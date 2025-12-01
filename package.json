@@ -1,7 +1,7 @@
 {
-  "name": "cleanarchitecturewarning",
-  "displayName": "CleanArchitectureWarning",
-  "description": "Clean architecture warning",
+  "name": "CleanArchitectureHighlighter",
+  "displayName": "Clean Architecture Highlighter",
+  "description": "Clean architecture Highlighter for VSCode",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.106.1"
@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "cleanarchitecturewarning.helloWorld",
+        "command": "cleanarchitecturehighlighter.helloWorld",
         "title": "Hello World"
       }
     ]
