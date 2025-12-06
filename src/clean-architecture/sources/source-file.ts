@@ -19,8 +19,7 @@ export class SourceFile extends LayeredComponent {
 
     private parseImports(document: TextDocument) {
         const text = document.getText();
-        // TODO: Permitir saltos de línea entre import y from
-        const importRegex = /import\s+.*\s+from\s+['"](.*)['"]/g;
+        const importRegex = /import\s+([\s\S]*?)\s+from\s+['"](.*)['"]/g;
 
         let match: RegExpExecArray | null;
         while ((match = importRegex.exec(text))) {
