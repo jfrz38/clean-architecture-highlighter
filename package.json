@@ -9,13 +9,17 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "cleanarchitecturehighlighter.helloWorld",
-        "title": "Hello World"
+        "command": "cleanarchitecturehighlighter.checker",
+        "title": "Clean Architecture Highlighter"
       }
     ]
   },
