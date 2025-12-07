@@ -4,15 +4,19 @@ import { DependencyPosition } from "./dependencies/dependency-position";
 import { DependencyStatement } from "./dependencies/dependency-statement";
 import { LayerPath } from "./layer/layer-path";
 import { LayeredComponent } from "./layer/layered-component";
+import { AllowedDependencies } from "../restrictions/allowed-dependencies";
+import { LayerAlias } from "./layer/layer-alias";
 
 export class SourceFile extends LayeredComponent {
 
-    protected readonly path: string;
     private dependencies: DependencyStatement[] = [];
 
-    constructor(document: TextDocument) {
-        super(document.uri.path);
-        this.path = document.uri.path;
+    constructor(
+        document: TextDocument,
+        private readonly allowedDependencies: AllowedDependencies,
+        aliases: LayerAlias
+    ) {
+        super(document.uri.path, aliases);
 
         this.parseImports(document);
     }
@@ -26,7 +30,7 @@ export class SourceFile extends LayeredComponent {
             const startPos = document.positionAt(match.index);
             const endPos = document.positionAt(match.index + match[0].length);
             const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-            this.dependencies.push(new DependencyStatement(new LayerPath(match[0]), this.path, position));
+            this.dependencies.push(new DependencyStatement(new LayerPath(match[0], this.aliases), this.path, position, this.allowedDependencies, this.aliases));
         }
 
     }

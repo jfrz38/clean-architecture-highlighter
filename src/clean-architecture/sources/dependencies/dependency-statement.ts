@@ -1,20 +1,21 @@
+import { AllowedDependencies } from "../../restrictions/allowed-dependencies";
 import { LayerViolation } from "../../restrictions/layer-violation";
+import { LayerAlias } from "../layer/layer-alias";
 import { LayerPath } from "../layer/layer-path";
-import { LayeredComponent } from "../layer/layered-component";
 import { DependencyPosition } from "./dependency-position";
 
-export class DependencyStatement extends LayeredComponent {
+export class DependencyStatement {
 
     private readonly _violation: LayerViolation | null;
 
     constructor(
-        private readonly text: LayerPath,
+        readonly text: LayerPath,
         protected readonly path: string,
-        public readonly position: DependencyPosition
+        public readonly position: DependencyPosition,
+        readonly allowedDependencies: AllowedDependencies,
+        aliases: LayerAlias
     ) {
-        super(path);
-
-        const layer = this.layer;
+        const layer = aliases.getLayer(path);
         const toLayer = text.layer;
 
         if (!layer || !toLayer) {
@@ -22,7 +23,7 @@ export class DependencyStatement extends LayeredComponent {
             return;
         }
 
-        this._violation = new LayerViolation(this.layer, toLayer), position;
+        this._violation = new LayerViolation(layer, toLayer, allowedDependencies), position;
     }
 
     public isViolation(): boolean {
