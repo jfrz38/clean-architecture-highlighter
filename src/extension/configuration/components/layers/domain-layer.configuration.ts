@@ -1,5 +1,5 @@
 import { Layer } from "../../types.configuration";
-import { LayerComponent } from "../layer-component";
+import { LayerComponent } from "./layer-component";
 
 export class DomainLayerConfiguration extends LayerComponent {
 

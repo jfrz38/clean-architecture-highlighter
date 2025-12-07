@@ -1,4 +1,4 @@
-import { Aliases, AllowedDependencies, Layer, Layers } from "../types.configuration";
+import { Aliases, AllowedDependencies, Layer, Layers } from "../../types.configuration";
 
 export class LayerComponent {
 
