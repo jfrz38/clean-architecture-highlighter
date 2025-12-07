@@ -21,5 +21,4 @@ export class DefaultConfiguration {
         this.config = Object.freeze(built) as ConfigurationOptions;
     }
 }
-export { ConfigurationOptions };
 

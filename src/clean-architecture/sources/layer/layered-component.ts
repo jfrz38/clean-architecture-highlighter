@@ -1,38 +1,27 @@
-import { Layer } from "./layers";
+import { Layer } from "../../types";
+import { LayerAlias } from "./layer-alias";
 
-export abstract class LayeredComponent {
+export class LayeredComponent {
 
-    private readonly LAYERS: Record<Layer, () => boolean> = {
-        domain: () => this.isDomain(),
-        application: () => this.isApplication(),
-        infrastructure: () => this.isInfrastructure()
-    };
+    public readonly layer: Layer | undefined;
 
-    constructor(protected readonly path: string) { }
-
-    protected isDomain(): boolean {
-        return this.path.includes('/domain');
+    constructor(
+        protected readonly path: string,
+        protected readonly aliases: LayerAlias
+    ) {
+        this.layer = aliases.getLayer(path);
     }
 
-    protected isInfrastructure(): boolean {
-        return this.path.includes('/infrastructure');
+    protected isDomain(): boolean {
+        return this.aliases.isDomain(this.path);
     }
 
     protected isApplication(): boolean {
-        return this.path.includes('/application');
+        return this.aliases.isApplication(this.path);
     }
 
-    public get layer(): Layer | null {
-        for (const [layer, check] of Object.entries(this.LAYERS) as [Layer, (ctx: any) => boolean][]) {
-            if (check(this)) {
-                return layer;
-            }
-        }
-        return null;
+    protected isInfrastructure(): boolean {
+        return this.aliases.isInfrastructure(this.path);
     }
-
-
-
-
 
 }

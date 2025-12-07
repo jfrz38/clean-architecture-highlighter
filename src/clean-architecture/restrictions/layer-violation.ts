@@ -1,13 +1,12 @@
-import { Layer } from "../sources/layer/layers";
+import { Layer } from "../types";
 import { AllowedDependencies } from "./allowed-dependencies";
 
 export class LayerViolation {
 
-    private readonly allowedDependencies = new AllowedDependencies();
-
     constructor(
         private readonly fromLayer: Layer,
-        private readonly toLayer: Layer
+        private readonly toLayer: Layer,
+        private readonly allowedDependencies: AllowedDependencies
     ) { }
 
     public isViolation(): boolean {
