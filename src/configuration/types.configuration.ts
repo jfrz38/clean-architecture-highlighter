@@ -21,5 +21,4 @@ export type AllowedDependencies = string[];
 export type SeverityLevel = 'warning' | 'error';
 export type SourceFolder = string;
 
-
 export type ConfigValue = SeverityLevel | SourceFolder | Layers | Layer;
