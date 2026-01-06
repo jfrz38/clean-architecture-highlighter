@@ -1,5 +1,5 @@
 {
-  "name": "CleanArchitectureHighlighter",
+  "name": "clean-architecture-highlighter",
   "displayName": "Clean Architecture Highlighter",
   "description": "Clean architecture Highlighter for VSCode",
   "version": "0.0.1",
@@ -14,11 +14,100 @@
     "onLanguage:typescript",
     "onStartupFinished"
   ],
-  "main": "./out/extension/extension.js",
+  "main": "./out/src/extension/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Clean Architecture Highlighter",
+      "properties": {
+        "clean-architecture-highlighter.severityLevel": {
+          "type": "string",
+          "enum": [
+            "warning",
+            "error",
+            "information"
+          ],
+          "default": "warning",
+          "description": "The severity level of the diagnostic messages shown in the editor."
+        },
+        "clean-architecture-highlighter.layers.domain": {
+          "type": "object",
+          "default": {},
+          "description": "Configuration for the Domain layer. Defines rules and identification patterns for core business logic.",
+          "properties": {
+            "aliases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "List of path aliases or glob patterns that identify this layer (e.g., '@/domain/*', 'src/core/*')."
+            },
+            "allowedDependencies": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "List of layers that the Domain layer is permitted to import from. Usually empty in Clean Architecture."
+            }
+          }
+        },
+        "clean-architecture-highlighter.layers.application": {
+          "type": "object",
+          "default": {},
+          "description": "Configuration for the Application layer. Defines rules for use cases and application services.",
+          "properties": {
+            "aliases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "List of path aliases or glob patterns that identify this layer."
+            },
+            "allowedDependencies": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "List of layers that the Application layer is permitted to import from (e.g., ['domain'])."
+            }
+          }
+        },
+        "clean-architecture-highlighter.layers.infrastructure": {
+          "type": "object",
+          "default": {},
+          "description": "Configuration for the Infrastructure layer. Defines rules for external tools, databases, and frameworks.",
+          "properties": {
+            "aliases": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "List of path aliases or glob patterns that identify this layer."
+            },
+            "allowedDependencies": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": [],
+              "description": "List of layers that the Infrastructure layer is permitted to import from (e.g., ['domain', 'application'])."
+            }
+          }
+        },
+        "clean-architecture-highlighter.sourceFolder": {
+          "type": "string",
+          "default": "src",
+          "description": "The source folder relative to the workspace root."
+        }
+      }
+    },
     "commands": [
       {
-        "command": "cleanarchitecturehighlighter.checker",
+        "command": "clean-architecture-highlighter.checker",
         "title": "Clean Architecture Highlighter"
       }
     ]
@@ -29,16 +118,24 @@
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test --label all",
+    "test-unit": "vscode-test --label unit-tests",
+    "test-integration": "vscode-test --label integration",
+    "tests": "npm run compile && node out/src/test/runTest.js",
+    "clean:tests": "rm -rf out/ && npm run tests"
   },
   "devDependencies": {
-    "@types/vscode": "^1.106.1",
-    "@types/mocha": "^10.0.10",
+    "@types/mocha": "10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.46.3",
-    "eslint": "^9.39.1",
-    "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "@types/vscode": "1.106.1",
+    "@vscode/test-cli": "0.0.12",
+    "@vscode/test-electron": "2.5.2",
+    "eslint": "9.39.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.46.3"
+  },
+  "dependencies": {
+    "glob": "13.0.0",
+    "mocha": "11.7.5"
   }
 }
