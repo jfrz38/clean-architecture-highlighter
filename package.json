@@ -39,7 +39,9 @@
               "items": {
                 "type": "string"
               },
-              "default": [],
+              "default": [
+                "domain"
+              ],
               "description": "List of path aliases or glob patterns that identify this layer (e.g., '@/domain/*', 'src/core/*')."
             },
             "allowedDependencies": {
@@ -47,7 +49,9 @@
               "items": {
                 "type": "string"
               },
-              "default": [],
+              "default": [
+                "domain"
+              ],
               "description": "List of layers that the Domain layer is permitted to import from. Usually empty in Clean Architecture."
             }
           }
@@ -62,7 +66,9 @@
               "items": {
                 "type": "string"
               },
-              "default": [],
+              "default": [
+                "application"
+              ],
               "description": "List of path aliases or glob patterns that identify this layer."
             },
             "allowedDependencies": {
@@ -70,7 +76,10 @@
               "items": {
                 "type": "string"
               },
-              "default": [],
+              "default": [
+                "domain",
+                "application"
+              ],
               "description": "List of layers that the Application layer is permitted to import from (e.g., ['domain'])."
             }
           }
@@ -85,7 +94,9 @@
               "items": {
                 "type": "string"
               },
-              "default": [],
+              "default": [
+                "infrastructure"
+              ],
               "description": "List of path aliases or glob patterns that identify this layer."
             },
             "allowedDependencies": {
@@ -93,7 +104,11 @@
               "items": {
                 "type": "string"
               },
-              "default": [],
+              "default": [
+                "domain",
+                "application",
+                "infrastructure"
+              ],
               "description": "List of layers that the Infrastructure layer is permitted to import from (e.g., ['domain', 'application'])."
             }
           }
