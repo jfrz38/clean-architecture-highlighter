@@ -1,8 +1,9 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { Scenario, Diagnostic, Suite } from './suites/types';
+import { DefaultConfiguration } from '../extension/configuration/default.configuration';
 import { suites } from './suites/scenarios';
+import { Diagnostic, Scenario, Suite } from './suites/types';
 
 suite('Extension Test Suite', () => {
 	const currentWorkspace = 'workspace';
@@ -17,6 +18,7 @@ suite('Extension Test Suite', () => {
 						await assertScenario(workspaceRootPath, scenario);
 					} finally {
 						await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+						await setDefaultConfigurations();
 					}
 				});
 			});
@@ -29,10 +31,35 @@ suite('Extension Test Suite', () => {
 		}
 
 		const config = vscode.workspace.getConfiguration('clean-architecture-highlighter');
+		const updates: Thenable<void>[] = [];
 
-		for (const key of Object.keys(configuration)) {
-			await config.update(key, configuration[key], vscode.ConfigurationTarget.Global);
+		for (const key of ['severityLevel', 'sourceFolder']) {
+			if (configuration[key] !== undefined) {
+				updates.push(config.update(key, configuration[key], vscode.ConfigurationTarget.Global));
+			}
 		}
+
+		if (configuration.layers) {
+			for (const [layerName, layerContent] of Object.entries(configuration.layers)) {
+				if (typeof layerContent === 'object' && layerContent !== null) {
+					for (const [propName, value] of Object.entries(layerContent)) {
+						updates.push(
+							config.update(
+								`layers.${layerName}.${propName}`,
+								value,
+								vscode.ConfigurationTarget.Global
+							)
+						);
+					}
+				}
+			}
+		}
+
+		await Promise.all(updates);
+	}
+
+	async function setDefaultConfigurations(): Promise<void> {
+		await setConfigurations(DefaultConfiguration.default);
 	}
 
 	async function assertScenario(workspaceRootPath: string, scenario: Scenario) {
