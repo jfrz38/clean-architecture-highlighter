@@ -112,9 +112,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
-    "test": "vscode-test --label all",
-    "test-unit": "vscode-test --label unit-tests",
-    "test-integration": "vscode-test --label integration",
+    "test": "npm run tests",
     "tests": "npm run compile && node out/src/test/runTest.js",
     "clean:tests": "rm -rf out/ && npm run tests"
   },
