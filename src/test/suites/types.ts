@@ -1,3 +1,5 @@
+import { ConfigurationOptions } from "../../extension/configuration/types.configuration";
+
 export type Scenario = {
     name: string,
     file: string,
@@ -14,6 +16,10 @@ export type Diagnostic = {
 
 export type Suite = {
     name: string,
-    configuration: object,
+    configuration: DeepPartial<ConfigurationOptions>,
     scenarios: Scenario[]
 }
+
+type DeepPartial<T> = {
+    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> | null : T[P] | null;
+};

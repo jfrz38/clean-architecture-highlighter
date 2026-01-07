@@ -7,6 +7,10 @@ export class DefaultConfiguration {
 
     public readonly config: ConfigurationOptions;
 
+    public static get default(): ConfigurationOptions {
+        return new DefaultConfiguration({}, undefined, undefined).config;
+    }
+
     constructor(
         private readonly layers: Partial<Layers>,
         private readonly severityLevel: SeverityLevel | undefined,

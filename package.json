@@ -29,94 +29,73 @@
           "default": "warning",
           "description": "The severity level of the diagnostic messages shown in the editor."
         },
-        "clean-architecture-highlighter.layers.domain": {
-          "type": "object",
-          "default": {},
-          "description": "Configuration for the Domain layer. Defines rules and identification patterns for core business logic.",
-          "properties": {
-            "aliases": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "default": [
-                "domain"
-              ],
-              "description": "List of path aliases or glob patterns that identify this layer (e.g., '@/domain/*', 'src/core/*')."
-            },
-            "allowedDependencies": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "default": [
-                "domain"
-              ],
-              "description": "List of layers that the Domain layer is permitted to import from. Usually empty in Clean Architecture."
-            }
-          }
-        },
-        "clean-architecture-highlighter.layers.application": {
-          "type": "object",
-          "default": {},
-          "description": "Configuration for the Application layer. Defines rules for use cases and application services.",
-          "properties": {
-            "aliases": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "default": [
-                "application"
-              ],
-              "description": "List of path aliases or glob patterns that identify this layer."
-            },
-            "allowedDependencies": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "default": [
-                "domain",
-                "application"
-              ],
-              "description": "List of layers that the Application layer is permitted to import from (e.g., ['domain'])."
-            }
-          }
-        },
-        "clean-architecture-highlighter.layers.infrastructure": {
-          "type": "object",
-          "default": {},
-          "description": "Configuration for the Infrastructure layer. Defines rules for external tools, databases, and frameworks.",
-          "properties": {
-            "aliases": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "default": [
-                "infrastructure"
-              ],
-              "description": "List of path aliases or glob patterns that identify this layer."
-            },
-            "allowedDependencies": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "default": [
-                "domain",
-                "application",
-                "infrastructure"
-              ],
-              "description": "List of layers that the Infrastructure layer is permitted to import from (e.g., ['domain', 'application'])."
-            }
-          }
-        },
         "clean-architecture-highlighter.sourceFolder": {
           "type": "string",
           "default": "src",
           "description": "The source folder relative to the workspace root."
+        },
+        "clean-architecture-highlighter.layers.domain.aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "domain"
+          ],
+          "description": "List of path aliases or glob patterns that identify the Domain layer."
+        },
+        "clean-architecture-highlighter.layers.domain.allowedDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "domain"
+          ],
+          "description": "List of layers that the Domain layer is permitted to import from."
+        },
+        "clean-architecture-highlighter.layers.application.aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "application"
+          ],
+          "description": "List of path aliases or glob patterns that identify the Application layer."
+        },
+        "clean-architecture-highlighter.layers.application.allowedDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "domain",
+            "application"
+          ],
+          "description": "List of layers that the Application layer is permitted to import from."
+        },
+        "clean-architecture-highlighter.layers.infrastructure.aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "infrastructure"
+          ],
+          "description": "List of path aliases or glob patterns that identify the Infrastructure layer."
+        },
+        "clean-architecture-highlighter.layers.infrastructure.allowedDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "domain",
+            "application",
+            "infrastructure"
+          ],
+          "description": "List of layers that the Infrastructure layer is permitted to import from."
         }
       }
     },
