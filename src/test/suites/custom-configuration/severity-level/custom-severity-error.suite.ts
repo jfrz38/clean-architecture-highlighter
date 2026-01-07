@@ -3,8 +3,7 @@ import { Suite } from "../../types";
 export const customSeverityErrorSuite: Suite = {
     name: 'Severity error custom config',
     configuration: {
-        severityLevel: 'error',
-        sourceFolder: 'src'
+        severityLevel: 'error'
     },
     scenarios: [
         {

@@ -1,8 +1,10 @@
 import { Suite } from "../types";
+import { customLayersSuite } from "./layers/custom-layers";
 import { customSeverityErrorSuite } from "./severity-level/custom-severity-error.suite";
-import { customSourceFolderErrorSuite } from "./source-folder/custom-source-folder-error.suite";
+import { customSourceFolderSuite } from "./source-folder/custom-source-folder.suite";
 
 export const customConfigSuite: Suite[] = [
     customSeverityErrorSuite,
-    customSourceFolderErrorSuite
+    customSourceFolderSuite,
+    ...customLayersSuite
 ];

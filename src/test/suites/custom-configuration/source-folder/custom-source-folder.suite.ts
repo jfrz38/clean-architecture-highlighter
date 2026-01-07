@@ -1,9 +1,8 @@
 import { Suite } from "../../types";
 
-export const customSourceFolderErrorSuite: Suite = {
-    name: 'Source folder error custom config',
+export const customSourceFolderSuite: Suite = {
+    name: 'Source folder custom config',
     configuration: {
-        severityLevel: 'warning',
         sourceFolder: 'newSrc'
     },
     scenarios: [

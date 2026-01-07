@@ -2,10 +2,7 @@ import { Suite } from "../types";
 
 export const defaultConfigSuite: Suite = {
     name: "Default config",
-    configuration: {
-        severityLevel: 'warning',
-        sourceFolder: 'src'
-    },
+    configuration: {},
     scenarios: [
         {
             name: "Application layer should depend only from domain and application itself",
