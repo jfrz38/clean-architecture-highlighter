@@ -1,6 +1,7 @@
 import { InfrastructureAlias } from "../my-infrastructure-alias/infrastructure";
-import { Application } from "../my-application-alias/application";
+import { ApplicationAlias } from "../my-application-alias/application";
+import { Application } from "../../application/application";
 
 export class DomainImportApplicationAlias {
-    
+
 }

@@ -1,1 +1,1 @@
-export class Application { }
+export class ApplicationAlias { }
