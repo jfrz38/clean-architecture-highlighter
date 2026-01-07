@@ -1,7 +1,7 @@
 import { Suite } from "../../../../types";
 
 export const customApplicationLayerAliasesSuite: Suite = {
-    name: 'Application custom config',
+    name: 'Application custom config with aliases',
     configuration: {
         layers: {
             application: {

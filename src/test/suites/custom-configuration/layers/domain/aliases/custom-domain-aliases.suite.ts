@@ -1,7 +1,7 @@
 import { Suite } from "../../../../types";
 
 export const customDomainLayerAliasesSuite: Suite = {
-    name: 'Domain custom config',
+    name: 'Domain custom config with aliases',
     configuration: {
         layers: {
             domain: {

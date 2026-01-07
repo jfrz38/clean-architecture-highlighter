@@ -1,7 +1,7 @@
 import { Suite } from "../../../../types";
 
 export const customInfrastructureLayerAliasesSuite: Suite = {
-    name: 'Infrastructure custom config',
+    name: 'Infrastructure custom config with aliases',
     configuration: {
         layers: {
             infrastructure: {
