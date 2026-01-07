@@ -41,16 +41,17 @@ suite('Extension Test Suite', () => {
 
 		if (configuration.layers) {
 			for (const [layerName, layerContent] of Object.entries(configuration.layers)) {
-				if (typeof layerContent === 'object' && layerContent !== null) {
-					for (const [propName, value] of Object.entries(layerContent)) {
-						updates.push(
-							config.update(
-								`layers.${layerName}.${propName}`,
-								value,
-								vscode.ConfigurationTarget.Global
-							)
-						);
-					}
+				if (typeof layerContent !== 'object' || layerContent === null) {
+					continue;
+				}
+				for (const [propName, value] of Object.entries(layerContent)) {
+					updates.push(
+						config.update(
+							`layers.${layerName}.${propName}`,
+							value,
+							vscode.ConfigurationTarget.Global
+						)
+					);
 				}
 			}
 		}
