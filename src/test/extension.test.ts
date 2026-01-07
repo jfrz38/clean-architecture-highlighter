@@ -97,9 +97,6 @@ suite('Extension Test Suite', () => {
 	function assertDiagnostics(fileUri: vscode.Uri, diagnostics: Diagnostic[]) {
 		const existingDiagnostics = vscode.languages.getDiagnostics(fileUri);
 
-		// console.log("existing diagnostics = ", JSON.stringify(existingDiagnostics, null, 2));
-		// console.log("expected diagnostics = ", JSON.stringify(diagnostics, null, 2));
-
 		assert.strictEqual(existingDiagnostics.length, diagnostics.length, 'No existe el mismo número de diagnostics');
 
 		diagnostics.forEach(diagnostic => assertExistsDiagnostic(existingDiagnostics, diagnostic));
