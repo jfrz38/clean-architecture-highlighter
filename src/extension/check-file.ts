@@ -16,7 +16,7 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
         state.config.layers.infrastructure.aliases
     );
 
-    const violations = new SourceFile(document, state.allowedDependencies, aliases).warnings;
+    const violations = new SourceFile(document, state.allowedDependencies, aliases).violations;
 
     diagnostics.set(document.uri, violations.map(violation => {
         const range = new vscode.Range(

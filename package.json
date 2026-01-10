@@ -24,7 +24,7 @@
           "enum": [
             "warning",
             "error",
-            "information"
+            "info"
           ],
           "default": "warning",
           "description": "The severity level of the diagnostic messages shown in the editor."

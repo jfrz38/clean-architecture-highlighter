@@ -1,6 +1,9 @@
-import { Aliases, AllowedDependencies, Layer, Layers } from "../../types.configuration";
+import { Aliases, Layer, Layers } from "../../types.configuration";
+import { AllowedLayerDependencies } from "./allowed-dependencies/allowed-layer-dependencies";
 
 export class LayerComponent {
+
+    private _config: Layer;
 
     public static readonly DEFAULT_LAYERS: Layers = {
         domain: {
@@ -17,15 +20,13 @@ export class LayerComponent {
         }
     } as const;
 
-    private _config: Layer;
-
     constructor(
         readonly aliases: Aliases,
-        readonly allowedDependencies: AllowedDependencies
+        private readonly allowedDependencies: AllowedLayerDependencies
     ) {
         this._config = {
             aliases: this.aliases,
-            allowedDependencies: this.allowedDependencies
+            allowedDependencies: this.allowedDependencies.value
         };
     }
 
