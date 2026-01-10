@@ -1,11 +1,11 @@
 import { TextDocument } from "vscode";
+import { AllowedDependencies } from "../restrictions/allowed-dependencies";
 import { ArchitectureViolation } from "../restrictions/architecture-violation";
 import { DependencyPosition } from "./dependencies/dependency-position";
 import { DependencyStatement } from "./dependencies/dependency-statement";
+import { LayerAlias } from "./layer/layer-alias";
 import { LayerPath } from "./layer/layer-path";
 import { LayeredComponent } from "./layer/layered-component";
-import { AllowedDependencies } from "../restrictions/allowed-dependencies";
-import { LayerAlias } from "./layer/layer-alias";
 
 export class SourceFile extends LayeredComponent {
 
@@ -35,7 +35,7 @@ export class SourceFile extends LayeredComponent {
 
     }
 
-    public get warnings(): ArchitectureViolation[] {
+    public get violations(): ArchitectureViolation[] {
         return this.dependencies
             .filter(dependency => dependency.isViolation())
             .map(dependency => new ArchitectureViolation(dependency.violation!, dependency.position));

@@ -1,4 +1,5 @@
 import { Layer } from "../../types.configuration";
+import { AllowedLayerDependencies } from "./allowed-dependencies/allowed-layer-dependencies";
 import { LayerComponent } from "./layer-component";
 
 export class ApplicationLayerConfiguration extends LayerComponent {
@@ -8,7 +9,10 @@ export class ApplicationLayerConfiguration extends LayerComponent {
     constructor(layer?: Partial<Layer>) {
         super(
             layer?.aliases ?? ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.aliases,
-            layer?.allowedDependencies ?? ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies
+            new AllowedLayerDependencies(
+                ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies,
+                layer?.allowedDependencies
+            )
         );
     }
 }

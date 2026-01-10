@@ -1,4 +1,5 @@
 import { Layer } from "../../types.configuration";
+import { AllowedLayerDependencies } from "./allowed-dependencies/allowed-layer-dependencies";
 import { LayerComponent } from "./layer-component";
 
 export class DomainLayerConfiguration extends LayerComponent {
@@ -8,7 +9,10 @@ export class DomainLayerConfiguration extends LayerComponent {
     constructor(layer?: Partial<Layer>) {
         super(
             layer?.aliases ?? DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.aliases,
-            layer?.allowedDependencies ?? DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies
+            new AllowedLayerDependencies(
+                DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies,
+                layer?.allowedDependencies
+            )
         );
     }
 
