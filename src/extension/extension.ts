@@ -6,6 +6,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const { state, diagnostics } = createExtensionContext();
 
+	vscode.workspace.textDocuments.forEach(document => checkFile(document, state, diagnostics));
+
 	const onDidOpenTextDocument = vscode.workspace.onDidOpenTextDocument(document => checkFile(document, state, diagnostics));
 	const onDidChangeTextDocument = vscode.workspace.onDidChangeTextDocument(event => checkFile(event.document, state, diagnostics));
 	const onDidChangeConfiguration = vscode.workspace.onDidChangeConfiguration(event => {
