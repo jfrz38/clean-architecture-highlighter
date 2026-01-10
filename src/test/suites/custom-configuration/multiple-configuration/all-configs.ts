@@ -35,14 +35,7 @@ export const allConfigs: Suite = {
         {
             name: 'Application should not fail when import infrastructure layer but domain is not override',
             file: 'newSrc/aliases/app/app.ts',
-            diagnostics: [
-                {
-                    message: 'application layer should not depend on domain layer.',
-                    severity: 'Error',
-                    startLine: 0,
-                    endLine: 0
-                }
-            ]
+            diagnostics: []
         },
         {
             name: 'Infrastructure should fail when any dependency is allowed',
