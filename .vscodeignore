@@ -9,3 +9,14 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+test/**
+
+# Keep only out/src
+/out/**
+!/out/src/**
+
+# Explicity add documentation files
+!images/**
+!README.md
+!LICENSE
+!package.json
