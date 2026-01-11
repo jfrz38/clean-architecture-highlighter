@@ -4,7 +4,7 @@
   "description": "Clean architecture Highlighter for VSCode",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.106.1"
+    "vscode": "^1.108.1"
   },
   "categories": [
     "Other"
