@@ -6,14 +6,32 @@
   "engines": {
     "vscode": "^1.108.1"
   },
+  "publisher": "jfrz38",
+  "icon": "images/icon.png",
   "categories": [
-    "Other"
+    "Linters",
+    "Visualization"
   ],
   "activationEvents": [
     "onLanguage:javascript",
     "onLanguage:typescript",
     "onStartupFinished"
   ],
+  "keywords": [
+    "code analysis",
+    "clean architecture",
+    "dependency validation",
+    "static analysis",
+    "hexagonal architecture"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jfrz38/clean-architecture-highlighter"
+  },
+  "bugs": {
+    "url": "https://github.com/jfrz38/clean-architecture-highlighter/issues"
+  },
+  "homepage": "https://github.com/jfrz38/clean-architecture-highlighter#readme",
   "main": "./out/src/extension/extension.js",
   "contributes": {
     "configuration": {
