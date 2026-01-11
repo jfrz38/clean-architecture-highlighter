@@ -2,18 +2,48 @@
   "name": "clean-architecture-highlighter",
   "displayName": "Clean Architecture Highlighter",
   "description": "Clean architecture Highlighter for VSCode",
+  "publisher": "jfrz38",
+  "author": {
+    "name": "José F. Ruiz",
+    "email": "jrz899@inlumine.ual.es"
+  },
+  "pricing": "Free",
   "version": "0.0.1",
+  "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.106.1"
+    "vscode": "^1.70.0"
+  },
+  "qna": "marketplace",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1E2D3D",
+    "theme": "dark"
   },
   "categories": [
-    "Other"
+    "Linters",
+    "Visualization",
+    "Programming Languages"
   ],
   "activationEvents": [
     "onLanguage:javascript",
     "onLanguage:typescript",
     "onStartupFinished"
   ],
+  "keywords": [
+    "code analysis",
+    "clean architecture",
+    "dependency validation",
+    "static analysis",
+    "hexagonal architecture"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jfrz38/clean-architecture-highlighter"
+  },
+  "bugs": {
+    "url": "https://github.com/jfrz38/clean-architecture-highlighter/issues"
+  },
+  "homepage": "https://github.com/jfrz38/clean-architecture-highlighter#readme",
   "main": "./out/src/extension/extension.js",
   "contributes": {
     "configuration": {
@@ -98,13 +128,7 @@
           "description": "List of layers that the Infrastructure layer is permitted to import from."
         }
       }
-    },
-    "commands": [
-      {
-        "command": "clean-architecture-highlighter.checker",
-        "title": "Clean Architecture Highlighter"
-      }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
@@ -118,16 +142,16 @@
   },
   "devDependencies": {
     "@types/mocha": "10.0.10",
-    "@types/node": "25.x",
-    "@types/vscode": "1.108.1",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.70.0",
     "@vscode/test-cli": "0.0.12",
     "@vscode/test-electron": "2.5.2",
     "eslint": "9.39.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.52.0"
+    "typescript-eslint": "8.52.0",
+    "mocha": "11.7.5"
   },
   "dependencies": {
-    "glob": "13.0.0",
-    "mocha": "11.7.5"
+    "glob": "13.0.0"
   }
 }
