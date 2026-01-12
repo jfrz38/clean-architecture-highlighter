@@ -1,11 +1,12 @@
-name: Build
+name: Publish Extension
+
 on:
-  pull_request:
+  push:
     branches:
       - main
-      - develop
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,3 +29,11 @@ jobs:
 
       - name: Run tests
         run: xvfb-run -a pnpm run clean:tests
+
+      - name: Compile
+        run: pnpm run clean:compile
+
+      - name: Publish to Marketplace
+        run: npx @vscode/vsce publish --no-dependencies
+        env:
+          VSCE_PAT: ${{ secrets.VS_CODE_TOKEN }}
