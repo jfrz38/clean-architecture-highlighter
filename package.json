@@ -8,7 +8,7 @@
     "email": "jrz899@inlumine.ual.es"
   },
   "pricing": "Free",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.70.0"
