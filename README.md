@@ -1,7 +1,7 @@
 # Clean Architecture Highlighter
 
 [![Installs](https://img.shields.io/visual-studio-marketplace/i/jfrz38.clean-architecture-highlighter)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
-[![Tests](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/run_tests.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions)
+[![Tests](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions)
 
 VS Code extension to **enforce Clean Architecture rules** in Node.js projects by **statically analyzing imports**.
 
