@@ -143,13 +143,13 @@
   },
   "devDependencies": {
     "@types/mocha": "10.0.10",
-    "@types/node": "20.x",
+    "@types/node": "25.x",
     "@types/vscode": "^1.70.0",
     "@vscode/test-cli": "0.0.12",
     "@vscode/test-electron": "2.5.2",
     "eslint": "9.39.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.52.0",
+    "typescript-eslint": "8.54.0",
     "mocha": "11.7.5"
   },
   "dependencies": {
