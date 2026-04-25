@@ -28,3 +28,6 @@ jobs:
 
       - name: Run tests
         run: xvfb-run -a pnpm run clean:tests
+
+      - name: Package extension
+        run: npx @vscode/vsce package --no-dependencies
