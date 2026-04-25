@@ -70,6 +70,6 @@ jobs:
 
           gh release create "$TAG" \
             --repo "$GITHUB_REPOSITORY" \
-            --title "Clean Architecture Highlighter $VERSION" \
+            --title "$TAG" \
             --generate-notes \
             "clean-architecture-highlighter-$VERSION.vsix"
