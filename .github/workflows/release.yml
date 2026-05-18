@@ -20,8 +20,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6.0.3
-        with:
-          version: latest
 
       - name: Setup Node
         uses: actions/setup-node@v6
