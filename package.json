@@ -9,6 +9,7 @@
   },
   "pricing": "Free",
   "version": "0.0.3",
+  "packageManager": "pnpm@11.1.3",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.70.0"
