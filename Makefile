@@ -2,7 +2,7 @@
 help: ## show make targets
 	@node -e "const fs = require('fs'); const lines = fs.readFileSync('$(firstword $(MAKEFILE_LIST))', 'utf8').split(/\r?\n/); for (const line of lines) { const match = line.match(/^([a-zA-Z_-]+):.*?## (.*)$$/); if (match) console.log(' ' + match[1].padEnd(20) + '  ' + match[2]); }"
 
-.PHONY: install ci-install build compile test clean-test package
+.PHONY: install ci-install build compile test clean-test package dev
 
 install: ## install project dependencies from the lockfile
 	pnpm install
