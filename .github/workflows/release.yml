@@ -29,10 +29,10 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Run tests
-        run: xvfb-run -a pnpm run clean:tests
+        run: xvfb-run -a make clean-test
 
       - name: Resolve release version
         id: version
@@ -46,7 +46,7 @@ jobs:
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Package extension
-        run: npx @vscode/vsce package --no-dependencies
+        run: make package
 
       - name: Create GitHub release
         env:

@@ -22,10 +22,10 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        run: make ci-install
 
       - name: Run tests
-        run: xvfb-run -a pnpm run clean:tests
+        run: xvfb-run -a make clean-test
 
       - name: Package extension
-        run: npx @vscode/vsce package --no-dependencies
+        run: make package
