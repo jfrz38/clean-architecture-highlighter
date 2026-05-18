@@ -4,7 +4,7 @@ export const pythonLanguageSuites: Suite[] = [
     {
         name: 'Python enabled language',
         configuration: {
-            enabledLanguages: ['javascript', 'typescript', 'python']
+            enabledLanguages: ['python']
         },
         scenarios: [
             {
