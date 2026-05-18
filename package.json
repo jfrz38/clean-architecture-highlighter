@@ -65,6 +65,17 @@
           "default": "src",
           "description": "The source folder relative to the workspace root."
         },
+        "clean-architecture-highlighter.enabledLanguages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "javascript",
+            "typescript"
+          ],
+          "description": "List of VS Code language identifiers that should be analyzed."
+        },
         "clean-architecture-highlighter.layers.domain.aliases": {
           "type": "array",
           "items": {

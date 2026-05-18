@@ -3,10 +3,12 @@ import { customLayersSuite } from "./layers/custom-layers";
 import { multipleConfiguration } from "./multiple-configuration/multiple-configuration";
 import { customSeverityErrorSuite } from "./severity-level/custom-severity-error.suite";
 import { customSourceFolderSuite } from "./source-folder/custom-source-folder.suite";
+import { customEnabledLanguagesSuite } from "./enabled-languages/custom-enabled-languages.suite";
 
 export const customConfigSuite: Suite[] = [
     customSeverityErrorSuite,
     customSourceFolderSuite,
+    customEnabledLanguagesSuite,
     ...customLayersSuite,
     ...multipleConfiguration
 ];

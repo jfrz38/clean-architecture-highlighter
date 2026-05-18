@@ -33,7 +33,7 @@ suite('Extension Test Suite', () => {
 		const config = vscode.workspace.getConfiguration('clean-architecture-highlighter');
 		const updates: Thenable<void>[] = [];
 
-		for (const key of ['severityLevel', 'sourceFolder']) {
+		for (const key of ['severityLevel', 'sourceFolder', 'enabledLanguages']) {
 			if (configuration[key] !== undefined) {
 				updates.push(config.update(key, configuration[key], vscode.ConfigurationTarget.Global));
 			}
