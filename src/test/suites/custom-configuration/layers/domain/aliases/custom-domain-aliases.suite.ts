@@ -12,7 +12,7 @@ export const customDomainLayerAliasesSuite: Suite = {
     scenarios: [
         {
             name: 'Domain layer with alias should depend only from domain itself',
-            file: 'src/aliases/my-domain-alias/domain.ts',
+            file: 'architecture/typescript/src/aliases/my-domain-alias/domain.ts',
             diagnostics: [
                 {
                     message: 'domain layer should not depend on infrastructure layer.',
@@ -30,7 +30,7 @@ export const customDomainLayerAliasesSuite: Suite = {
         },
         {
             name: 'Original domain should not fail',
-            file: 'src/domain/domain.ts',
+            file: 'architecture/typescript/src/domain/domain.ts',
             diagnostics: []
         }
     ]

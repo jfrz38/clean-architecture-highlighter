@@ -33,7 +33,7 @@ suite('Extension Test Suite', () => {
 		const config = vscode.workspace.getConfiguration('clean-architecture-highlighter');
 		const updates: Thenable<void>[] = [];
 
-		for (const key of ['severityLevel', 'sourceFolder']) {
+		for (const key of ['severityLevel', 'sourceFolder', 'enabledLanguages']) {
 			if (configuration[key] !== undefined) {
 				updates.push(config.update(key, configuration[key], vscode.ConfigurationTarget.Global));
 			}
@@ -97,7 +97,7 @@ suite('Extension Test Suite', () => {
 	function assertDiagnostics(fileUri: vscode.Uri, diagnostics: Diagnostic[]) {
 		const existingDiagnostics = vscode.languages.getDiagnostics(fileUri);
 
-		assert.strictEqual(existingDiagnostics.length, diagnostics.length, 'No existe el mismo número de diagnostics');
+		assert.strictEqual(existingDiagnostics.length, diagnostics.length, 'Diagnostics count does not match');
 
 		diagnostics.forEach(diagnostic => assertExistsDiagnostic(existingDiagnostics, diagnostic));
 	}

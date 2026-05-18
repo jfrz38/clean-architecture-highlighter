@@ -37,6 +37,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 {
     "clean-architecture-highlighter.severityLevel": "warning",
     "clean-architecture-highlighter.sourceFolder": "src",
+    "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
     
     "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
     "clean-architecture-highlighter.layers.domain.allowedDependencies": ["domain"],
@@ -53,6 +54,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | ------------------------------------ | -------- | --------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
 | `sourceFolder`                       | string   | `src`     | any folder name                           | Root folder where the source code is analyzed. Only files below this folder (and subfolders) will be analyzed. |
+| `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
 
@@ -65,13 +67,14 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension is designed for Node.js/TypeScript projects using ES Modules (`import`/`export`).
+This extension currently supports JavaScript and TypeScript projects using ES Modules (`import`/`export`).
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
+- **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations
 
-- **Import Syntax Only**: Currently, the extension only analyzes static `import` statements. It does **not** support CommonJS `require()` or dynamic `import()`.
+- **Import Syntax Only**: Currently, the JavaScript/TypeScript extractor only analyzes static `import` statements. It does **not** support CommonJS `require()` or dynamic `import()`.
 - **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
 
 ## The Dependency Rule

@@ -22,7 +22,7 @@ export const allConfigs: Suite = {
     scenarios: [
         {
             name: 'Domain should fail when import infrastructure layer and not with application',
-            file: 'newSrc/aliases/core/core.ts',
+            file: 'architecture/typescript/newSrc/aliases/core/core.ts',
             diagnostics: [
                 {
                     message: 'domain layer should not depend on infrastructure layer.',
@@ -34,12 +34,12 @@ export const allConfigs: Suite = {
         },
         {
             name: 'Application should not fail when import infrastructure layer but domain is not override',
-            file: 'newSrc/aliases/app/app.ts',
+            file: 'architecture/typescript/newSrc/aliases/app/app.ts',
             diagnostics: []
         },
         {
             name: 'Infrastructure should fail when any dependency is allowed',
-            file: 'newSrc/aliases/infra/infra.ts',
+            file: 'architecture/typescript/newSrc/aliases/infra/infra.ts',
             diagnostics: []
         },
     ]

@@ -12,7 +12,7 @@ export const customDomainLayerAllowedDependenciesSuite: Suite = {
     scenarios: [
         {
             name: 'Domain layer with allowed application dependency can depend on application but not on infrastructure',
-            file: 'src/domain/domain.ts',
+            file: 'architecture/typescript/src/domain/domain.ts',
             diagnostics: [
                 {
                     message: 'domain layer should not depend on infrastructure layer.',
@@ -24,7 +24,7 @@ export const customDomainLayerAllowedDependenciesSuite: Suite = {
         },
         {
             name: 'Domain layer with allowed application dependency when multiple import lines can depend on application but not on infrastructure',
-            file: "src/domain/other-domain.ts",
+            file: "architecture/typescript/src/domain/other-domain.ts",
             diagnostics: [
                 {
                     message: "domain layer should not depend on infrastructure layer.",

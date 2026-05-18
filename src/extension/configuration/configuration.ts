@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { DefaultConfiguration } from './default.configuration';
-import { ConfigurationOptions, Layers, SeverityLevel, SourceFolder } from './types.configuration';
+import { ConfigurationOptions, EnabledLanguages, Layers, SeverityLevel, SourceFolder } from './types.configuration';
 
 export class Configuration {
 
@@ -10,7 +10,8 @@ export class Configuration {
         return new DefaultConfiguration(
             config.get<Partial<Layers>>('layers', {}),
             config.get<Partial<SeverityLevel>>('severityLevel'),
-            config.get<Partial<SourceFolder>>('sourceFolder')
+            config.get<Partial<SourceFolder>>('sourceFolder'),
+            config.get<EnabledLanguages>('enabledLanguages')
         ).config;
     }
 }
