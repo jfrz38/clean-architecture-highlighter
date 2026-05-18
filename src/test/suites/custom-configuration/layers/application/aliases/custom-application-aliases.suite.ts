@@ -12,7 +12,7 @@ export const customApplicationLayerAliasesSuite: Suite = {
     scenarios: [
         {
             name: 'Application layer with alias should depend only from domain and application itself',
-            file: 'src/aliases/my-application-alias/application.ts',
+            file: 'architecture/typescript/src/aliases/my-application-alias/application.ts',
             diagnostics: [
                 {
                     message: 'application layer should not depend on infrastructure layer.',
@@ -24,7 +24,7 @@ export const customApplicationLayerAliasesSuite: Suite = {
         },
         {
             name: 'Original application should not fail',
-            file: 'src/application/application.ts',
+            file: 'architecture/typescript/src/application/application.ts',
             diagnostics: []
         }
     ]

@@ -15,7 +15,7 @@ export const customDomainAndApplicationLayerAliasesSuite: Suite = {
     scenarios: [
         {
             name: 'Domain layer with alias import other invalid layer with alias should fail',
-            file: 'src/aliases/my-domain-alias/domain-import-application-alias.ts',
+            file: 'architecture/typescript/src/aliases/my-domain-alias/domain-import-application-alias.ts',
             diagnostics: [
                 {
                     message: 'domain layer should not depend on application layer.',
