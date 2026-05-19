@@ -8,7 +8,7 @@
     "email": "jrz899@inlumine.ual.es"
   },
   "pricing": "Free",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "packageManager": "pnpm@11.1.3",
   "license": "Apache-2.0",
   "engines": {
