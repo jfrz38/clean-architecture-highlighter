@@ -1,6 +1,7 @@
 import { DependencyExtractor } from "./dependency-extractor";
 import { EcmaScriptDependencyExtractor } from "./ecmascript-dependency-extractor";
 import { JavaDependencyExtractor } from "./java-dependency-extractor";
+import { KotlinDependencyExtractor } from "./kotlin-dependency-extractor";
 import { PythonDependencyExtractor } from "./python-dependency-extractor";
 
 export class DependencyExtractorRegistry {
@@ -9,6 +10,7 @@ export class DependencyExtractorRegistry {
         ['javascript', new EcmaScriptDependencyExtractor()],
         ['typescript', new EcmaScriptDependencyExtractor()],
         ['java', new JavaDependencyExtractor()],
+        ['kotlin', new KotlinDependencyExtractor()],
         ['python', new PythonDependencyExtractor()],
     ]);
 
