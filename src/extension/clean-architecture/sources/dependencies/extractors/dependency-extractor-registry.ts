@@ -8,6 +8,7 @@ import { KotlinDependencyExtractor } from "./kotlin-dependency-extractor";
 import { PhpDependencyExtractor } from "./php-dependency-extractor";
 import { PythonDependencyExtractor } from "./python-dependency-extractor";
 import { RubyDependencyExtractor } from "./ruby-dependency-extractor";
+import { RustDependencyExtractor } from "./rust-dependency-extractor";
 import { ScalaDependencyExtractor } from "./scala-dependency-extractor";
 
 export class DependencyExtractorRegistry {
@@ -23,6 +24,7 @@ export class DependencyExtractorRegistry {
         ['php', new PhpDependencyExtractor()],
         ['python', new PythonDependencyExtractor()],
         ['ruby', new RubyDependencyExtractor()],
+        ['rust', new RustDependencyExtractor()],
         ['scala', new ScalaDependencyExtractor()],
     ]);
 

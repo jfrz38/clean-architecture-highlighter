@@ -78,6 +78,7 @@ JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces t
 | PHP        | `php`               | No                 | Namespace `use ...`, aliases, grouped imports, and function/constant imports |
 | Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
 | Ruby       | `ruby`              | No                 | `require ...` and `require_relative ...` |
+| Rust       | `rust`              | No                 | `use ...`, grouped imports, aliases, glob imports, and `mod ...` declarations |
 | Scala      | `scala`             | No                 | Static `import ...`, grouped imports, aliases, exclusions, and wildcard imports |
 
 Note that the default `aliases` and `allowedDependencies` **do not need to be set**; they are applied automatically.  
@@ -89,7 +90,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension analyzes JavaScript and TypeScript by default. C#, Go, Groovy, Java, Kotlin, PHP, Python, Ruby, and Scala are supported as opt-in languages through `enabledLanguages`.
+This extension analyzes JavaScript and TypeScript by default. C#, Go, Groovy, Java, Kotlin, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
@@ -106,6 +107,7 @@ This extension analyzes JavaScript and TypeScript by default. C#, Go, Groovy, Ja
   - PHP: Composer PSR-4 autoload metadata and runtime dependency loading are not resolved.
   - Python: dynamic imports and runtime dependency loading are not supported.
   - Ruby: Rails-style autoloaded constants and runtime dependency loading are not supported.
+  - Rust: Cargo crate metadata and file-system module resolution are not resolved.
   - Scala: runtime dependency injection and non-import-based dependencies are not supported.
 - **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
 
