@@ -9,7 +9,7 @@ export class PythonDependencyExtractor extends DelimitedDependencyExtractor {
     private static readonly FROM_IMPORT_REGEX = /^\s*from\s+([A-Za-z_][\w.]*)\s+import\s+.+$/gm;
 
     constructor() {
-        super('.');
+        super('.', true);
     }
 
     public extract(document: TextDocument): ExtractedDependency[] {

@@ -14,7 +14,7 @@ suite('EcmaScriptDependencyExtractor', () => {
         const dependencies = extractor.extract(document);
 
         assert.strictEqual(dependencies.length, 1);
-        assert.strictEqual(dependencies[0].path, '/../domain/user/');
+        assert.strictEqual(dependencies[0].path, '/../domain/user');
         assert.strictEqual(dependencies[0].position.lineStart, 0);
         assert.strictEqual(dependencies[0].position.lineEnd, 0);
     });
@@ -31,7 +31,7 @@ suite('EcmaScriptDependencyExtractor', () => {
         const dependencies = extractor.extract(document);
 
         assert.strictEqual(dependencies.length, 1);
-        assert.strictEqual(dependencies[0].path, '/../domain/user/');
+        assert.strictEqual(dependencies[0].path, '/../domain/user');
         assert.strictEqual(dependencies[0].position.lineStart, 0);
         assert.strictEqual(dependencies[0].position.lineEnd, 3);
     });
@@ -45,6 +45,6 @@ suite('EcmaScriptDependencyExtractor', () => {
         const dependencies = extractor.extract(document);
 
         assert.strictEqual(dependencies.length, 1);
-        assert.strictEqual(dependencies[0].path, '/domain/user/');
+        assert.strictEqual(dependencies[0].path, '/domain/user');
     });
 });

@@ -5,10 +5,10 @@ import { DelimitedDependencyExtractor } from "./delimited-dependency-extractor";
 
 export class JavaDependencyExtractor extends DelimitedDependencyExtractor {
 
-    private static readonly IMPORT_REGEX = /^\s*import\s+(?:static\s+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)\s*;/gm;
+    private static readonly IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)[ \t]*;/gm;
 
     constructor() {
-        super('.');
+        super('.', true);
     }
 
     public extract(document: TextDocument): ExtractedDependency[] {
