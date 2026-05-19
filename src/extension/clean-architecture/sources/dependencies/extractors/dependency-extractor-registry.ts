@@ -1,3 +1,4 @@
+import { CsharpDependencyExtractor } from "./csharp-dependency-extractor";
 import { DependencyExtractor } from "./dependency-extractor";
 import { EcmaScriptDependencyExtractor } from "./ecmascript-dependency-extractor";
 import { GoDependencyExtractor } from "./go-dependency-extractor";
@@ -13,6 +14,7 @@ export class DependencyExtractorRegistry {
     private readonly extractors = new Map<string, DependencyExtractor>([
         ['javascript', new EcmaScriptDependencyExtractor()],
         ['typescript', new EcmaScriptDependencyExtractor()],
+        ['csharp', new CsharpDependencyExtractor()],
         ['go', new GoDependencyExtractor()],
         ['java', new JavaDependencyExtractor()],
         ['kotlin', new KotlinDependencyExtractor()],
