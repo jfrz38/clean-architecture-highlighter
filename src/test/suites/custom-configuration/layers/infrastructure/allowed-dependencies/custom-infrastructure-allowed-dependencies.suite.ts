@@ -4,7 +4,7 @@ export const customInfrastructureLayerAllowedDependenciesSuite: Suite = {
     name: 'Infrastructure custom config with allowed dependencies',
     configuration: {
         layers: {
-            domain: {
+            infrastructure: {
                 allowedDependencies: ['']
             }
         }
