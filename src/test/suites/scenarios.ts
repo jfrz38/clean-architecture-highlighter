@@ -1,6 +1,7 @@
 import { customConfigSuite } from "./custom-configuration/custom-configuration";
 import { defaultConfigSuite } from "./default-configuration/default-config.suite";
 import { goLanguageSuites } from "./languages/go.suite";
+import { groovyLanguageSuites } from "./languages/groovy.suite";
 import { javaLanguageSuites } from "./languages/java.suite";
 import { javascriptLanguageSuites } from "./languages/javascript.suite";
 import { kotlinLanguageSuites } from "./languages/kotlin.suite";
@@ -15,6 +16,7 @@ export const suites: Suite[] = [
     defaultConfigSuite,
     ...customConfigSuite,
     ...goLanguageSuites,
+    ...groovyLanguageSuites,
     ...javaLanguageSuites,
     ...javascriptLanguageSuites,
     ...kotlinLanguageSuites,
