@@ -8,7 +8,7 @@ export const customSourceFolderSuite: Suite = {
     scenarios: [
         {
             name: 'Other source folder should fail for application layer',
-            file: 'newSrc/application/application.ts',
+            file: 'architecture/typescript/newSrc/application/application.ts',
             diagnostics: [
                 {
                     message: 'application layer should not depend on infrastructure layer.',
@@ -21,7 +21,7 @@ export const customSourceFolderSuite: Suite = {
         },
         {
             name: "Other source folder should fail for domain layer",
-            file: "newSrc/domain/domain.ts",
+            file: "architecture/typescript/newSrc/domain/domain.ts",
             diagnostics: [
                 {
                     message: "domain layer should not depend on infrastructure layer.",
@@ -39,22 +39,22 @@ export const customSourceFolderSuite: Suite = {
         },
         {
             name: "Other source folder should not fail for domain layer",
-            file: "newSrc/infrastructure/infrastructure.ts",
+            file: "architecture/typescript/newSrc/infrastructure/infrastructure.ts",
             diagnostics: []
         },
         {
             name: 'Default source folder should not fail for application layer',
-            file: 'src/application/application.ts',
+            file: 'architecture/typescript/src/application/application.ts',
             diagnostics: []
         },
         {
             name: "Default source folder should not fail for domain layer",
-            file: "src/domain/domain.ts",
+            file: "architecture/typescript/src/domain/domain.ts",
             diagnostics: []
         },
         {
             name: "Default source folder should not fail for infrastructure layer",
-            file: "src/infrastructure/infrastructure.ts",
+            file: "architecture/typescript/src/infrastructure/infrastructure.ts",
             diagnostics: []
         }
     ]

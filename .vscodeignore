@@ -1,8 +1,15 @@
 .vscode/**
 .vscode-test/**
+.agents/**
+.github/**
+.mypy_cache/**
+.pnpm-store/**
 src/**
 .gitignore
 .yarnrc
+Makefile
+pnpm-lock.yaml
+pnpm-workspace.yaml
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/eslint.config.mjs
@@ -10,10 +17,10 @@ vsc-extension-quickstart.md
 **/*.ts
 **/.vscode-test.*
 **/test/**
-.github
+images/**
 
 # Explicitly add documentation files
-!images/**
+!images/icon.png
 !README.md
 !LICENSE
 !package.json

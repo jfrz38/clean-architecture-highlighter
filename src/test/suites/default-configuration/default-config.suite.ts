@@ -6,7 +6,7 @@ export const defaultConfigSuite: Suite = {
     scenarios: [
         {
             name: "Application layer should depend only from domain and application itself",
-            file: "src/application/application.ts",
+            file: "architecture/typescript/src/application/application.ts",
             diagnostics: [
                 {
                     message: "application layer should not depend on infrastructure layer.",
@@ -19,7 +19,7 @@ export const defaultConfigSuite: Suite = {
         },
         {
             name: "Application layer in inner folder should depend only from domain and application itself",
-            file: "src/application/use-case/my-business.use-case.ts",
+            file: "architecture/typescript/src/application/use-case/my-business.use-case.ts",
             diagnostics: [
                 {
                     message: "application layer should not depend on infrastructure layer.",
@@ -31,7 +31,7 @@ export const defaultConfigSuite: Suite = {
         },
         {
             name: "Domain layer should depend only from domain itself",
-            file: "src/domain/domain.ts",
+            file: "architecture/typescript/src/domain/domain.ts",
             diagnostics: [
                 {
                     message: "domain layer should not depend on infrastructure layer.",
@@ -49,7 +49,7 @@ export const defaultConfigSuite: Suite = {
         },
         {
             name: "Domain layer when multiple import lines should depend only from domain itself",
-            file: "src/domain/other-domain.ts",
+            file: "architecture/typescript/src/domain/other-domain.ts",
             diagnostics: [
                 {
                     message: "domain layer should not depend on infrastructure layer.",
@@ -79,27 +79,27 @@ export const defaultConfigSuite: Suite = {
         },
         {
             name: "Infrastructure layer can depend any layer",
-            file: "src/infrastructure/infrastructure.ts",
+            file: "architecture/typescript/src/infrastructure/infrastructure.ts",
             diagnostics: []
         },
         {
             name: "Infrastructure layer when inner folder can depend any layer",
-            file: "src/infrastructure/controller/controller.ts",
+            file: "architecture/typescript/src/infrastructure/controller/controller.ts",
             diagnostics: []
         },
         {
             name: "Other source folder should not fail for application layer",
-            file: "newSrc/application/application.ts",
+            file: "architecture/typescript/newSrc/application/application.ts",
             diagnostics: []
         },
         {
             name: "Other source folder should not fail for domain layer",
-            file: "newSrc/domain/domain.ts",
+            file: "architecture/typescript/newSrc/domain/domain.ts",
             diagnostics: []
         },
         {
             name: "Other source folder should not fail for infrastructure layer",
-            file: "newSrc/infrastructure/infrastructure.ts",
+            file: "architecture/typescript/newSrc/infrastructure/infrastructure.ts",
             diagnostics: []
         }
     ]

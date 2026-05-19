@@ -1,25 +1,28 @@
 import { LayersConfiguration } from "./components/layers/layers.configuration";
 import { SeverityLevelConfiguration } from "./components/severity-level/severity-level.configuration";
 import { SourceFolderConfiguration } from "./components/source-folder/source-folder.configuration";
-import { ConfigurationOptions, Layers, SeverityLevel, SourceFolder } from "./types.configuration";
+import { EnabledLanguagesConfiguration } from "./components/enabled-languages/enabled-languages.configuration";
+import { ConfigurationOptions, EnabledLanguages, Layers, SeverityLevel, SourceFolder } from "./types.configuration";
 
 export class DefaultConfiguration {
 
     public readonly config: ConfigurationOptions;
 
     public static get default(): ConfigurationOptions {
-        return new DefaultConfiguration({}, undefined, undefined).config;
+        return new DefaultConfiguration({}, undefined, undefined, undefined).config;
     }
 
     constructor(
         private readonly layers: Partial<Layers>,
         private readonly severityLevel: SeverityLevel | undefined,
-        private readonly sourceFolder: SourceFolder | undefined
+        private readonly sourceFolder: SourceFolder | undefined,
+        private readonly enabledLanguages: EnabledLanguages | undefined
     ) {
         const built: ConfigurationOptions = {
             layers: new LayersConfiguration(this.layers).config,
             severityLevel: new SeverityLevelConfiguration(this.severityLevel).config,
-            sourceFolder: new SourceFolderConfiguration(this.sourceFolder).config
+            sourceFolder: new SourceFolderConfiguration(this.sourceFolder).config,
+            enabledLanguages: new EnabledLanguagesConfiguration(this.enabledLanguages).config
         };
 
         this.config = Object.freeze(built) as ConfigurationOptions;

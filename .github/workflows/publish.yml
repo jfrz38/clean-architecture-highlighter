@@ -79,9 +79,7 @@ jobs:
           fi
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: latest
+        uses: pnpm/action-setup@v6.0.3
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -91,16 +89,16 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: make ci-install
 
       - name: Run tests
-        run: xvfb-run -a pnpm run clean:tests
+        run: xvfb-run -a make clean-test
 
       - name: Compile
-        run: pnpm run clean:compile
+        run: make build
 
       - name: Package extension
-        run: npx @vscode/vsce package --no-dependencies
+        run: make package
 
       - name: Publish to Marketplace
         run: npx @vscode/vsce publish --packagePath clean-architecture-highlighter-${{ steps.version.outputs.version }}.vsix

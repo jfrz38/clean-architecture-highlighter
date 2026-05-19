@@ -12,12 +12,12 @@ export const customInfrastructureLayerAliasesSuite: Suite = {
     scenarios: [
         {
             name: 'Infrastructure layer with alias can depend from any layer',
-            file: 'src/aliases/my-infrastructure-alias/infrastructure.ts',
+            file: 'architecture/typescript/src/aliases/my-infrastructure-alias/infrastructure.ts',
             diagnostics: []
         },
         {
             name: 'Original infrastructure should not fail',
-            file: 'src/infrastructure/infrastructure.ts',
+            file: 'architecture/typescript/src/infrastructure/infrastructure.ts',
             diagnostics: []
         }
     ]

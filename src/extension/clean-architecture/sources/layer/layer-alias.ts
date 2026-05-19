@@ -39,7 +39,12 @@ export class LayerAlias {
     }
 
     private isAliasInLayer(path: string, aliases: string[]) {
-        return aliases.some(alias => path.includes(alias));
+        const normalizedPath = this.normalizeForAliasLookup(path);
+        return aliases.some(alias => normalizedPath.includes(this.normalizeForAliasLookup(alias)));
+    }
+
+    private normalizeForAliasLookup(path: string): string {
+        return path.toLowerCase().replace(/[.\\]/g, '/');
     }
 
     public getLayer(path: string): Layer | undefined {

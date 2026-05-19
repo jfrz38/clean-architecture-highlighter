@@ -8,7 +8,8 @@
     "email": "jrz899@inlumine.ual.es"
   },
   "pricing": "Free",
-  "version": "0.0.3",
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.1.3",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.70.0"
@@ -46,6 +47,175 @@
   "homepage": "https://github.com/jfrz38/clean-architecture-highlighter#readme",
   "main": "./out/src/extension/extension.js",
   "contributes": {
+    "languages": [
+      {
+        "id": "javascript",
+        "aliases": [
+          "JavaScript",
+          "javascript"
+        ],
+        "extensions": [
+          ".js",
+          ".mjs",
+          ".cjs"
+        ]
+      },
+      {
+        "id": "typescript",
+        "aliases": [
+          "TypeScript",
+          "typescript"
+        ],
+        "extensions": [
+          ".ts",
+          ".mts",
+          ".cts"
+        ]
+      },
+      {
+        "id": "csharp",
+        "aliases": [
+          "C#",
+          "csharp"
+        ],
+        "extensions": [
+          ".cs",
+          ".csx"
+        ]
+      },
+      {
+        "id": "dart",
+        "aliases": [
+          "Dart",
+          "dart"
+        ],
+        "extensions": [
+          ".dart"
+        ]
+      },
+      {
+        "id": "elixir",
+        "aliases": [
+          "Elixir",
+          "elixir"
+        ],
+        "extensions": [
+          ".ex",
+          ".exs"
+        ]
+      },
+      {
+        "id": "go",
+        "aliases": [
+          "Go",
+          "go",
+          "Golang",
+          "golang"
+        ],
+        "extensions": [
+          ".go"
+        ]
+      },
+      {
+        "id": "groovy",
+        "aliases": [
+          "Groovy",
+          "groovy"
+        ],
+        "extensions": [
+          ".groovy",
+          ".gvy",
+          ".gy",
+          ".gsh"
+        ]
+      },
+      {
+        "id": "java",
+        "aliases": [
+          "Java",
+          "java"
+        ],
+        "extensions": [
+          ".java"
+        ]
+      },
+      {
+        "id": "kotlin",
+        "aliases": [
+          "Kotlin",
+          "kotlin"
+        ],
+        "extensions": [
+          ".kt",
+          ".kts"
+        ]
+      },
+      {
+        "id": "lua",
+        "aliases": [
+          "Lua",
+          "lua"
+        ],
+        "extensions": [
+          ".lua"
+        ]
+      },
+      {
+        "id": "php",
+        "aliases": [
+          "PHP",
+          "php"
+        ],
+        "extensions": [
+          ".php",
+          ".php3",
+          ".php4",
+          ".php5",
+          ".phtml"
+        ]
+      },
+      {
+        "id": "python",
+        "aliases": [
+          "Python",
+          "python"
+        ],
+        "extensions": [
+          ".py"
+        ]
+      },
+      {
+        "id": "ruby",
+        "aliases": [
+          "Ruby",
+          "ruby"
+        ],
+        "extensions": [
+          ".rb"
+        ]
+      },
+      {
+        "id": "rust",
+        "aliases": [
+          "Rust",
+          "rust"
+        ],
+        "extensions": [
+          ".rs"
+        ]
+      },
+      {
+        "id": "scala",
+        "aliases": [
+          "Scala",
+          "scala"
+        ],
+        "extensions": [
+          ".scala",
+          ".sc"
+        ]
+      }
+    ],
     "configuration": {
       "title": "Clean Architecture Highlighter",
       "properties": {
@@ -63,6 +233,17 @@
           "type": "string",
           "default": "src",
           "description": "The source folder relative to the workspace root."
+        },
+        "clean-architecture-highlighter.enabledLanguages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "javascript",
+            "typescript"
+          ],
+          "description": "List of VS Code language identifiers that should be analyzed."
         },
         "clean-architecture-highlighter.layers.domain.aliases": {
           "type": "array",
@@ -133,13 +314,13 @@
   "scripts": {
     "vscode:prepublish": "pnpm run clean:compile",
     "compile": "tsc -p ./",
-    "clean:compile": "rm -fr out/ && tsc -p ./",
+    "clean:compile": "rimraf out && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
     "test": "pnpm run tests",
     "tests": "pnpm run compile && node out/src/test/runTest.js",
-    "clean:tests": "rm -rf out/ && pnpm run tests"
+    "clean:tests": "rimraf out && pnpm run tests"
   },
   "devDependencies": {
     "@types/mocha": "10.0.10",
@@ -147,12 +328,12 @@
     "@types/vscode": "1.70.0",
     "@vscode/test-cli": "0.0.12",
     "@vscode/test-electron": "2.5.2",
+    "@vscode/vsce": "3.9.1",
     "eslint": "10.1.0",
+    "glob": "13.0.6",
+    "mocha": "11.7.5",
+    "rimraf": "6.1.3",
     "typescript": "6.0.2",
-    "typescript-eslint": "8.58.0",
-    "mocha": "11.7.5"
-  },
-  "dependencies": {
-    "glob": "13.0.6"
+    "typescript-eslint": "8.58.0"
   }
 }

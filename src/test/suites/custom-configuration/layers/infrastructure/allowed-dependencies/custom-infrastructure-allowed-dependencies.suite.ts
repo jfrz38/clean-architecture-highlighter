@@ -4,7 +4,7 @@ export const customInfrastructureLayerAllowedDependenciesSuite: Suite = {
     name: 'Infrastructure custom config with allowed dependencies',
     configuration: {
         layers: {
-            domain: {
+            infrastructure: {
                 allowedDependencies: ['']
             }
         }
@@ -12,7 +12,7 @@ export const customInfrastructureLayerAllowedDependenciesSuite: Suite = {
     scenarios: [
         {
             name: 'Infrastructure layer with allowed application dependency can depend on application but not on infrastructure',
-            file: 'src/infrastructure/infrastructure.ts',
+            file: 'architecture/typescript/src/infrastructure/infrastructure.ts',
             diagnostics: [ ]
         }
     ]

@@ -1,11 +1,15 @@
 # Clean Architecture Highlighter
 
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/jfrz38.clean-architecture-highlighter)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
-[![Tests](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions)
+[![Marketplace Version](https://vsmarketplacebadges.dev/version-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
+[![Installs](https://vsmarketplacebadges.dev/installs-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
+[![Downloads](https://vsmarketplacebadges.dev/downloads-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
+[![Rating](https://vsmarketplacebadges.dev/rating-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter&ssr=false#review-details)
+[![Build](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml)
+[![License](https://img.shields.io/github/license/jfrz38/clean-architecture-highlighter)](LICENSE)
 
 VS Code extension to **enforce Clean Architecture rules** in Node.js projects by **statically analyzing imports**.
 
-![Demo](images/demo.gif)
+![Demo](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/demo.gif)
 
 ## Features
 
@@ -33,6 +37,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 {
     "clean-architecture-highlighter.severityLevel": "warning",
     "clean-architecture-highlighter.sourceFolder": "src",
+    "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
     
     "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
     "clean-architecture-highlighter.layers.domain.allowedDependencies": ["domain"],
@@ -49,8 +54,35 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | ------------------------------------ | -------- | --------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
 | `sourceFolder`                       | string   | `src`     | any folder name                           | Root folder where the source code is analyzed. Only files below this folder (and subfolders) will be analyzed. |
+| `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
+
+JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces the full analyzed-language list, so include every language you want to analyze:
+
+```json
+"clean-architecture-highlighter.enabledLanguages": ["<language-id>", "<another-language-id>"]
+```
+
+### Supported Languages
+
+| Language   | VS Code language id | Enabled by default | Supported dependency syntax |
+| ---------- | ------------------- | ------------------ | --------------------------- |
+| JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...` |
+| TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...` |
+| C#         | `csharp`            | No                 | `using ...`, alias directives, static imports, and global usings |
+| Dart       | `dart`              | No                 | `import ...`, `export ...`, `part ...`, aliases, and `show`/`hide` combinators |
+| Elixir     | `elixir`            | No                 | `alias ...`, grouped aliases, `import ...`, `require ...`, and `use ...` |
+| Go         | `go`                | No                 | Single-line imports, import blocks, aliased imports, dot imports, and blank imports |
+| Groovy     | `groovy`            | No                 | Static `import ...`, `import static ...`, alias imports, and wildcard imports |
+| Java       | `java`              | No                 | Static `import ...`, `import static ...`, and wildcard imports |
+| Kotlin     | `kotlin`            | No                 | Static `import ...`, aliased `import ... as ...`, and wildcard imports |
+| Lua        | `lua`               | No                 | `require(...)`, `require '...'`, and local assignment requires |
+| PHP        | `php`               | No                 | Namespace `use ...`, aliases, grouped imports, and function/constant imports |
+| Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
+| Ruby       | `ruby`              | No                 | `require ...` and `require_relative ...` |
+| Rust       | `rust`              | No                 | `use ...`, grouped imports, aliases, glob imports, and `mod ...` declarations |
+| Scala      | `scala`             | No                 | Static `import ...`, grouped imports, aliases, exclusions, and wildcard imports |
 
 Note that the default `aliases` and `allowedDependencies` **do not need to be set**; they are applied automatically.  
 `aliases` are used when your layer folder has a different name. For example, if your `application` folder is called `business`, you can add it here using:
@@ -61,13 +93,28 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension is designed for Node.js/TypeScript projects using ES Modules (`import`/`export`).
+This extension analyzes JavaScript and TypeScript by default. C#, Dart, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
+- **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations
 
-- **Import Syntax Only**: Currently, the extension only analyzes static `import` statements. It does **not** support CommonJS `require()` or dynamic `import()`.
+- **Import Syntax Only**: The extension analyzes the static dependency forms listed in the Supported Languages table. Unsupported forms are ignored:
+  - JavaScript/TypeScript: CommonJS `require()` and dynamic imports are not supported.
+  - C#: project-level MSBuild references and runtime dependency injection are not resolved.
+  - Dart: `pubspec.yaml`, generated part files, and runtime dependency loading are not resolved.
+  - Elixir: macro expansion, behaviours, and runtime application configuration are not resolved.
+  - Go: runtime dependency injection and non-import-based dependencies are not supported.
+  - Groovy: default imports, runtime metaprogramming, and non-import-based dependencies are not supported.
+  - Java: runtime dependency injection and non-import-based dependencies are not supported.
+  - Kotlin: runtime dependency injection and non-import-based dependencies are not supported.
+  - Lua: custom `package.path` loaders and runtime dependency loading are not resolved.
+  - PHP: Composer PSR-4 autoload metadata and runtime dependency loading are not resolved.
+  - Python: dynamic imports and runtime dependency loading are not supported.
+  - Ruby: Rails-style autoloaded constants and runtime dependency loading are not supported.
+  - Rust: Cargo crate metadata and file-system module resolution are not resolved.
+  - Scala: runtime dependency injection and non-import-based dependencies are not supported.
 - **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
 
 ## The Dependency Rule
@@ -75,4 +122,4 @@ This extension is designed for Node.js/TypeScript projects using ES Modules (`im
 The arrows in the diagram below represent the only allowed direction for dependencies.  
 Inner layers **must not know anything** about outer layers.
 
-![Dependency rule](images/dependency_rule.png)
+![Dependency rule](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/dependency_rule.png)

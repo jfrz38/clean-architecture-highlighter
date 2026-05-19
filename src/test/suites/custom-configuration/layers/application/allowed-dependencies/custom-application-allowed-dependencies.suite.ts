@@ -12,7 +12,7 @@ export const customApplicationLayerAllowedDependenciesSuite: Suite = {
     scenarios: [
         {
             name: 'Application layer overrides default dependencies: can depend on infrastructure',
-            file: 'src/application/application.ts',
+            file: 'architecture/typescript/src/application/application.ts',
             diagnostics: []
         }
     ]
