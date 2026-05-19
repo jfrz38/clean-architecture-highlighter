@@ -11,7 +11,7 @@ export class InfrastructureLayerConfiguration extends LayerComponent {
             layer?.aliases ?? InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.aliases,
             new AllowedLayerDependencies(
                 InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies,
-                layer?.aliases
+                layer?.allowedDependencies
             )
         );
     }
