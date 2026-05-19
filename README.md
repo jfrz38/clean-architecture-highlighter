@@ -76,6 +76,7 @@ JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces t
 | Groovy     | `groovy`            | No                 | Static `import ...`, `import static ...`, alias imports, and wildcard imports |
 | Java       | `java`              | No                 | Static `import ...`, `import static ...`, and wildcard imports |
 | Kotlin     | `kotlin`            | No                 | Static `import ...`, aliased `import ... as ...`, and wildcard imports |
+| Lua        | `lua`               | No                 | `require(...)`, `require '...'`, and local assignment requires |
 | PHP        | `php`               | No                 | Namespace `use ...`, aliases, grouped imports, and function/constant imports |
 | Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
 | Ruby       | `ruby`              | No                 | `require ...` and `require_relative ...` |
@@ -91,7 +92,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension analyzes JavaScript and TypeScript by default. C#, Elixir, Go, Groovy, Java, Kotlin, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
+This extension analyzes JavaScript and TypeScript by default. C#, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
@@ -106,6 +107,7 @@ This extension analyzes JavaScript and TypeScript by default. C#, Elixir, Go, Gr
   - Groovy: default imports, runtime metaprogramming, and non-import-based dependencies are not supported.
   - Java: runtime dependency injection and non-import-based dependencies are not supported.
   - Kotlin: runtime dependency injection and non-import-based dependencies are not supported.
+  - Lua: custom `package.path` loaders and runtime dependency loading are not resolved.
   - PHP: Composer PSR-4 autoload metadata and runtime dependency loading are not resolved.
   - Python: dynamic imports and runtime dependency loading are not supported.
   - Ruby: Rails-style autoloaded constants and runtime dependency loading are not supported.

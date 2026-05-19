@@ -141,6 +141,16 @@
         ]
       },
       {
+        "id": "lua",
+        "aliases": [
+          "Lua",
+          "lua"
+        ],
+        "extensions": [
+          ".lua"
+        ]
+      },
+      {
         "id": "php",
         "aliases": [
           "PHP",
