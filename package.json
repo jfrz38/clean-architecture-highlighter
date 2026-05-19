@@ -145,13 +145,13 @@
   "scripts": {
     "vscode:prepublish": "pnpm run clean:compile",
     "compile": "tsc -p ./",
-    "clean:compile": "rm -fr out/ && tsc -p ./",
+    "clean:compile": "rimraf out && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
     "test": "pnpm run tests",
     "tests": "pnpm run compile && node out/src/test/runTest.js",
-    "clean:tests": "rm -rf out/ && pnpm run tests"
+    "clean:tests": "rimraf out && pnpm run tests"
   },
   "devDependencies": {
     "@types/mocha": "10.0.10",
@@ -159,12 +159,12 @@
     "@types/vscode": "1.70.0",
     "@vscode/test-cli": "0.0.12",
     "@vscode/test-electron": "2.5.2",
+    "@vscode/vsce": "3.9.1",
     "eslint": "10.1.0",
+    "glob": "13.0.6",
+    "mocha": "11.7.5",
+    "rimraf": "6.1.3",
     "typescript": "6.0.2",
-    "typescript-eslint": "8.58.0",
-    "mocha": "11.7.5"
-  },
-  "dependencies": {
-    "glob": "13.0.6"
+    "typescript-eslint": "8.58.0"
   }
 }
