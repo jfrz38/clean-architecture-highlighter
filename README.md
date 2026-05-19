@@ -58,10 +58,10 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
 
-JavaScript and TypeScript are analyzed by default. Other supported languages are opt-in and must be added to `enabledLanguages` explicitly:
+JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces the full analyzed-language list, so include every language you want to analyze:
 
 ```json
-"clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript", "python"]
+"clean-architecture-highlighter.enabledLanguages": ["<language-id>", "<another-language-id>"]
 ```
 
 ### Supported Languages
@@ -70,6 +70,7 @@ JavaScript and TypeScript are analyzed by default. Other supported languages are
 | ---------- | ------------------- | ------------------ | --------------------------- |
 | JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...` |
 | TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...` |
+| Java       | `java`              | No                 | Static `import ...`, `import static ...`, and wildcard imports |
 | Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
 
 Note that the default `aliases` and `allowedDependencies` **do not need to be set**; they are applied automatically.  
@@ -81,14 +82,17 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension analyzes JavaScript and TypeScript by default. Python is supported as an opt-in language through `enabledLanguages`.
+This extension analyzes JavaScript and TypeScript by default. Java and Python are supported as opt-in languages through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations
 
-- **Import Syntax Only**: Currently, the JavaScript/TypeScript extractor analyzes static ES Module `import` statements, and the Python extractor analyzes static `import ...` and `from ... import ...` statements. It does **not** support CommonJS `require()` or dynamic imports.
+- **Import Syntax Only**: The extension analyzes the static dependency forms listed in the Supported Languages table. Unsupported forms are ignored:
+  - JavaScript/TypeScript: CommonJS `require()` and dynamic imports are not supported.
+  - Java: runtime dependency injection and non-import-based dependencies are not supported.
+  - Python: dynamic imports and runtime dependency loading are not supported.
 - **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
 
 ## The Dependency Rule
