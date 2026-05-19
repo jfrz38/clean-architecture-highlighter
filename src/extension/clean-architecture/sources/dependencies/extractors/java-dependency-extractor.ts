@@ -3,12 +3,12 @@ import { DependencyPosition } from "../dependency-position";
 import { ExtractedDependency } from "../extracted-dependency";
 import { DelimitedDependencyExtractor } from "./delimited-dependency-extractor";
 
-export class EcmaScriptDependencyExtractor extends DelimitedDependencyExtractor {
+export class JavaDependencyExtractor extends DelimitedDependencyExtractor {
 
-    private static readonly IMPORT_REGEX = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
+    private static readonly IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)[ \t]*;/gm;
 
     constructor() {
-        super();
+        super('.', true);
     }
 
     public extract(document: TextDocument): ExtractedDependency[] {
@@ -16,11 +16,11 @@ export class EcmaScriptDependencyExtractor extends DelimitedDependencyExtractor 
         const text = document.getText();
         let match: RegExpExecArray | null;
 
-        while ((match = EcmaScriptDependencyExtractor.IMPORT_REGEX.exec(text))) {
+        while ((match = JavaDependencyExtractor.IMPORT_REGEX.exec(text))) {
             const startPos = document.positionAt(match.index);
             const endPos = document.positionAt(match.index + match[0].length);
             const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-            dependencies.push(new ExtractedDependency(this.normalizeDependencyPath(match[2]), position));
+            dependencies.push(new ExtractedDependency(this.normalizeDependencyPath(match[1]), position));
         }
 
         return dependencies;

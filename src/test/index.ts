@@ -9,7 +9,7 @@ export function run(testsRoot: string, cb: (error: any, failures?: number) => vo
         timeout: 10000
     });
 
-    glob('*.test.js', { cwd: testsRoot })
+    glob('**/*.test.js', { cwd: testsRoot })
         .then((files) => {
             files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
             try {

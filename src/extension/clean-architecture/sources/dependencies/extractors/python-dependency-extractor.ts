@@ -1,12 +1,16 @@
 import { TextDocument } from "vscode";
 import { DependencyPosition } from "../dependency-position";
 import { ExtractedDependency } from "../extracted-dependency";
-import { DependencyExtractor } from "./dependency-extractor";
+import { DelimitedDependencyExtractor } from "./delimited-dependency-extractor";
 
-export class PythonDependencyExtractor implements DependencyExtractor {
+export class PythonDependencyExtractor extends DelimitedDependencyExtractor {
 
     private static readonly IMPORT_REGEX = /^\s*import\s+(.+)$/gm;
     private static readonly FROM_IMPORT_REGEX = /^\s*from\s+([A-Za-z_][\w.]*)\s+import\s+.+$/gm;
+
+    constructor() {
+        super('.', true);
+    }
 
     public extract(document: TextDocument): ExtractedDependency[] {
         return [
@@ -49,11 +53,6 @@ export class PythonDependencyExtractor implements DependencyExtractor {
         const endPos = document.positionAt(match.index + match[0].length);
         const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
 
-        return new ExtractedDependency(this.normalizeModulePath(module), position);
-    }
-
-    private normalizeModulePath(module: string): string {
-        const normalized = module.replace(/\./g, '/');
-        return `/${normalized}/`;
+        return new ExtractedDependency(this.normalizeDependencyPath(module), position);
     }
 }
