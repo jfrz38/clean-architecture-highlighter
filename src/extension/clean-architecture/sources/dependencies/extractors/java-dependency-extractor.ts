@@ -1,11 +1,15 @@
 import { TextDocument } from "vscode";
 import { DependencyPosition } from "../dependency-position";
 import { ExtractedDependency } from "../extracted-dependency";
-import { DependencyExtractor } from "./dependency-extractor";
+import { DelimitedDependencyExtractor } from "./delimited-dependency-extractor";
 
-export class JavaDependencyExtractor implements DependencyExtractor {
+export class JavaDependencyExtractor extends DelimitedDependencyExtractor {
 
     private static readonly IMPORT_REGEX = /^\s*import\s+(?:static\s+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)\s*;/gm;
+
+    constructor() {
+        super('.');
+    }
 
     public extract(document: TextDocument): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
@@ -16,14 +20,9 @@ export class JavaDependencyExtractor implements DependencyExtractor {
             const startPos = document.positionAt(match.index);
             const endPos = document.positionAt(match.index + match[0].length);
             const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-            dependencies.push(new ExtractedDependency(this.normalizePackagePath(match[1]), position));
+            dependencies.push(new ExtractedDependency(this.normalizeDependencyPath(match[1]), position));
         }
 
         return dependencies;
-    }
-
-    private normalizePackagePath(packagePath: string): string {
-        const normalized = packagePath.replace(/\./g, '/');
-        return `/${normalized}/`;
     }
 }

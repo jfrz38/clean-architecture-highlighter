@@ -14,7 +14,7 @@ suite('EcmaScriptDependencyExtractor', () => {
         const dependencies = extractor.extract(document);
 
         assert.strictEqual(dependencies.length, 1);
-        assert.strictEqual(dependencies[0].path, '../domain/user');
+        assert.strictEqual(dependencies[0].path, '/../domain/user/');
         assert.strictEqual(dependencies[0].position.lineStart, 0);
         assert.strictEqual(dependencies[0].position.lineEnd, 0);
     });
@@ -31,8 +31,20 @@ suite('EcmaScriptDependencyExtractor', () => {
         const dependencies = extractor.extract(document);
 
         assert.strictEqual(dependencies.length, 1);
-        assert.strictEqual(dependencies[0].path, '../domain/user');
+        assert.strictEqual(dependencies[0].path, '/../domain/user/');
         assert.strictEqual(dependencies[0].position.lineStart, 0);
         assert.strictEqual(dependencies[0].position.lineEnd, 3);
+    });
+
+    test('normalizes path aliases as slash-delimited paths', async () => {
+        const document = await vscode.workspace.openTextDocument({
+            language: 'typescript',
+            content: `import { User } from 'domain/user';`
+        });
+
+        const dependencies = extractor.extract(document);
+
+        assert.strictEqual(dependencies.length, 1);
+        assert.strictEqual(dependencies[0].path, '/domain/user/');
     });
 });
