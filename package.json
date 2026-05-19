@@ -116,6 +116,16 @@
         ]
       },
       {
+        "id": "ruby",
+        "aliases": [
+          "Ruby",
+          "ruby"
+        ],
+        "extensions": [
+          ".rb"
+        ]
+      },
+      {
         "id": "scala",
         "aliases": [
           "Scala",

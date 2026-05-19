@@ -4,6 +4,7 @@ import { GoDependencyExtractor } from "./go-dependency-extractor";
 import { JavaDependencyExtractor } from "./java-dependency-extractor";
 import { KotlinDependencyExtractor } from "./kotlin-dependency-extractor";
 import { PythonDependencyExtractor } from "./python-dependency-extractor";
+import { RubyDependencyExtractor } from "./ruby-dependency-extractor";
 import { ScalaDependencyExtractor } from "./scala-dependency-extractor";
 
 export class DependencyExtractorRegistry {
@@ -15,6 +16,7 @@ export class DependencyExtractorRegistry {
         ['java', new JavaDependencyExtractor()],
         ['kotlin', new KotlinDependencyExtractor()],
         ['python', new PythonDependencyExtractor()],
+        ['ruby', new RubyDependencyExtractor()],
         ['scala', new ScalaDependencyExtractor()],
     ]);
 
