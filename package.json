@@ -47,6 +47,63 @@
   "homepage": "https://github.com/jfrz38/clean-architecture-highlighter#readme",
   "main": "./out/src/extension/extension.js",
   "contributes": {
+    "languages": [
+      {
+        "id": "javascript",
+        "aliases": [
+          "JavaScript",
+          "javascript"
+        ],
+        "extensions": [
+          ".js",
+          ".mjs",
+          ".cjs"
+        ]
+      },
+      {
+        "id": "typescript",
+        "aliases": [
+          "TypeScript",
+          "typescript"
+        ],
+        "extensions": [
+          ".ts",
+          ".mts",
+          ".cts"
+        ]
+      },
+      {
+        "id": "java",
+        "aliases": [
+          "Java",
+          "java"
+        ],
+        "extensions": [
+          ".java"
+        ]
+      },
+      {
+        "id": "kotlin",
+        "aliases": [
+          "Kotlin",
+          "kotlin"
+        ],
+        "extensions": [
+          ".kt",
+          ".kts"
+        ]
+      },
+      {
+        "id": "python",
+        "aliases": [
+          "Python",
+          "python"
+        ],
+        "extensions": [
+          ".py"
+        ]
+      }
+    ],
     "configuration": {
       "title": "Clean Architecture Highlighter",
       "properties": {

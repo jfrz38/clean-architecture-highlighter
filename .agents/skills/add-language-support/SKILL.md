@@ -70,6 +70,7 @@ Add the new VS Code `languageId` to the registry:
 
 Update `package.json` only where appropriate:
 
+- Add or update `contributes.languages` for the supported language, including its VS Code `languageId`, aliases, and file extensions. This lets VS Code assign the correct `document.languageId` even when users do not have a separate language extension installed.
 - Add `onLanguage:<languageId>` **only if** the language should activate the extension directly.
 - For opt-in languages, prefer relying on `onStartupFinished` unless the user explicitly wants early activation.
 - Do **not** add the language to the default `enabledLanguages` unless explicitly requested.
@@ -229,6 +230,7 @@ If `make test` fails before executing tests because the VS Code harness cannot l
 
 - [ ] New extractor added.
 - [ ] Extractor registered by VS Code `languageId`.
+- [ ] `package.json` `contributes.languages` includes the language id, aliases, and extensions.
 - [ ] Default `enabledLanguages` unchanged unless explicitly requested.
 - [ ] Extractor unit tests added for language syntax.
 - [ ] Minimal `test/workspace/languages/<languageId>/` fixtures added.
