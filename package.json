@@ -102,6 +102,17 @@
         "extensions": [
           ".py"
         ]
+      },
+      {
+        "id": "scala",
+        "aliases": [
+          "Scala",
+          "scala"
+        ],
+        "extensions": [
+          ".scala",
+          ".sc"
+        ]
       }
     ],
     "configuration": {

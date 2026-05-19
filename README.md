@@ -73,6 +73,7 @@ JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces t
 | Java       | `java`              | No                 | Static `import ...`, `import static ...`, and wildcard imports |
 | Kotlin     | `kotlin`            | No                 | Static `import ...`, aliased `import ... as ...`, and wildcard imports |
 | Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
+| Scala      | `scala`             | No                 | Static `import ...`, grouped imports, aliases, exclusions, and wildcard imports |
 
 Note that the default `aliases` and `allowedDependencies` **do not need to be set**; they are applied automatically.  
 `aliases` are used when your layer folder has a different name. For example, if your `application` folder is called `business`, you can add it here using:
@@ -83,7 +84,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension analyzes JavaScript and TypeScript by default. Java, Kotlin, and Python are supported as opt-in languages through `enabledLanguages`.
+This extension analyzes JavaScript and TypeScript by default. Java, Kotlin, Python, and Scala are supported as opt-in languages through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
@@ -95,6 +96,7 @@ This extension analyzes JavaScript and TypeScript by default. Java, Kotlin, and 
   - Java: runtime dependency injection and non-import-based dependencies are not supported.
   - Kotlin: runtime dependency injection and non-import-based dependencies are not supported.
   - Python: dynamic imports and runtime dependency loading are not supported.
+  - Scala: runtime dependency injection and non-import-based dependencies are not supported.
 - **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
 
 ## The Dependency Rule
