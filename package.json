@@ -73,6 +73,18 @@
         ]
       },
       {
+        "id": "go",
+        "aliases": [
+          "Go",
+          "go",
+          "Golang",
+          "golang"
+        ],
+        "extensions": [
+          ".go"
+        ]
+      },
+      {
         "id": "java",
         "aliases": [
           "Java",
