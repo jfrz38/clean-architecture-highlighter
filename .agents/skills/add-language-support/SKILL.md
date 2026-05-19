@@ -1,6 +1,6 @@
 ---
 name: add-language-support
-description: Add support for a new programming language to this VS Code Clean Architecture Highlighter extension. Use when implementing a new language extractor, wiring it into enabledLanguages, adding extractor tests, adding minimal integration fixtures, and verifying the extension without changing default enabled languages unless explicitly requested.
+description: Add opt-in support for a new language by adding a dependency extractor, registration, focused tests, minimal fixtures, documentation, and verification.
 ---
 
 # Add Language Support
@@ -50,7 +50,7 @@ Normalize the extracted dependency into the path style expected by the existing 
 Examples:
 
 - JavaScript/TypeScript path import: `../domain/user`
-- Python dotted import: `application.use_cases.create_user` → `/application/use_cases/create_user/`
+- Dotted/module import: `application.use_cases.create_user` -> `/application/use_cases/create_user/`
 
 ### 2. Register the extractor
 
@@ -63,7 +63,7 @@ src/extension/clean-architecture/sources/dependencies/extractors/dependency-extr
 Add the new VS Code `languageId` to the registry:
 
 ```ts
-['python', new PythonDependencyExtractor()]
+['<languageId>', new <Language>DependencyExtractor()]
 ```
 
 ### 3. Activation and configuration
@@ -87,13 +87,13 @@ If the language is opt-in, document that users must configure:
 
 ### 4. Add extractor unit tests
 
-Update:
+Add or update the extractor-specific test file under:
 
 ```text
-src/test/dependency-extractor.test.ts
+src/test/dependency-extractors/<language>-dependency-extractor.test.ts
 ```
 
-Add tests for language-specific dependency syntax.
+Keep one test file per extractor/language so language syntax coverage does not grow a shared monolithic test file.
 
 Cover representative cases such as:
 
@@ -103,7 +103,7 @@ Cover representative cases such as:
 - correct normalized path;
 - correct diagnostic range.
 
-Do not rely only on integration tests for parser behavior.
+Do not rely only on integration tests for parser behavior. If the test runner does not already discover nested test files, update it to load `*.test` files recursively.
 
 ### 5. Add minimal language integration fixtures
 
