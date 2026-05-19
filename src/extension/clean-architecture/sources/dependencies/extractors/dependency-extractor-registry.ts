@@ -1,5 +1,6 @@
 import { DependencyExtractor } from "./dependency-extractor";
 import { EcmaScriptDependencyExtractor } from "./ecmascript-dependency-extractor";
+import { GoDependencyExtractor } from "./go-dependency-extractor";
 import { JavaDependencyExtractor } from "./java-dependency-extractor";
 import { KotlinDependencyExtractor } from "./kotlin-dependency-extractor";
 import { PythonDependencyExtractor } from "./python-dependency-extractor";
@@ -10,6 +11,7 @@ export class DependencyExtractorRegistry {
     private readonly extractors = new Map<string, DependencyExtractor>([
         ['javascript', new EcmaScriptDependencyExtractor()],
         ['typescript', new EcmaScriptDependencyExtractor()],
+        ['go', new GoDependencyExtractor()],
         ['java', new JavaDependencyExtractor()],
         ['kotlin', new KotlinDependencyExtractor()],
         ['python', new PythonDependencyExtractor()],
