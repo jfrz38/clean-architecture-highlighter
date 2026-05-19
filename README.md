@@ -9,7 +9,7 @@
 
 VS Code extension to **enforce Clean Architecture rules** in Node.js projects by **statically analyzing imports**.
 
-![Demo](images/demo.gif)
+![Demo](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/demo.gif)
 
 ## Features
 
@@ -96,4 +96,4 @@ This extension analyzes JavaScript and TypeScript by default. Python is supporte
 The arrows in the diagram below represent the only allowed direction for dependencies.  
 Inner layers **must not know anything** about outer layers.
 
-![Dependency rule](images/dependency_rule.png)
+![Dependency rule](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/dependency_rule.png)
