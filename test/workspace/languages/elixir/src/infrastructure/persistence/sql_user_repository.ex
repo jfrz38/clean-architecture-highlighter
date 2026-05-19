@@ -1,0 +1,2 @@
+defmodule Example.Infrastructure.Persistence.SqlUserRepository do
+end

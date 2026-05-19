@@ -84,6 +84,17 @@
         ]
       },
       {
+        "id": "elixir",
+        "aliases": [
+          "Elixir",
+          "elixir"
+        ],
+        "extensions": [
+          ".ex",
+          ".exs"
+        ]
+      },
+      {
         "id": "go",
         "aliases": [
           "Go",

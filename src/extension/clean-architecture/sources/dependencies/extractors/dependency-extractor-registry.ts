@@ -1,6 +1,7 @@
 import { CsharpDependencyExtractor } from "./csharp-dependency-extractor";
 import { DependencyExtractor } from "./dependency-extractor";
 import { EcmaScriptDependencyExtractor } from "./ecmascript-dependency-extractor";
+import { ElixirDependencyExtractor } from "./elixir-dependency-extractor";
 import { GoDependencyExtractor } from "./go-dependency-extractor";
 import { GroovyDependencyExtractor } from "./groovy-dependency-extractor";
 import { JavaDependencyExtractor } from "./java-dependency-extractor";
@@ -17,6 +18,7 @@ export class DependencyExtractorRegistry {
         ['javascript', new EcmaScriptDependencyExtractor()],
         ['typescript', new EcmaScriptDependencyExtractor()],
         ['csharp', new CsharpDependencyExtractor()],
+        ['elixir', new ElixirDependencyExtractor()],
         ['go', new GoDependencyExtractor()],
         ['groovy', new GroovyDependencyExtractor()],
         ['java', new JavaDependencyExtractor()],
