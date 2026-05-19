@@ -73,6 +73,17 @@
         ]
       },
       {
+        "id": "csharp",
+        "aliases": [
+          "C#",
+          "csharp"
+        ],
+        "extensions": [
+          ".cs",
+          ".csx"
+        ]
+      },
+      {
         "id": "go",
         "aliases": [
           "Go",

@@ -70,6 +70,7 @@ JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces t
 | ---------- | ------------------- | ------------------ | --------------------------- |
 | JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...` |
 | TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...` |
+| C#         | `csharp`            | No                 | `using ...`, alias directives, static imports, and global usings |
 | Go         | `go`                | No                 | Single-line imports, import blocks, aliased imports, dot imports, and blank imports |
 | Groovy     | `groovy`            | No                 | Static `import ...`, `import static ...`, alias imports, and wildcard imports |
 | Java       | `java`              | No                 | Static `import ...`, `import static ...`, and wildcard imports |
@@ -88,7 +89,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension analyzes JavaScript and TypeScript by default. Go, Groovy, Java, Kotlin, PHP, Python, Ruby, and Scala are supported as opt-in languages through `enabledLanguages`.
+This extension analyzes JavaScript and TypeScript by default. C#, Go, Groovy, Java, Kotlin, PHP, Python, Ruby, and Scala are supported as opt-in languages through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
@@ -97,6 +98,7 @@ This extension analyzes JavaScript and TypeScript by default. Go, Groovy, Java, 
 
 - **Import Syntax Only**: The extension analyzes the static dependency forms listed in the Supported Languages table. Unsupported forms are ignored:
   - JavaScript/TypeScript: CommonJS `require()` and dynamic imports are not supported.
+  - C#: project-level MSBuild references and runtime dependency injection are not resolved.
   - Go: runtime dependency injection and non-import-based dependencies are not supported.
   - Groovy: default imports, runtime metaprogramming, and non-import-based dependencies are not supported.
   - Java: runtime dependency injection and non-import-based dependencies are not supported.
