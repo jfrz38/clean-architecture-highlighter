@@ -164,6 +164,16 @@
         ]
       },
       {
+        "id": "rust",
+        "aliases": [
+          "Rust",
+          "rust"
+        ],
+        "extensions": [
+          ".rs"
+        ]
+      },
+      {
         "id": "scala",
         "aliases": [
           "Scala",
