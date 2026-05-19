@@ -85,6 +85,19 @@
         ]
       },
       {
+        "id": "groovy",
+        "aliases": [
+          "Groovy",
+          "groovy"
+        ],
+        "extensions": [
+          ".groovy",
+          ".gvy",
+          ".gy",
+          ".gsh"
+        ]
+      },
+      {
         "id": "java",
         "aliases": [
           "Java",

@@ -1,6 +1,7 @@
 import { DependencyExtractor } from "./dependency-extractor";
 import { EcmaScriptDependencyExtractor } from "./ecmascript-dependency-extractor";
 import { GoDependencyExtractor } from "./go-dependency-extractor";
+import { GroovyDependencyExtractor } from "./groovy-dependency-extractor";
 import { JavaDependencyExtractor } from "./java-dependency-extractor";
 import { KotlinDependencyExtractor } from "./kotlin-dependency-extractor";
 import { PhpDependencyExtractor } from "./php-dependency-extractor";
@@ -14,6 +15,7 @@ export class DependencyExtractorRegistry {
         ['javascript', new EcmaScriptDependencyExtractor()],
         ['typescript', new EcmaScriptDependencyExtractor()],
         ['go', new GoDependencyExtractor()],
+        ['groovy', new GroovyDependencyExtractor()],
         ['java', new JavaDependencyExtractor()],
         ['kotlin', new KotlinDependencyExtractor()],
         ['php', new PhpDependencyExtractor()],
