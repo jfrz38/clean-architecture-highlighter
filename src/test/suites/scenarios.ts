@@ -1,6 +1,7 @@
 import { customConfigSuite } from "./custom-configuration/custom-configuration";
 import { defaultConfigSuite } from "./default-configuration/default-config.suite";
 import { csharpLanguageSuites } from "./languages/csharp.suite";
+import { dartLanguageSuites } from "./languages/dart.suite";
 import { elixirLanguageSuites } from "./languages/elixir.suite";
 import { goLanguageSuites } from "./languages/go.suite";
 import { groovyLanguageSuites } from "./languages/groovy.suite";
@@ -20,6 +21,7 @@ export const suites: Suite[] = [
     defaultConfigSuite,
     ...customConfigSuite,
     ...csharpLanguageSuites,
+    ...dartLanguageSuites,
     ...elixirLanguageSuites,
     ...goLanguageSuites,
     ...groovyLanguageSuites,

@@ -84,6 +84,16 @@
         ]
       },
       {
+        "id": "dart",
+        "aliases": [
+          "Dart",
+          "dart"
+        ],
+        "extensions": [
+          ".dart"
+        ]
+      },
+      {
         "id": "elixir",
         "aliases": [
           "Elixir",
