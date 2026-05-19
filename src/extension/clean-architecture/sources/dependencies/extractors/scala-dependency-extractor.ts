@@ -2,7 +2,7 @@ import { DelimitedDependencyExtractor, RegexDependencyPattern } from "./delimite
 
 export class ScalaDependencyExtractor extends DelimitedDependencyExtractor {
 
-    private static readonly IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*|\.\*|\._)*(?:\.\{[^}\r\n]+\})?)[ \t]*(?:\/\/.*)?$/gm;
+    private static readonly IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.(?:[A-Za-z]\w*|_\w+|_|\*))*(?:\.\{[^}\r\n]+\})?)[ \t]*(?:\/\/.*)?$/gm;
 
     constructor() {
         super([{

@@ -91,6 +91,18 @@ suite('ScalaDependencyExtractor', () => {
         assert.strictEqual(dependencies[0].path, '/com/example/domain/user/UserStatus/ACTIVE/');
     });
 
+    test('extracts import statements with underscore-prefixed identifiers', async () => {
+        const document = await vscode.workspace.openTextDocument({
+            language: 'scala',
+            content: `import com.example.domain.user._InternalUser`
+        });
+
+        const dependencies = extractor.extract(document);
+
+        assert.strictEqual(dependencies.length, 1);
+        assert.strictEqual(dependencies[0].path, '/com/example/domain/user/_InternalUser/');
+    });
+
     test('ignores package declarations', async () => {
         const document = await vscode.workspace.openTextDocument({
             language: 'scala',
