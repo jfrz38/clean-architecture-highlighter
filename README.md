@@ -58,6 +58,20 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
 
+JavaScript and TypeScript are analyzed by default. Other supported languages are opt-in and must be added to `enabledLanguages` explicitly:
+
+```json
+"clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript", "python"]
+```
+
+### Supported Languages
+
+| Language   | VS Code language id | Enabled by default | Supported dependency syntax |
+| ---------- | ------------------- | ------------------ | --------------------------- |
+| JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...` |
+| TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...` |
+| Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
+
 Note that the default `aliases` and `allowedDependencies` **do not need to be set**; they are applied automatically.  
 `aliases` are used when your layer folder has a different name. For example, if your `application` folder is called `business`, you can add it here using:
 
@@ -67,14 +81,14 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension currently supports JavaScript and TypeScript projects using ES Modules (`import`/`export`).
+This extension analyzes JavaScript and TypeScript by default. Python is supported as an opt-in language through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations
 
-- **Import Syntax Only**: Currently, the JavaScript/TypeScript extractor only analyzes static `import` statements. It does **not** support CommonJS `require()` or dynamic `import()`.
+- **Import Syntax Only**: Currently, the JavaScript/TypeScript extractor analyzes static ES Module `import` statements, and the Python extractor analyzes static `import ...` and `from ... import ...` statements. It does **not** support CommonJS `require()` or dynamic imports.
 - **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
 
 ## The Dependency Rule
