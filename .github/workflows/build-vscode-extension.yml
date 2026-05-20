@@ -14,7 +14,7 @@ on:
       - "tsconfig.base.json"
       - "eslint.config.mjs"
       - "Makefile"
-      - ".github/workflows/build_and_tests.yml"
+      - ".github/workflows/build-vscode-extension.yml"
   workflow_dispatch:
 jobs:
   build:
