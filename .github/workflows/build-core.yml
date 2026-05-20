@@ -1,4 +1,4 @@
-name: Build VS Code Extension
+name: Build Core
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -6,7 +6,6 @@ on:
       - main
       - develop
     paths:
-      - "packages/vscode-extension/**"
       - "packages/core/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -14,8 +13,9 @@ on:
       - "tsconfig.base.json"
       - "eslint.config.mjs"
       - "Makefile"
-      - ".github/workflows/build_and_tests.yml"
+      - ".github/workflows/build-core.yml"
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,5 +33,5 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
 
-      - name: Validate VS Code extension
-        run: xvfb-run -a make validate-vscode-extension
+      - name: Validate core
+        run: make validate-core
