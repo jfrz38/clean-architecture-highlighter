@@ -45,6 +45,14 @@ importers:
         specifier: 8.58.0
         version: 8.58.0(eslint@10.1.0)(typescript@6.0.2)
 
+  packages/core: {}
+
+  packages/vscode-extension:
+    dependencies:
+      '@jfrz38/clean-architecture-highlighter-core':
+        specifier: workspace:*
+        version: link:../core
+
 packages:
 
   '@azu/format-text@1.0.2':

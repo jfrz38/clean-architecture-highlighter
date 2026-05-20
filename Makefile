@@ -23,7 +23,7 @@ clean-test: ## clean generated output and run the full test suite
 	pnpm run clean:tests
 
 package: ## package the VS Code extension without installing dependencies
-	npx @vscode/vsce package --no-dependencies
+	pnpm run package
 
 dev: compile ## open test workspace with this extension loaded in development mode
-	code --extensionDevelopmentPath=. test/workspace
+	code --extensionDevelopmentPath=packages/vscode-extension packages/vscode-extension/test/workspace
