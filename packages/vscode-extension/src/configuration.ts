@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { DefaultConfiguration } from './default.configuration';
-import { ConfigurationOptions, EnabledLanguages, Layers, SeverityLevel, SourceFolder } from './types.configuration';
+import { ConfigurationOptions, DefaultConfiguration, EnabledLanguages, Layers, SeverityLevel, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
 
 export class Configuration {
 

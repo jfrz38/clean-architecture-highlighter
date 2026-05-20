@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { DefaultConfiguration } from '../extension/configuration/default.configuration';
+import { DefaultConfiguration } from '@jfrz38/clean-architecture-highlighter-core';
 import { suites } from './suites/scenarios';
 import { Diagnostic, Scenario, Suite } from './suites/types';
 

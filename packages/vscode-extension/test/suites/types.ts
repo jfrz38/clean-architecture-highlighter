@@ -1,4 +1,4 @@
-import { ConfigurationOptions } from "../../extension/configuration/types.configuration";
+import { ConfigurationOptions } from "@jfrz38/clean-architecture-highlighter-core";
 
 export type Scenario = {
     name: string,

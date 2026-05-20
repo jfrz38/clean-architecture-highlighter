@@ -3,7 +3,9 @@ import * as path from 'path';
 
 async function main() {
     try {
-        const extensionDevelopmentPath = path.resolve(__dirname, '../../../');
+        delete process.env.ELECTRON_RUN_AS_NODE;
+
+        const extensionDevelopmentPath = path.resolve(__dirname, '../..');
         const extensionTestsPath = path.resolve(__dirname);
         const testWorkspace = path.resolve(extensionDevelopmentPath, 'test/workspace');
 

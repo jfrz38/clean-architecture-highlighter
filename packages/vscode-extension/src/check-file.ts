@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { LayerAlias } from './clean-architecture/sources/layer/layer-alias';
-import { SourceFile } from './clean-architecture/sources/source-file';
-import { DependencyExtractorRegistry } from './clean-architecture/sources/dependencies/extractors/dependency-extractor-registry';
+import { DependencyExtractorRegistry, LayerAlias, SourceFile } from '@jfrz38/clean-architecture-highlighter-core';
 import { State } from './state';
 
 const dependencyExtractors = new DependencyExtractorRegistry();

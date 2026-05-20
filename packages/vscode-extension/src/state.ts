@@ -1,10 +1,6 @@
 import * as vscode from 'vscode';
-import { AllowedDependencies } from "./clean-architecture/restrictions/allowed-dependencies";
-import { AllowedApplicationDependencies } from './configuration/components/layers/allowed-dependencies/allowed-application-dependencies';
-import { AllowedDomainDependencies } from './configuration/components/layers/allowed-dependencies/allowed-domain-dependencies';
-import { AllowedInfrastructureDependencies } from './configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies';
-import { Configuration } from "./configuration/configuration";
-import { ConfigurationOptions } from "./configuration/types.configuration";
+import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions } from "@jfrz38/clean-architecture-highlighter-core";
+import { Configuration } from "./configuration";
 
 export class State {
   config: ConfigurationOptions;
