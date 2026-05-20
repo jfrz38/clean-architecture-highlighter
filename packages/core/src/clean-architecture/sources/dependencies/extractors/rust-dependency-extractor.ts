@@ -1,4 +1,4 @@
-import { TextDocument } from "vscode";
+import { CoreDocument } from "../../../../document";
 import { DependencyPosition } from "../dependency-position";
 import { ExtractedDependency } from "../extracted-dependency";
 import { DependencyExtractor } from "./dependency-extractor";
@@ -8,14 +8,14 @@ export class RustDependencyExtractor implements DependencyExtractor {
     private static readonly USE_REGEX = /^[ \t]*use[ \t]+([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
     private static readonly MOD_REGEX = /^[ \t]*(?:pub[ \t]+)?mod[ \t]+([A-Za-z_]\w*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
 
-    public extract(document: TextDocument): ExtractedDependency[] {
+    public extract(document: CoreDocument): ExtractedDependency[] {
         return [
             ...this.extractUseDeclarations(document),
             ...this.extractModDeclarations(document)
         ];
     }
 
-    private extractUseDeclarations(document: TextDocument): ExtractedDependency[] {
+    private extractUseDeclarations(document: CoreDocument): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
         const text = document.getText();
         let match: RegExpExecArray | null;
@@ -30,7 +30,7 @@ export class RustDependencyExtractor implements DependencyExtractor {
         return dependencies;
     }
 
-    private extractModDeclarations(document: TextDocument): ExtractedDependency[] {
+    private extractModDeclarations(document: CoreDocument): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
         const text = document.getText();
         let match: RegExpExecArray | null;
@@ -114,7 +114,7 @@ export class RustDependencyExtractor implements DependencyExtractor {
         return path.split(/\s+as\s+/)[0].trim();
     }
 
-    private toPosition(document: TextDocument, matchIndex: number, matchLength: number): DependencyPosition {
+    private toPosition(document: CoreDocument, matchIndex: number, matchLength: number): DependencyPosition {
         const startPos = document.positionAt(matchIndex);
         const endPos = document.positionAt(matchIndex + matchLength);
 

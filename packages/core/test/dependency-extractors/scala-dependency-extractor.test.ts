@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { ScalaDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/scala-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { ScalaDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/scala-dependency-extractor';
 
 suite('ScalaDependencyExtractor', () => {
     const extractor = new ScalaDependencyExtractor();
 
     test('extracts import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.infrastructure.persistence.SqlUserRepository`
         });
@@ -20,7 +20,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts wildcard import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user._`
         });
@@ -32,7 +32,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts Scala 3 wildcard import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user.*`
         });
@@ -44,7 +44,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts grouped import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user.{User, UserId}`
         });
@@ -57,7 +57,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts aliased grouped import statements without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user.{User => DomainUser}`
         });
@@ -69,7 +69,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('ignores excluded grouped import selectors', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user.{LegacyUser => _}`
         });
@@ -80,7 +80,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts static member import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user.UserStatus.ACTIVE`
         });
@@ -92,7 +92,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts import statements with underscore-prefixed identifiers', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `import com.example.domain.user._InternalUser`
         });
@@ -104,7 +104,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('ignores package declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `package com.example.domain.user`
         });
@@ -115,7 +115,7 @@ suite('ScalaDependencyExtractor', () => {
     });
 
     test('extracts import ranges from the import statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'scala',
             content: `package com.example.domain.user
 

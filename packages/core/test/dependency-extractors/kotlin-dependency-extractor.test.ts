@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { KotlinDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/kotlin-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { KotlinDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/kotlin-dependency-extractor';
 
 suite('KotlinDependencyExtractor', () => {
     const extractor = new KotlinDependencyExtractor();
 
     test('extracts import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'kotlin',
             content: `import com.example.infrastructure.persistence.SqlUserRepository`
         });
@@ -20,7 +20,7 @@ suite('KotlinDependencyExtractor', () => {
     });
 
     test('extracts aliased import statements as normalized paths without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'kotlin',
             content: `import com.example.domain.user.UserId as DomainUserId`
         });
@@ -32,7 +32,7 @@ suite('KotlinDependencyExtractor', () => {
     });
 
     test('extracts wildcard import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'kotlin',
             content: `import com.example.domain.user.*`
         });
@@ -44,7 +44,7 @@ suite('KotlinDependencyExtractor', () => {
     });
 
     test('ignores package declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'kotlin',
             content: `package com.example.domain.user`
         });
@@ -55,7 +55,7 @@ suite('KotlinDependencyExtractor', () => {
     });
 
     test('extracts import ranges from the import statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'kotlin',
             content: `package com.example.domain.user
 
@@ -73,7 +73,7 @@ class User`
     });
 
     test('allows trailing line comments after imports', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'kotlin',
             content: `import com.example.domain.user.UserId // used by User`
         });

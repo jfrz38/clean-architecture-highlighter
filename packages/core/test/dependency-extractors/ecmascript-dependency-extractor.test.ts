@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { EcmaScriptDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/ecmascript-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { EcmaScriptDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/ecmascript-dependency-extractor';
 
 suite('EcmaScriptDependencyExtractor', () => {
     const extractor = new EcmaScriptDependencyExtractor();
 
     test('extracts a single-line import path and range', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'typescript',
             content: `import { User } from '../domain/user';`
         });
@@ -20,7 +20,7 @@ suite('EcmaScriptDependencyExtractor', () => {
     });
 
     test('extracts a multiline import path and range', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'typescript',
             content: `import {
     User,
@@ -37,7 +37,7 @@ suite('EcmaScriptDependencyExtractor', () => {
     });
 
     test('normalizes path aliases as slash-delimited paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'typescript',
             content: `import { User } from 'domain/user';`
         });

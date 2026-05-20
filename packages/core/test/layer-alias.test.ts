@@ -1,9 +1,9 @@
 import * as assert from 'assert';
-import { AllowedDependencies } from '../extension/clean-architecture/restrictions/allowed-dependencies';
-import { ExtractedDependency } from '../extension/clean-architecture/sources/dependencies/extracted-dependency';
-import { DependencyPosition } from '../extension/clean-architecture/sources/dependencies/dependency-position';
-import { LayerAlias } from '../extension/clean-architecture/sources/layer/layer-alias';
-import { SourceFile } from '../extension/clean-architecture/sources/source-file';
+import { AllowedDependencies } from '../src/clean-architecture/restrictions/allowed-dependencies';
+import { ExtractedDependency } from '../src/clean-architecture/sources/dependencies/extracted-dependency';
+import { DependencyPosition } from '../src/clean-architecture/sources/dependencies/dependency-position';
+import { LayerAlias } from '../src/clean-architecture/sources/layer/layer-alias';
+import { SourceFile } from '../src/clean-architecture/sources/source-file';
 
 suite('LayerAlias', () => {
     test('matches layer aliases without depending on path casing', () => {

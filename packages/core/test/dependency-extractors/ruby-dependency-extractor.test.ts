@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { RubyDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/ruby-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { RubyDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/ruby-dependency-extractor';
 
 suite('RubyDependencyExtractor', () => {
     const extractor = new RubyDependencyExtractor();
 
     test('extracts double-quoted require statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `require "infrastructure/persistence/sql_user_repository"`
         });
@@ -20,7 +20,7 @@ suite('RubyDependencyExtractor', () => {
     });
 
     test('extracts single-quoted require statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `require 'application/use_cases/create_user'`
         });
@@ -32,7 +32,7 @@ suite('RubyDependencyExtractor', () => {
     });
 
     test('extracts double-quoted require_relative statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `require_relative "../../domain/user"`
         });
@@ -44,7 +44,7 @@ suite('RubyDependencyExtractor', () => {
     });
 
     test('extracts single-quoted require_relative statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `require_relative '../ports/user_repository'`
         });
@@ -56,7 +56,7 @@ suite('RubyDependencyExtractor', () => {
     });
 
     test('extracts parenthesized require statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `require("domain/user")`
         });
@@ -68,7 +68,7 @@ suite('RubyDependencyExtractor', () => {
     });
 
     test('extracts require ranges from the require statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `module Domain
   require "application/use_cases/create_user"
@@ -84,7 +84,7 @@ end`
     });
 
     test('ignores Ruby constant references without require statements', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'ruby',
             content: `Infrastructure::Persistence::SqlUserRepository.new`
         });

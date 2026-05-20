@@ -1,4 +1,4 @@
-import { TextDocument } from "vscode";
+import { CoreDocument } from "../../document";
 import { AllowedDependencies } from "../restrictions/allowed-dependencies";
 import { ArchitectureViolation } from "../restrictions/architecture-violation";
 import { ExtractedDependency } from "./dependencies/extracted-dependency";
@@ -12,7 +12,7 @@ export class SourceFile extends LayeredComponent {
     private dependencies: DependencyStatement[] = [];
 
     constructor(
-        document: TextDocument,
+        document: CoreDocument,
         extractedDependencies: ExtractedDependency[],
         private readonly allowedDependencies: AllowedDependencies,
         aliases: LayerAlias

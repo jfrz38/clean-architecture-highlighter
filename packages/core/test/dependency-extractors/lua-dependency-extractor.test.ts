@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { LuaDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/lua-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { LuaDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/lua-dependency-extractor';
 
 suite('LuaDependencyExtractor', () => {
     const extractor = new LuaDependencyExtractor();
 
     test('extracts require calls as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'lua',
             content: `require("infrastructure.persistence.sql_user_repository")`
         });
@@ -20,7 +20,7 @@ suite('LuaDependencyExtractor', () => {
     });
 
     test('extracts single-quoted require calls as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'lua',
             content: `require 'domain.user_status'`
         });
@@ -32,7 +32,7 @@ suite('LuaDependencyExtractor', () => {
     });
 
     test('extracts local assignment require calls as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'lua',
             content: `local CreateUser = require("application.use_cases.create_user")`
         });
@@ -44,7 +44,7 @@ suite('LuaDependencyExtractor', () => {
     });
 
     test('allows trailing line comments', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'lua',
             content: `local User = require("domain.user") -- domain entity`
         });
@@ -56,7 +56,7 @@ suite('LuaDependencyExtractor', () => {
     });
 
     test('extracts require ranges from the require statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'lua',
             content: `local id = "UserId"
 local CreateUser = require("application.use_cases.create_user")

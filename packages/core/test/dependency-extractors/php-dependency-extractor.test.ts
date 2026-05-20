@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { PhpDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/php-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { PhpDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/php-dependency-extractor';
 
 suite('PhpDependencyExtractor', () => {
     const extractor = new PhpDependencyExtractor();
 
     test('extracts use statements as normalized lower-case paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `use App\\Infrastructure\\Persistence\\SqlUserRepository;`
         });
@@ -20,7 +20,7 @@ suite('PhpDependencyExtractor', () => {
     });
 
     test('extracts aliased use statements without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `use App\\Domain\\User\\UserStatus as DomainUserStatus;`
         });
@@ -32,7 +32,7 @@ suite('PhpDependencyExtractor', () => {
     });
 
     test('extracts function and const use statements', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `use function App\\Domain\\User\\normalize_user_name;
 use const App\\Domain\\User\\DEFAULT_STATUS;`
@@ -46,7 +46,7 @@ use const App\\Domain\\User\\DEFAULT_STATUS;`
     });
 
     test('extracts grouped use statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `use App\\Domain\\User\\{UserEmail, UserName};`
         });
@@ -59,7 +59,7 @@ use const App\\Domain\\User\\DEFAULT_STATUS;`
     });
 
     test('extracts grouped aliased use statements without aliases', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `use App\\Domain\\User\\{UserEmail as Email, UserName};`
         });
@@ -72,7 +72,7 @@ use const App\\Domain\\User\\DEFAULT_STATUS;`
     });
 
     test('ignores namespace declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `namespace App\\Domain\\User;`
         });
@@ -83,7 +83,7 @@ use const App\\Domain\\User\\DEFAULT_STATUS;`
     });
 
     test('extracts use ranges from the use statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'php',
             content: `<?php
 

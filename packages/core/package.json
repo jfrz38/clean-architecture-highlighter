@@ -1,0 +1,26 @@
+{
+  "name": "@jfrz38/clean-architecture-highlighter-core",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "main": "./out/src/index.js",
+  "types": "./out/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./out/src/index.d.ts",
+      "default": "./out/src/index.js"
+    },
+    "./*": {
+      "types": "./out/src/*.d.ts",
+      "default": "./out/src/*.js"
+    }
+  },
+  "scripts": {
+    "compile": "tsc -b ./",
+    "clean:compile": "rimraf out tsconfig.tsbuildinfo && tsc -b ./",
+    "lint": "eslint src test",
+    "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
+    "clean:tests": "rimraf out && pnpm run test"
+  }
+}

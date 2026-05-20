@@ -1,4 +1,4 @@
-import { TextDocument } from "vscode";
+import { CoreDocument } from "../../../../document";
 import { DependencyPosition } from "../dependency-position";
 import { ExtractedDependency } from "../extracted-dependency";
 import { DependencyExtractor } from "./dependency-extractor";
@@ -20,11 +20,11 @@ export abstract class DelimitedDependencyExtractor implements DependencyExtracto
         this.addTrailingSeparator = addTrailingSeparator;
     }
 
-    public extract(document: TextDocument): ExtractedDependency[] {
+    public extract(document: CoreDocument): ExtractedDependency[] {
         return this.patterns.flatMap(pattern => this.extractMatches(document, pattern));
     }
 
-    private extractMatches(document: TextDocument, pattern: RegexDependencyPattern): ExtractedDependency[] {
+    private extractMatches(document: CoreDocument, pattern: RegexDependencyPattern): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
         const text = document.getText();
         let match: RegExpExecArray | null;

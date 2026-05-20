@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { GroovyDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/groovy-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { GroovyDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/groovy-dependency-extractor';
 
 suite('GroovyDependencyExtractor', () => {
     const extractor = new GroovyDependencyExtractor();
 
     test('extracts import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `import com.example.infrastructure.persistence.SqlUserRepository`
         });
@@ -20,7 +20,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('extracts static import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `import static com.example.domain.user.UserStatus.ACTIVE`
         });
@@ -32,7 +32,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('extracts wildcard import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `import com.example.domain.user.*`
         });
@@ -44,7 +44,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('extracts static wildcard import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `import static com.example.domain.user.UserStatus.*`
         });
@@ -56,7 +56,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('extracts aliased import statements without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `import com.example.domain.user.User as DomainUser`
         });
@@ -68,7 +68,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('allows optional semicolons and trailing line comments', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `import com.example.domain.user.UserId; // used by User`
         });
@@ -80,7 +80,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('ignores package declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `package com.example.domain.user`
         });
@@ -91,7 +91,7 @@ suite('GroovyDependencyExtractor', () => {
     });
 
     test('extracts import ranges from the import statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'groovy',
             content: `package com.example.domain.user
 

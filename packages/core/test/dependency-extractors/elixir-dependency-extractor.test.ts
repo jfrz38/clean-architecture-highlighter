@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { ElixirDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/elixir-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { ElixirDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/elixir-dependency-extractor';
 
 suite('ElixirDependencyExtractor', () => {
     const extractor = new ElixirDependencyExtractor();
 
     test('extracts alias directives as normalized lower-case paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'elixir',
             content: `alias Example.Infrastructure.Persistence.SqlUserRepository`
         });
@@ -20,7 +20,7 @@ suite('ElixirDependencyExtractor', () => {
     });
 
     test('extracts grouped alias directives as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'elixir',
             content: `alias Example.Domain.User.{UserId, UserStatus}`
         });
@@ -33,7 +33,7 @@ suite('ElixirDependencyExtractor', () => {
     });
 
     test('extracts alias directives without the alias option', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'elixir',
             content: `alias Example.Domain.User, as: DomainUser`
         });
@@ -45,7 +45,7 @@ suite('ElixirDependencyExtractor', () => {
     });
 
     test('extracts import, require, and use directives', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'elixir',
             content: `import Example.Domain.User.Guards
 require Example.Application.Ports.UserRepository
@@ -61,7 +61,7 @@ use Example.Infrastructure.Persistence.SqlUserRepository`
     });
 
     test('ignores defmodule declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'elixir',
             content: `defmodule Example.Domain.User do`
         });
@@ -72,7 +72,7 @@ use Example.Infrastructure.Persistence.SqlUserRepository`
     });
 
     test('extracts directive ranges from the directive only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'elixir',
             content: `defmodule Example.Domain.User do
   alias Example.Application.UseCases.CreateUser

@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { JavaDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/java-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { JavaDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/java-dependency-extractor';
 
 suite('JavaDependencyExtractor', () => {
     const extractor = new JavaDependencyExtractor();
 
     test('extracts import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'java',
             content: `import com.example.infrastructure.persistence.SqlUserRepository;`
         });
@@ -20,7 +20,7 @@ suite('JavaDependencyExtractor', () => {
     });
 
     test('extracts static import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'java',
             content: `import static com.example.domain.user.UserStatus.ACTIVE;`
         });
@@ -32,7 +32,7 @@ suite('JavaDependencyExtractor', () => {
     });
 
     test('extracts wildcard import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'java',
             content: `import com.example.domain.user.*;`
         });
@@ -44,7 +44,7 @@ suite('JavaDependencyExtractor', () => {
     });
 
     test('ignores package declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'java',
             content: `package com.example.domain.user;`
         });
@@ -55,7 +55,7 @@ suite('JavaDependencyExtractor', () => {
     });
 
     test('extracts import ranges from the import statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'java',
             content: `package com.example.domain.user;
 

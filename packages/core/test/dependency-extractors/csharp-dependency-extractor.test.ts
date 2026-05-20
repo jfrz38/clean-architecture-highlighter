@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { CsharpDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/csharp-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { CsharpDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/csharp-dependency-extractor';
 
 suite('CsharpDependencyExtractor', () => {
     const extractor = new CsharpDependencyExtractor();
 
     test('extracts using directives as normalized lower-case paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'csharp',
             content: `using Example.Infrastructure.Persistence;`
         });
@@ -20,7 +20,7 @@ suite('CsharpDependencyExtractor', () => {
     });
 
     test('extracts alias using directives without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'csharp',
             content: `using DomainUser = Example.Domain.User.User;`
         });
@@ -32,7 +32,7 @@ suite('CsharpDependencyExtractor', () => {
     });
 
     test('extracts static using directives', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'csharp',
             content: `using static Example.Domain.User.UserStatus;`
         });
@@ -44,7 +44,7 @@ suite('CsharpDependencyExtractor', () => {
     });
 
     test('extracts global using directives', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'csharp',
             content: `global using Example.Application.Ports;`
         });
@@ -56,7 +56,7 @@ suite('CsharpDependencyExtractor', () => {
     });
 
     test('ignores namespace declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'csharp',
             content: `namespace Example.Domain.User;`
         });
@@ -67,7 +67,7 @@ suite('CsharpDependencyExtractor', () => {
     });
 
     test('extracts using ranges from the using directive only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'csharp',
             content: `namespace Example.Domain.User;
 

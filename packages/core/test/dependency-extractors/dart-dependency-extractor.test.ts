@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { DartDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/dart-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { DartDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/dart-dependency-extractor';
 
 suite('DartDependencyExtractor', () => {
     const extractor = new DartDependencyExtractor();
 
     test('extracts package import directives as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `import 'package:example/infrastructure/persistence/sql_user_repository.dart';`
         });
@@ -20,7 +20,7 @@ suite('DartDependencyExtractor', () => {
     });
 
     test('extracts relative import directives as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `import '../../domain/user/user.dart';`
         });
@@ -32,7 +32,7 @@ suite('DartDependencyExtractor', () => {
     });
 
     test('extracts aliased import directives without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `import 'package:example/domain/user/user.dart' as domain;`
         });
@@ -44,7 +44,7 @@ suite('DartDependencyExtractor', () => {
     });
 
     test('extracts show and hide combinator imports', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `import 'package:example/domain/user/user_status.dart' show UserStatus;
 import 'package:example/domain/user/legacy_user.dart' hide LegacyUserMapper;`
@@ -58,7 +58,7 @@ import 'package:example/domain/user/legacy_user.dart' hide LegacyUserMapper;`
     });
 
     test('extracts export and part directives', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `export 'package:example/domain/user/user.dart';
 part 'user.g.dart';`
@@ -72,7 +72,7 @@ part 'user.g.dart';`
     });
 
     test('extracts annotated directives', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `@Deprecated('use other import')
 import 'package:example/application/use_cases/create_user.dart';`
@@ -85,7 +85,7 @@ import 'package:example/application/use_cases/create_user.dart';`
     });
 
     test('extracts directive ranges from the directive only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'dart',
             content: `class UserId {}
 import 'package:example/application/use_cases/create_user.dart';

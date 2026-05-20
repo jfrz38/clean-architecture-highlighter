@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { GoDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/go-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { GoDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/go-dependency-extractor';
 
 suite('GoDependencyExtractor', () => {
     const extractor = new GoDependencyExtractor();
 
     test('extracts single-line import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `import "github.com/example/project/domain/user"`
         });
@@ -20,7 +20,7 @@ suite('GoDependencyExtractor', () => {
     });
 
     test('extracts aliased import statements as normalized paths without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `import ports "github.com/example/project/application/ports"`
         });
@@ -32,7 +32,7 @@ suite('GoDependencyExtractor', () => {
     });
 
     test('extracts dot and blank import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `import . "github.com/example/project/domain/shared"
 import _ "github.com/example/project/infrastructure/drivers/postgres"`
@@ -46,7 +46,7 @@ import _ "github.com/example/project/infrastructure/drivers/postgres"`
     });
 
     test('extracts import block entries as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `import (
     "context"
@@ -70,7 +70,7 @@ import _ "github.com/example/project/infrastructure/drivers/postgres"`
     });
 
     test('ignores package declarations', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `package usecases`
         });
@@ -81,7 +81,7 @@ import _ "github.com/example/project/infrastructure/drivers/postgres"`
     });
 
     test('extracts import ranges from the import statement only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `package user
 
@@ -99,7 +99,7 @@ type User struct{}`
     });
 
     test('extracts import block ranges from each entry only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'go',
             content: `package user
 

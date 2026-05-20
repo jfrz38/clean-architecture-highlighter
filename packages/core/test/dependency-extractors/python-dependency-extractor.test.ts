@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { PythonDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/python-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { PythonDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/python-dependency-extractor';
 
 suite('PythonDependencyExtractor', () => {
     const extractor = new PythonDependencyExtractor();
 
     test('extracts import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'python',
             content: `import infrastructure.persistence.user_repository`
         });
@@ -20,7 +20,7 @@ suite('PythonDependencyExtractor', () => {
     });
 
     test('extracts from-import statements as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'python',
             content: `from application.use_cases.create_user import CreateUser`
         });
@@ -34,7 +34,7 @@ suite('PythonDependencyExtractor', () => {
     });
 
     test('extracts multiple import modules from the same statement', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'python',
             content: `import domain.user, application.create_user as create_user`
         });

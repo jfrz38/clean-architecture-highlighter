@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { RustDependencyExtractor } from '../../extension/clean-architecture/sources/dependencies/extractors/rust-dependency-extractor';
+import { createDocument } from '../support/create-document';
+import { RustDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/rust-dependency-extractor';
 
 suite('RustDependencyExtractor', () => {
     const extractor = new RustDependencyExtractor();
 
     test('extracts use declarations as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `use crate::infrastructure::persistence::SqlUserRepository;`
         });
@@ -20,7 +20,7 @@ suite('RustDependencyExtractor', () => {
     });
 
     test('extracts grouped use declarations as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `use crate::domain::user::{User, UserId};`
         });
@@ -33,7 +33,7 @@ suite('RustDependencyExtractor', () => {
     });
 
     test('extracts nested grouped use declarations as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `use crate::{domain::user::{User, UserId}, application::ports::UserRepository};`
         });
@@ -47,7 +47,7 @@ suite('RustDependencyExtractor', () => {
     });
 
     test('extracts aliased use declarations without the alias', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `use crate::domain::user::User as DomainUser;`
         });
@@ -59,7 +59,7 @@ suite('RustDependencyExtractor', () => {
     });
 
     test('extracts glob use declarations as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `use crate::domain::user::*;`
         });
@@ -71,7 +71,7 @@ suite('RustDependencyExtractor', () => {
     });
 
     test('extracts relative use declarations as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `use super::ports::CommandHandler;
 use self::domain::User;`
@@ -85,7 +85,7 @@ use self::domain::User;`
     });
 
     test('extracts mod declarations as normalized paths', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `mod create_user;
 pub mod ports;`
@@ -99,7 +99,7 @@ pub mod ports;`
     });
 
     test('extracts use ranges from the use declaration only', async () => {
-        const document = await vscode.workspace.openTextDocument({
+        const document = createDocument({
             language: 'rust',
             content: `mod user;
 
