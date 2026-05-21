@@ -1,5 +1,3 @@
-import { extname } from 'node:path';
-
 export class SupportedLanguageRegistry {
 
     private readonly languagesByExtension = new Map<string, string>([
@@ -35,7 +33,7 @@ export class SupportedLanguageRegistry {
         ['.sc', 'scala']
     ]);
 
-    public getLanguageIdFromPath(path: string): string | undefined {
-        return this.languagesByExtension.get(extname(path).toLowerCase());
+    public getLanguageIdFromExtension(extension: string): string | undefined {
+        return this.languagesByExtension.get(extension.toLowerCase());
     }
 }

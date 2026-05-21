@@ -1,0 +1,38 @@
+{
+  "name": "@jfrz38/clean-architecture-highlighter-cli",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/index.js",
+  "types": "./out/src/index.d.ts",
+  "bin": {
+    "clean-arch": "./dist/index.js",
+    "clean-architecture-highlighter": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "out/src/**/*.d.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "compile": "tsc -b ./",
+    "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && tsc -b ./",
+    "bundle": "esbuild ./src/index.ts --bundle --outfile=dist/index.js --format=cjs --platform=node --target=node20",
+    "package": "pnpm run clean:compile && pnpm run bundle",
+    "prepublishOnly": "pnpm run package",
+    "lint": "eslint src test",
+    "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
+    "check": "node out/src/index.js check",
+    "clean:tests": "rimraf out && pnpm run test"
+  },
+  "devDependencies": {
+    "@jfrz38/clean-architecture-highlighter-core": "workspace:*",
+    "@types/node": "25.x",
+    "commander": "14.0.3"
+  }
+}

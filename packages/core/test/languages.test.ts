@@ -3,17 +3,17 @@ import { suite, test } from 'mocha';
 import { SupportedLanguageRegistry } from '../src';
 
 suite('Supported languages', () => {
-    test('resolves language identifiers from file paths', () => {
+    test('resolves language identifiers from file extensions', () => {
         const languages = new SupportedLanguageRegistry();
 
-        assert.strictEqual(languages.getLanguageIdFromPath('/project/src/application/use-case.ts'), 'typescript');
-        assert.strictEqual(languages.getLanguageIdFromPath('/project/src/domain/entity.py'), 'python');
-        assert.strictEqual(languages.getLanguageIdFromPath('/project/src/infrastructure/repository.cs'), 'csharp');
+        assert.strictEqual(languages.getLanguageIdFromExtension('.ts'), 'typescript');
+        assert.strictEqual(languages.getLanguageIdFromExtension('.py'), 'python');
+        assert.strictEqual(languages.getLanguageIdFromExtension('.cs'), 'csharp');
     });
 
     test('returns undefined for unsupported extensions', () => {
         const languages = new SupportedLanguageRegistry();
 
-        assert.strictEqual(languages.getLanguageIdFromPath('/project/readme.md'), undefined);
+        assert.strictEqual(languages.getLanguageIdFromExtension('.md'), undefined);
     });
 });
