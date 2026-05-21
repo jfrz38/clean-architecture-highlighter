@@ -13,8 +13,11 @@ pnpm-workspace.yaml
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/eslint.config.mjs
+**/*.tsbuildinfo
 **/*.map
 **/*.ts
+out/src/**
+!out/src/extension.js
 **/.vscode-test.*
 **/test/**
 images/**
