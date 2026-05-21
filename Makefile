@@ -51,7 +51,7 @@ build-vscode-extension: ## build the VS Code extension package and its dependenc
 test-vscode-extension: ## test the VS Code extension package
 	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" test
 
-validate-vscode-extension: ci-install build-vscode-extension test-vscode-extension package-vscode-extension ## install, build, test, and package the VS Code extension
+validate-vscode-extension: ci-install build-vscode-extension test-vscode-extension ## install, build, and test the VS Code extension
 
 dev: compile ## open test workspace with this extension loaded in development mode
 	code --extensionDevelopmentPath=packages/vscode-extension packages/vscode-extension/test/workspace
