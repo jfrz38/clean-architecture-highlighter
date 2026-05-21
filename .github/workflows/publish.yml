@@ -52,7 +52,7 @@ jobs:
         env:
           EXPECTED_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          PACKAGE_VERSION="$(node -p "require('./packages/vscode-extension/package.json').version")"
           if [ "$PACKAGE_VERSION" != "$EXPECTED_VERSION" ]; then
             echo "Release version $EXPECTED_VERSION does not match package version $PACKAGE_VERSION" >&2
             exit 1
@@ -62,7 +62,7 @@ jobs:
         name: Check version is not already published
         uses: jfrz38/check-version-change@v1
         with:
-          file-path: package.json
+          file-path: packages/vscode-extension/package.json
           compare-source: registry
           registry: vscode-marketplace
 
@@ -92,15 +92,15 @@ jobs:
         run: make ci-install
 
       - name: Run tests
-        run: xvfb-run -a make clean-test
+        run: xvfb-run -a make validate-vscode-extension
 
       - name: Compile
-        run: make build
+        run: make build-vscode-extension
 
       - name: Package extension
-        run: make package
+        run: make package-vscode-extension
 
       - name: Publish to Marketplace
-        run: npx @vscode/vsce publish --packagePath clean-architecture-highlighter-${{ steps.version.outputs.version }}.vsix
+        run: npx @vscode/vsce publish --packagePath packages/vscode-extension/clean-architecture-highlighter-${{ steps.version.outputs.version }}.vsix
         env:
           VSCE_PAT: ${{ secrets.VS_CODE_TOKEN }}

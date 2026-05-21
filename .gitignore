@@ -78,6 +78,8 @@ web_modules/
 # Next.js build output
 .next
 out
+**/out
+*.tsbuildinfo
 
 # Nuxt.js build / generate output
 .nuxt
@@ -125,6 +127,7 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+**/.vscode-test
 *.vsix
 .vscode
 

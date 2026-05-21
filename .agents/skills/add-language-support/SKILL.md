@@ -1,6 +1,6 @@
 ---
 name: add-language-support
-description: Add opt-in support for a new language by adding a dependency extractor, registration, focused tests, minimal fixtures, documentation, and verification.
+description: Add opt-in support for a new language by updating the core dependency extractor package, the VS Code extension adapter, integration fixtures, documentation, and verification.
 ---
 
 # Add Language Support
@@ -17,9 +17,10 @@ The goal is to add a language-specific dependency extractor without changing the
 - Do **not** add `onLanguage:<languageId>` for an opt-in language by default.
   - Keep `onLanguage` for default languages.
   - `onStartupFinished` lets opt-in languages work after the extension starts.
-- Do **not** duplicate all architecture scenarios for the new language.
-  - Architecture rules are covered under `test/workspace/architecture/`.
-  - Language suites should only prove enabled/disabled behavior end-to-end.
+- Keep architecture rules language-agnostic in `packages/core`; language additions should only change dependency extraction and VS Code registration/integration.
+- Add VS Code integration coverage beyond enabled/disabled smoke tests when practical.
+  - Use the existing TypeScript scenarios as the reference shape.
+  - Prefer idiomatic fixtures for the target language over mechanically copying TypeScript syntax.
 - Put language syntax edge cases in extractor unit tests.
 - Keep import/dependency extraction separate from architecture validation.
 - Use VS Code `languageId`, not file extension, as the runtime language key.
@@ -31,13 +32,13 @@ The goal is to add a language-specific dependency extractor without changing the
 Create a new extractor under:
 
 ```text
-src/extension/clean-architecture/sources/dependencies/extractors/
+packages/core/src/clean-architecture/sources/dependencies/extractors/
 ```
 
 Use the existing contract:
 
 ```ts
-DependencyExtractor.extract(document: TextDocument): ExtractedDependency[]
+DependencyExtractor.extract(document: CoreDocument): ExtractedDependency[]
 ```
 
 Each extracted dependency must include:
@@ -57,7 +58,7 @@ Examples:
 Update:
 
 ```text
-src/extension/clean-architecture/sources/dependencies/extractors/dependency-extractor-registry.ts
+packages/core/src/clean-architecture/sources/dependencies/extractors/dependency-extractor-registry.ts
 ```
 
 Add the new VS Code `languageId` to the registry:
@@ -68,7 +69,11 @@ Add the new VS Code `languageId` to the registry:
 
 ### 3. Activation and configuration
 
-Update `package.json` only where appropriate:
+Update the VS Code extension package manifest only where appropriate:
+
+```text
+packages/vscode-extension/package.json
+```
 
 - Add or update `contributes.languages` for the supported language, including its VS Code `languageId`, aliases, and file extensions. This lets VS Code assign the correct `document.languageId` even when users do not have a separate language extension installed.
 - Add `onLanguage:<languageId>` **only if** the language should activate the extension directly.
@@ -91,7 +96,7 @@ If the language is opt-in, document that users must configure:
 Add or update the extractor-specific test file under:
 
 ```text
-src/test/dependency-extractors/<language>-dependency-extractor.test.ts
+packages/core/test/dependency-extractors/<language>-dependency-extractor.test.ts
 ```
 
 Keep one test file per extractor/language so language syntax coverage does not grow a shared monolithic test file.
@@ -111,7 +116,7 @@ Do not rely only on integration tests for parser behavior. If the test runner do
 Create fixtures under:
 
 ```text
-test/workspace/languages/<languageId>/
+packages/vscode-extension/test/workspace/languages/<languageId>/
 ```
 
 Use the minimal structure needed for the language and its tooling.
@@ -119,7 +124,7 @@ Use the minimal structure needed for the language and its tooling.
 Preferred shape when the existing path-based layer matcher can be used:
 
 ```text
-test/workspace/languages/<languageId>/src/
+packages/vscode-extension/test/workspace/languages/<languageId>/src/
   domain/
     domain.<ext>
     other-domain-or-equivalent.<ext>
@@ -150,10 +155,12 @@ This keeps the architecture rule engine unchanged.
 Create:
 
 ```text
-src/test/suites/languages/<language>.suite.ts
+packages/vscode-extension/test/suites/languages/<language>.suite.ts
 ```
 
-Add exactly two end-to-end scenarios by default:
+Add enabled/disabled scenarios and, when practical, fuller architecture scenarios equivalent to the TypeScript reference suite.
+
+At minimum include:
 
 1. Language enabled:
    - configure `enabledLanguages` to include the new language if it is not default;
@@ -164,10 +171,18 @@ Add exactly two end-to-end scenarios by default:
    - open the same fixture;
    - expect no diagnostics.
 
+Prefer also covering:
+
+- application layer cannot depend on infrastructure;
+- domain layer cannot depend on application or infrastructure;
+- infrastructure layer can depend on any layer;
+- nested layer folders are detected correctly;
+- files outside the configured `sourceFolder` are ignored.
+
 Register the suite in:
 
 ```text
-src/test/suites/scenarios.ts
+packages/vscode-extension/test/suites/scenarios.ts
 ```
 
 ### 7. Update documentation
@@ -180,7 +195,7 @@ Update `README.md`:
 - list the supported static import/dependency syntax at a high level;
 - keep default configuration examples unchanged unless defaults actually changed.
 
-For local manual testing, ensure `test/workspace/.vscode/settings.json` includes the opt-in language:
+For local manual testing, ensure `packages/vscode-extension/test/workspace/.vscode/settings.json` includes the opt-in language if such a workspace settings file is present:
 
 ```json
 {
@@ -195,13 +210,13 @@ For local manual testing, ensure `test/workspace/.vscode/settings.json` includes
 If useful, update:
 
 ```text
-test/workspace/readme.md
+packages/vscode-extension/test/workspace/readme.md
 ```
 
 Keep the convention:
 
 - `architecture/` = language-agnostic architecture rule coverage;
-- `languages/` = language-specific enabled/disabled integration coverage.
+- `languages/` = language-specific VS Code integration fixtures and scenarios.
 
 ## Verification
 
@@ -210,21 +225,22 @@ Run these commands before finishing:
 ```bash
 make compile
 pnpm run lint
+make test-core
 ```
 
 Run the integration suite command as well:
 
 ```bash
-make test
+make test-vscode-extension
 ```
 
 In CI or Linux environments where VS Code tests need a display, use:
 
 ```bash
-xvfb-run -a make clean-test
+xvfb-run -a make test-vscode-extension
 ```
 
-If `make test` fails before executing tests because the VS Code harness cannot launch or cannot resolve the test workspace, report that separately from compile/lint results and include the exact error.
+If `make test-vscode-extension` fails before executing tests because the VS Code harness cannot launch or cannot resolve the test workspace, report that separately from compile/lint/core-test results and include the exact error.
 
 ## Completion checklist
 
@@ -233,9 +249,11 @@ If `make test` fails before executing tests because the VS Code harness cannot l
 - [ ] `package.json` `contributes.languages` includes the language id, aliases, and extensions.
 - [ ] Default `enabledLanguages` unchanged unless explicitly requested.
 - [ ] Extractor unit tests added for language syntax.
-- [ ] Minimal `test/workspace/languages/<languageId>/` fixtures added.
+- [ ] Minimal `packages/vscode-extension/test/workspace/languages/<languageId>/` fixtures added.
 - [ ] Enabled/disabled integration scenarios added.
+- [ ] Full architecture-style integration scenarios added or intentionally deferred with an issue/note.
 - [ ] README updated.
 - [ ] `make compile` passes.
 - [ ] `pnpm run lint` passes.
-- [ ] `make test` or `xvfb-run -a make clean-test` executed and result reported.
+- [ ] `make test-core` passes.
+- [ ] `make test-vscode-extension` or `xvfb-run -a make test-vscode-extension` executed and result reported.
