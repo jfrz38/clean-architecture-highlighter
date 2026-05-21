@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { Command, InvalidArgumentError } from 'commander';
-import { Check } from './check';
-import { CheckInput } from './check-input';
-import { OutputFormat, ViolationFormatter } from './format';
+import { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
+import { Check } from './check/check';
+import { CheckInput } from './check/check-input';
+import { CheckInputOptions } from './check/check-input-options';
+import { OutputFormat, ViolationFormatter } from './output/violation-formatter';
 
 const program = new Command();
 
@@ -16,15 +18,22 @@ program
     .description('Check a project or source folder.')
     .argument('<path>', 'Project path or source folder path to analyze.')
     .option('--source-folder <folder>', 'Source folder relative to the project root.')
+    .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', parseEnabledLanguages)
     .option('--config <path>', 'Path to a JSON configuration file.')
     .option('--format <format>', 'Output format: text or json.', parseFormat, 'text')
-    .action((path: string, options: { sourceFolder?: string; config?: string; format: OutputFormat }) => {
+    .action((path: string, options: {
+        sourceFolder?: string;
+        enabledLanguages?: EnabledLanguages;
+        config?: string;
+        format: OutputFormat;
+    }) => {
         try {
-            const violations = new Check(new CheckInput({
+            const violations = new Check(new CheckInput(CheckInputOptions.fromCli(
                 path,
-                sourceFolder: options.sourceFolder,
-                configPath: options.config
-            })).violations;
+                options.config,
+                options.sourceFolder,
+                options.enabledLanguages
+            ))).violations;
             const output = new ViolationFormatter(violations, options.format).output;
             if (output) {
                 console.log(output);
@@ -44,4 +53,16 @@ function parseFormat(value: string): OutputFormat {
     }
 
     throw new InvalidArgumentError('Expected text or json.');
+}
+
+function parseEnabledLanguages(value: string): EnabledLanguages {
+    const languages = value.split(',')
+        .map(language => language.trim())
+        .filter(language => language.length > 0);
+
+    if (languages.length === 0) {
+        throw new InvalidArgumentError('Expected at least one language identifier.');
+    }
+
+    return languages;
 }

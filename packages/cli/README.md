@@ -56,6 +56,12 @@ Check a source folder:
 clean-arch check ./src
 ```
 
+Check a source folder with explicit languages:
+
+```bash
+clean-arch check ./src --enabled-languages csharp,typescript
+```
+
 Check another project:
 
 ```bash
@@ -89,6 +95,7 @@ clean-arch check . --format json
 | `<path>`                   | Project, source folder, or file to analyze | Yes       | -       |
 | `--config <path>`          | Path to a JSON configuration file          | No        | -       |
 | `--source-folder <folder>` | Source folder relative to the project root | No        | `src`   |
+| `--enabled-languages <languages>` | Comma-separated language identifiers to analyze | No | `javascript,typescript` |
 | `--format <format>`        | Output format: `text` or `json`            | No        | `text`  |
 
 ## Exit codes
@@ -136,6 +143,12 @@ Example configuration:
 clean-arch check . --source-folder code
 ```
 
+`--enabled-languages` can be used to override the configured `enabledLanguages` from the command line:
+
+```bash
+clean-arch check . --enabled-languages csharp,typescript
+```
+
 ## Supported languages
 
 JavaScript and TypeScript are enabled by default.
@@ -162,6 +175,12 @@ Additional supported languages can be enabled through `enabledLanguages`:
     "scala"
   ]
 }
+```
+
+They can also be enabled directly from the command line:
+
+```bash
+clean-arch check . --enabled-languages csharp,dart,go
 ```
 
 ## CI usage

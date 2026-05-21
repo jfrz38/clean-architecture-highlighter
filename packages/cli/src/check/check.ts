@@ -5,9 +5,9 @@ import {
     SourceFile,
     SupportedLanguageRegistry
 } from '@jfrz38/clean-architecture-highlighter-core';
+import { CliDocument } from '../adapter/cli-document';
 import { CheckInput } from './check-input';
-import { CliDocument } from './document';
-import { CliViolation } from './violation';
+import { CliViolation } from './cli-violation';
 
 export class Check {
 
