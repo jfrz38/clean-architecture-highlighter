@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { suite, test } from 'mocha';
 import { Check } from '../src/check';
+import { CheckInput } from '../src/check-input';
 import { ViolationFormatter } from '../src/format';
 
 suite('CLI check', () => {
@@ -14,7 +15,7 @@ suite('CLI check', () => {
         });
 
         try {
-            const violations = new Check({ path: projectPath }).violations;
+            const violations = new Check(new CheckInput({ path: projectPath })).violations;
 
             assert.strictEqual(violations.length, 1);
             assert.strictEqual(violations[0].filePath, 'src/application/use-case.ts');
@@ -33,7 +34,7 @@ suite('CLI check', () => {
         });
 
         try {
-            const violations = new Check({ path: projectPath }).violations;
+            const violations = new Check(new CheckInput({ path: projectPath })).violations;
 
             assert.deepStrictEqual(violations, []);
         } finally {
@@ -48,7 +49,7 @@ suite('CLI check', () => {
         });
 
         try {
-            const violations = new Check({ path: join(projectPath, 'src') }).violations;
+            const violations = new Check(new CheckInput({ path: join(projectPath, 'src') })).violations;
 
             assert.strictEqual(violations.length, 1);
             assert.strictEqual(violations[0].filePath, 'application/use-case.ts');

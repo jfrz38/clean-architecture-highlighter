@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { suite, test } from 'mocha';
 import { Check } from '../src/check';
+import { CheckInput } from '../src/check-input';
 
 suite('CLI language smoke tests', () => {
     const languagesRoot = resolve(__dirname, '../../../vscode-extension/test/workspace/languages');
@@ -11,10 +12,10 @@ suite('CLI language smoke tests', () => {
     for (const language of supportedLanguages()) {
         test(`${language} violations are analyzed when enabled`, () => {
             const violations = withConfig({ enabledLanguages: [language] }, configPath =>
-                new Check({
+                new Check(new CheckInput({
                     path: join(languagesRoot, language),
                     configPath
-                }).violations
+                })).violations
             );
 
             assert.ok(violations.length > 0, `Expected ${language} fixture to report violations.`);
@@ -22,10 +23,10 @@ suite('CLI language smoke tests', () => {
 
         test(`${language} violations are ignored when disabled`, () => {
             const violations = withConfig({ enabledLanguages: [otherLanguageThan(language)] }, configPath =>
-                new Check({
+                new Check(new CheckInput({
                     path: join(languagesRoot, language),
                     configPath
-                }).violations
+                })).violations
             );
 
             assert.deepStrictEqual(violations, []);

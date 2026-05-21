@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command, InvalidArgumentError } from 'commander';
 import { Check } from './check';
+import { CheckInput } from './check-input';
 import { OutputFormat, ViolationFormatter } from './format';
 
 const program = new Command();
@@ -19,11 +20,11 @@ program
     .option('--format <format>', 'Output format: text or json.', parseFormat, 'text')
     .action((path: string, options: { sourceFolder?: string; config?: string; format: OutputFormat }) => {
         try {
-            const violations = new Check({
+            const violations = new Check(new CheckInput({
                 path,
                 sourceFolder: options.sourceFolder,
                 configPath: options.config
-            }).violations;
+            })).violations;
             const output = new ViolationFormatter(violations, options.format).output;
             if (output) {
                 console.log(output);
