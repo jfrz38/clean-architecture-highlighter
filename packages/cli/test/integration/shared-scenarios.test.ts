@@ -7,24 +7,9 @@ import { Check } from '../../src/check/check';
 import { CheckInput } from '../../src/check/check-input';
 import { CheckInputOptions } from '../../src/check/check-input-options';
 
-type Scenario = {
-    name: string;
-    file: string;
-    diagnostics: Diagnostic[];
-};
+import type { Scenario, Suite } from '../../../../test/scenarios/out/types';
 
-type Diagnostic = {
-    message: string;
-    startLine: number;
-};
-
-type SharedSuite = {
-    name: string;
-    configuration: Record<string, unknown>;
-    scenarios: Scenario[];
-};
-
-const { suites } = require('../../../../../test/scenarios/out/scenarios') as { suites: SharedSuite[] };
+const { suites } = require('../../../../../test/scenarios/out/scenarios') as { suites: Suite[] };
 
 suite('Shared integration scenarios', () => {
     suites.forEach(sharedSuite => {
@@ -43,7 +28,7 @@ suite('Shared integration scenarios', () => {
     });
 });
 
-function runScenario(sharedSuite: SharedSuite, sharedScenario: Scenario) {
+function runScenario(sharedSuite: Suite, sharedScenario: Scenario) {
     const project = projectFrom(sharedScenario.file);
     const configPath = writeConfigFile(sharedSuite.configuration);
 

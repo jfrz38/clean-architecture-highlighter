@@ -2,25 +2,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { DefaultConfiguration } from '@jfrz38/clean-architecture-highlighter-core';
-
-type Scenario = {
-	name: string;
-	file: string;
-	diagnostics: Diagnostic[];
-};
-
-type Diagnostic = {
-	message: string;
-	severity: 'Warning' | 'Error';
-	startLine: number;
-	endLine: number;
-};
-
-type Suite = {
-	name: string;
-	configuration: any;
-	scenarios: Scenario[];
-};
+import type { Diagnostic, Scenario, Suite } from '../../../test/scenarios/out/types';
 
 const { suites } = require('../../../../test/scenarios/out/scenarios') as { suites: Suite[] };
 

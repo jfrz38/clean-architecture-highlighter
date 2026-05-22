@@ -313,7 +313,7 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run clean:compile && pnpm run bundle",
-    "compile": "tsc -b ./",
+    "compile": "pnpm run compile:scenarios && tsc -b ./",
     "clean:compile": "rimraf out tsconfig.tsbuildinfo && tsc -b ./",
     "bundle": "esbuild ./src/extension.ts --bundle --outfile=out/src/extension.js --external:vscode --format=cjs --platform=node --target=node16 --minify",
     "compile:scenarios": "tsc -p ../../test/scenarios/tsconfig.json",
@@ -321,7 +321,7 @@
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src test",
     "test": "pnpm run tests",
-    "tests": "pnpm run compile:scenarios && pnpm run compile && node out/test/runTest.js",
+    "tests": "pnpm run compile && node out/test/runTest.js",
     "clean:tests": "rimraf out && pnpm run tests",
     "package": "pnpm exec vsce package --no-dependencies"
   },

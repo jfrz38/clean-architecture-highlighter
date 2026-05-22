@@ -20,14 +20,14 @@
     "access": "public"
   },
   "scripts": {
-    "compile": "tsc -b ./",
+    "compile": "pnpm run compile:scenarios && tsc -b ./",
     "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && tsc -b ./",
     "compile:scenarios": "tsc -p ../../test/scenarios/tsconfig.json",
     "bundle": "esbuild ./src/index.ts --bundle --outfile=dist/index.js --format=cjs --platform=node --target=node20",
     "package": "pnpm run clean:compile && pnpm run bundle",
     "prepublishOnly": "pnpm run package",
     "lint": "eslint src test",
-    "test": "pnpm run compile:scenarios && pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
+    "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
     "check": "node out/src/index.js check",
     "clean:tests": "rimraf out && pnpm run test"
   },
