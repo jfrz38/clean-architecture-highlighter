@@ -1,9 +1,11 @@
 #!/usr/bin/env node
-import { Command, InvalidArgumentError } from 'commander';
+import { Command } from 'commander';
 import { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
 import { Check } from './check/check';
 import { CheckInput } from './check/check-input';
 import { CheckInputOptions } from './check/check-input-options';
+import { CliEnabledLanguages } from './command/cli-enabled-languages';
+import { CliOutputFormat } from './command/cli-output-format';
 import { OutputFormat, ViolationFormatter } from './output/violation-formatter';
 
 const program = new Command();
@@ -18,9 +20,9 @@ program
     .description('Check a project or source folder.')
     .argument('<path>', 'Project path or source folder path to analyze.')
     .option('--source-folder <folder>', 'Source folder relative to the project root.')
-    .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', parseEnabledLanguages)
+    .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', CliEnabledLanguages.parse)
     .option('--config <path>', 'Path to a JSON configuration file.')
-    .option('--format <format>', 'Output format: text or json.', parseFormat, 'text')
+    .option('--format <format>', 'Output format: text or json.', CliOutputFormat.parse, 'text')
     .action((path: string, options: {
         sourceFolder?: string;
         enabledLanguages?: EnabledLanguages;
@@ -46,23 +48,3 @@ program
     });
 
 program.parse();
-
-function parseFormat(value: string): OutputFormat {
-    if (value === 'text' || value === 'json') {
-        return value;
-    }
-
-    throw new InvalidArgumentError('Expected text or json.');
-}
-
-function parseEnabledLanguages(value: string): EnabledLanguages {
-    const languages = value.split(',')
-        .map(language => language.trim())
-        .filter(language => language.length > 0);
-
-    if (languages.length === 0) {
-        throw new InvalidArgumentError('Expected at least one language identifier.');
-    }
-
-    return languages;
-}
