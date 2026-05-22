@@ -5,6 +5,7 @@ help: ## show make targets
 PNPM ?= pnpm
 
 CORE_PACKAGE := @jfrz38/clean-architecture-highlighter-core
+CLI_PACKAGE := @jfrz38/clean-architecture-highlighter-cli
 VSCODE_EXTENSION_PACKAGE := clean-architecture-highlighter
 
 .PHONY: install ci-install build compile test clean-test lint package package-vscode-extension dev
@@ -43,6 +44,18 @@ test-core: ## test the core package
 	$(PNPM) --filter "$(CORE_PACKAGE)" test
 
 validate-core: ci-install build-core test-core ## install, build, and test core
+
+.PHONY: build-cli test-cli package-cli validate-cli
+build-cli: ## build the CLI package and its dependencies
+	$(PNPM) --filter "$(CLI_PACKAGE)..." run clean:compile
+
+test-cli: ## test the CLI package
+	$(PNPM) --filter "$(CLI_PACKAGE)" test
+
+package-cli: ## bundle the CLI package for publishing
+	$(PNPM) --filter "$(CLI_PACKAGE)" run package
+
+validate-cli: ci-install build-cli test-cli ## install, build, and test CLI
 
 .PHONY: build-vscode-extension test-vscode-extension validate-vscode-extension
 build-vscode-extension: ## build the VS Code extension package and its dependencies

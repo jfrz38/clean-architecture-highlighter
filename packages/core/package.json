@@ -22,5 +22,8 @@
     "lint": "eslint src test",
     "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
     "clean:tests": "rimraf out && pnpm run test"
+  },
+  "devDependencies": {
+    "@types/node": "25.x"
   }
 }

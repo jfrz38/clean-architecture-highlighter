@@ -1,0 +1,75 @@
+name: Publish CLI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Verify workflow runs from main
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Publish CLI must be run from main. Current ref is $GITHUB_REF" >&2
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: version-check
+        name: Check version is not already published
+        uses: jfrz38/check-version-change@v1
+        with:
+          file-path: packages/cli/package.json
+          package-name: "@jfrz38/clean-architecture-highlighter-cli"
+          compare-source: registry
+          registry: npm
+
+      - name: Verify version can be published
+        run: |
+          if [ "${{ steps.version-check.outputs.changed }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is already published to npm" >&2
+            exit 1
+          fi
+
+          if [ -n "${{ steps.version-check.outputs.compared-version }}" ] && [ "${{ steps.version-check.outputs.is-higher }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is not higher than published version ${{ steps.version-check.outputs.compared-version }}" >&2
+            exit 1
+          fi
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.3
+        with:
+          version: 11.1.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: make ci-install
+
+      - name: Build CLI
+        run: make build-cli
+
+      - name: Test CLI
+        run: make test-cli
+
+      - name: Package CLI
+        run: make package-cli
+
+      - name: Publish CLI to npm
+        working-directory: packages/cli
+        run: npm publish --access public
