@@ -131,6 +131,8 @@ dist
 **/.vscode-test
 *.vsix
 .vscode
+!test/fixtures/.vscode/
+!test/fixtures/.vscode/settings.json
 
 # yarn v3
 .pnp.*
