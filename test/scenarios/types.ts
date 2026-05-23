@@ -1,5 +1,3 @@
-import { ConfigurationOptions } from "@jfrz38/clean-architecture-highlighter-core";
-
 export type Scenario = {
     name: string,
     file: string,
@@ -16,10 +14,6 @@ export type Diagnostic = {
 
 export type Suite = {
     name: string,
-    configuration: DeepPartial<ConfigurationOptions>,
+    configuration: Record<string, unknown>,
     scenarios: Scenario[]
 }
-
-type DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> | null : T[P] | null;
-};

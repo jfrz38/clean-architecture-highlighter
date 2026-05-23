@@ -7,7 +7,7 @@ async function main() {
 
         const extensionDevelopmentPath = path.resolve(__dirname, '../..');
         const extensionTestsPath = path.resolve(__dirname);
-        const testWorkspace = path.resolve(extensionDevelopmentPath, 'test/workspace');
+        const testWorkspace = path.resolve(extensionDevelopmentPath, '../../test/fixtures');
 
         await runTests({
             extensionDevelopmentPath,

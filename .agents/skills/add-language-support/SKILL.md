@@ -116,7 +116,7 @@ Do not rely only on integration tests for parser behavior. If the test runner do
 Create fixtures under:
 
 ```text
-packages/vscode-extension/test/workspace/languages/<languageId>/
+test/fixtures/languages/<languageId>/
 ```
 
 Use the minimal structure needed for the language and its tooling.
@@ -124,7 +124,7 @@ Use the minimal structure needed for the language and its tooling.
 Preferred shape when the existing path-based layer matcher can be used:
 
 ```text
-packages/vscode-extension/test/workspace/languages/<languageId>/src/
+test/fixtures/languages/<languageId>/src/
   domain/
     domain.<ext>
     other-domain-or-equivalent.<ext>
@@ -155,7 +155,7 @@ This keeps the architecture rule engine unchanged.
 Create:
 
 ```text
-packages/vscode-extension/test/suites/languages/<language>.suite.ts
+test/scenarios/languages/<language>.suite.ts
 ```
 
 Add enabled/disabled scenarios and, when practical, fuller architecture scenarios equivalent to the TypeScript reference suite.
@@ -182,7 +182,7 @@ Prefer also covering:
 Register the suite in:
 
 ```text
-packages/vscode-extension/test/suites/scenarios.ts
+test/scenarios/scenarios.ts
 ```
 
 ### 7. Update documentation
@@ -195,7 +195,7 @@ Update `README.md`:
 - list the supported static import/dependency syntax at a high level;
 - keep default configuration examples unchanged unless defaults actually changed.
 
-For local manual testing, ensure `packages/vscode-extension/test/workspace/.vscode/settings.json` includes the opt-in language if such a workspace settings file is present:
+For local manual testing, ensure `test/fixtures/.vscode/settings.json` includes the opt-in language if such a workspace settings file is present:
 
 ```json
 {
@@ -210,13 +210,13 @@ For local manual testing, ensure `packages/vscode-extension/test/workspace/.vsco
 If useful, update:
 
 ```text
-packages/vscode-extension/test/workspace/readme.md
+test/fixtures/README.md
 ```
 
 Keep the convention:
 
 - `architecture/` = language-agnostic architecture rule coverage;
-- `languages/` = language-specific VS Code integration fixtures and scenarios.
+- `languages/` = language-specific integration fixtures and scenarios.
 
 ## Verification
 
@@ -249,7 +249,7 @@ If `make test-vscode-extension` fails before executing tests because the VS Code
 - [ ] `package.json` `contributes.languages` includes the language id, aliases, and extensions.
 - [ ] Default `enabledLanguages` unchanged unless explicitly requested.
 - [ ] Extractor unit tests added for language syntax.
-- [ ] Minimal `packages/vscode-extension/test/workspace/languages/<languageId>/` fixtures added.
+- [ ] Minimal `test/fixtures/languages/<languageId>/` fixtures added.
 - [ ] Enabled/disabled integration scenarios added.
 - [ ] Full architecture-style integration scenarios added or intentionally deferred with an issue/note.
 - [ ] README updated.

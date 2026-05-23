@@ -2,11 +2,12 @@ import * as assert from 'assert';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { DefaultConfiguration } from '@jfrz38/clean-architecture-highlighter-core';
-import { suites } from './suites/scenarios';
-import { Diagnostic, Scenario, Suite } from './suites/types';
+import type { Diagnostic, Scenario, Suite } from '../../../test/scenarios/out/types';
+
+const { suites } = require('../../../../test/scenarios/out/scenarios') as { suites: Suite[] };
 
 suite('Extension Test Suite', () => {
-	const currentWorkspace = 'workspace';
+	const currentWorkspace = 'fixtures';
 
 	suites.forEach(async (_suite: Suite) => {
 		suite(_suite.name, () => {

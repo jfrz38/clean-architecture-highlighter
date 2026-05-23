@@ -20,8 +20,9 @@
     "access": "public"
   },
   "scripts": {
-    "compile": "tsc -b ./",
-    "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && tsc -b ./",
+    "compile": "pnpm run compile:scenarios && tsc -b ./",
+    "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && pnpm run compile:scenarios && tsc -b ./",
+    "compile:scenarios": "tsc -p ../../test/scenarios/tsconfig.json",
     "bundle": "esbuild ./src/index.ts --bundle --outfile=dist/index.js --format=cjs --platform=node --target=node20",
     "package": "pnpm run clean:compile && pnpm run bundle",
     "prepublishOnly": "pnpm run package",
