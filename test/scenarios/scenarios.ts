@@ -1,38 +1,5 @@
-import { customConfigSuite } from "./custom-configuration/custom-configuration";
-import { defaultConfigSuite } from "./default-configuration/default-config.suite";
-import { csharpLanguageSuites } from "./languages/csharp.suite";
-import { dartLanguageSuites } from "./languages/dart.suite";
-import { elixirLanguageSuites } from "./languages/elixir.suite";
-import { goLanguageSuites } from "./languages/go.suite";
-import { groovyLanguageSuites } from "./languages/groovy.suite";
-import { javaLanguageSuites } from "./languages/java.suite";
-import { javascriptLanguageSuites } from "./languages/javascript.suite";
-import { kotlinLanguageSuites } from "./languages/kotlin.suite";
-import { luaLanguageSuites } from "./languages/lua.suite";
-import { phpLanguageSuites } from "./languages/php.suite";
-import { pythonLanguageSuites } from "./languages/python.suite";
-import { rubyLanguageSuites } from "./languages/ruby.suite";
-import { rustLanguageSuites } from "./languages/rust.suite";
-import { scalaLanguageSuites } from "./languages/scala.suite";
-import { typescriptLanguageSuites } from "./languages/typescript.suite";
 import { Suite } from "./types";
+import { getSelectedSuites } from "./scenario-selection";
 
-export const suites: Suite[] = [
-    defaultConfigSuite,
-    ...customConfigSuite,
-    ...csharpLanguageSuites,
-    ...dartLanguageSuites,
-    ...elixirLanguageSuites,
-    ...goLanguageSuites,
-    ...groovyLanguageSuites,
-    ...javaLanguageSuites,
-    ...javascriptLanguageSuites,
-    ...kotlinLanguageSuites,
-    ...luaLanguageSuites,
-    ...phpLanguageSuites,
-    ...pythonLanguageSuites,
-    ...rubyLanguageSuites,
-    ...rustLanguageSuites,
-    ...scalaLanguageSuites,
-    ...typescriptLanguageSuites
-];
+export const suites: Suite[] = getSelectedSuites();
+export const fullSuites: Suite[] = getSelectedSuites("full");
