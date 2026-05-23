@@ -37,3 +37,6 @@ jobs:
 
       - name: Validate VS Code extension
         run: xvfb-run -a make validate-vscode-extension
+
+      - name: Run CLI shared integration matrix
+        run: make test-cli TEST_LANGUAGE=all
