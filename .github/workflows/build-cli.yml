@@ -9,6 +9,7 @@ on:
     paths:
       - "packages/cli/**"
       - "packages/core/**"
+      - "test/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
@@ -37,3 +38,6 @@ jobs:
 
       - name: Validate CLI
         run: make validate-cli
+
+      - name: Run CLI shared integration matrix
+        run: make test-cli TEST_LANGUAGE=all

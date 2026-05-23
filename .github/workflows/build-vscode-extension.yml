@@ -9,6 +9,7 @@ on:
     paths:
       - "packages/vscode-extension/**"
       - "packages/core/**"
+      - "test/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
@@ -35,4 +36,4 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Validate VS Code extension
-        run: xvfb-run -a make validate-vscode-extension
+        run: xvfb-run -a make validate-vscode-extension TEST_LANGUAGE=all
