@@ -314,7 +314,7 @@
   "scripts": {
     "vscode:prepublish": "pnpm run clean:compile && pnpm run bundle",
     "compile": "pnpm run compile:scenarios && tsc -b ./",
-    "clean:compile": "rimraf out tsconfig.tsbuildinfo && tsc -b ./",
+    "clean:compile": "rimraf out tsconfig.tsbuildinfo && pnpm run compile:scenarios && tsc -b ./",
     "bundle": "esbuild ./src/extension.ts --bundle --outfile=out/src/extension.js --external:vscode --format=cjs --platform=node --target=node16 --minify",
     "compile:scenarios": "tsc -p ../../test/scenarios/tsconfig.json",
     "watch": "tsc -watch -p ./",
