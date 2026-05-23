@@ -36,4 +36,4 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Validate VS Code extension
-        run: xvfb-run -a make test-vscode-extension TEST_LANGUAGE=all
+        run: xvfb-run -a make validate-vscode-extension TEST_LANGUAGE=all

@@ -37,4 +37,4 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Validate CLI
-        run: make test-cli TEST_LANGUAGE=all
+        run: make validate-cli TEST_LANGUAGE=all
