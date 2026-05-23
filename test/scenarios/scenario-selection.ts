@@ -38,19 +38,24 @@ function referenceSuites(): Suite[] {
 }
 
 function selectedLanguageCases(): LanguageScenarioCase[] {
-    const selectedLanguage = selectedEnvironmentValue("TEST_LANGUAGE", DEFAULT_LANGUAGE);
+    const selectedLanguages = selectedEnvironmentValue("TEST_LANGUAGE", DEFAULT_LANGUAGE)
+        .split(",")
+        .map(language => language.trim())
+        .filter(Boolean);
 
-    if (selectedLanguage === ALL_LANGUAGES) {
+    if (selectedLanguages.includes(ALL_LANGUAGES)) {
         return languageCases;
     }
 
-    const languageCase = languageCases.find(candidate => candidate.language === selectedLanguage);
+    const unknownLanguages = selectedLanguages.filter(language =>
+        !languageCases.some(candidate => candidate.language === language)
+    );
 
-    if (languageCase) {
-        return [languageCase];
+    if (unknownLanguages.length > 0) {
+        throw new Error(`Unsupported TEST_LANGUAGE value "${unknownLanguages.join(", ")}". Use "all", one language, or a comma-separated list of: ${supportedLanguages.join(", ")}.`);
     }
 
-    throw new Error(`Unsupported TEST_LANGUAGE "${selectedLanguage}". Use one of: ${[ALL_LANGUAGES, ...supportedLanguages].join(", ")}.`);
+    return languageCases.filter(languageCase => selectedLanguages.includes(languageCase.language));
 }
 
 function selectedScenarioSet(): string {
