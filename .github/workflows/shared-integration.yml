@@ -1,0 +1,61 @@
+name: Shared Integration
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  cli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: make ci-install
+
+      - name: Run CLI shared integration matrix
+        run: make test-cli TEST_LANGUAGE=all
+
+  vscode-extension:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language-group:
+          - javascript,typescript
+          - java,kotlin,scala,groovy
+          - python,ruby,php
+          - go,rust,csharp
+          - dart,elixir,lua
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: make ci-install
+
+      - name: Run VS Code shared integration matrix
+        run: xvfb-run -a make test-vscode-extension TEST_LANGUAGE=${{ matrix.language-group }}

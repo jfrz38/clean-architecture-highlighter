@@ -9,6 +9,7 @@ on:
     paths:
       - "packages/cli/**"
       - "packages/core/**"
+      - "test/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
@@ -36,4 +37,4 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Validate CLI
-        run: make validate-cli
+        run: make validate-cli TEST_LANGUAGE=all

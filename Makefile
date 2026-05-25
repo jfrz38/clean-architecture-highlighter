@@ -4,11 +4,14 @@ help: ## show make targets
 
 PNPM ?= pnpm
 
+export TEST_LANGUAGE
+export TEST_SCENARIO_SET
+
 CORE_PACKAGE := @jfrz38/clean-architecture-highlighter-core
 CLI_PACKAGE := @jfrz38/clean-architecture-highlighter-cli
 VSCODE_EXTENSION_PACKAGE := clean-architecture-highlighter
 
-.PHONY: install ci-install build compile test clean-test lint package package-vscode-extension dev
+.PHONY: install ci-install build compile test clean-test lint package package-vscode-extension test-integration test-integration-full validate-release dev
 
 install: ## install project dependencies from the lockfile
 	$(PNPM) install
@@ -24,6 +27,13 @@ compile: ## compile all workspace packages without cleaning generated output fir
 
 test: ## run the full test suite
 	$(PNPM) test
+
+test-integration: test-cli test-vscode-extension ## run shared CLI and VS Code integration scenarios
+
+test-integration-full: ## run the full shared integration matrix
+	$(MAKE) test-integration TEST_SCENARIO_SET=full TEST_LANGUAGE=all
+
+validate-release: ci-install build package-cli package-vscode-extension test-integration-full ## build, package, and run release validation
 
 clean-test: ## clean generated output and run the full test suite
 	$(PNPM) run clean:tests

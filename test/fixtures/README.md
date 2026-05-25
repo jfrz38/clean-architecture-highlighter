@@ -12,10 +12,18 @@ Predefined workspace containing representative scenarios to validate adapter beh
 Fixtures are grouped by test intent:
 
 - `architecture/typescript/`: full integration coverage for the language-agnostic architecture rules.
-- `languages/<language>/`: minimal end-to-end fixtures that verify a supported language is analyzed when enabled and ignored when disabled.
+- `languages/<language>/`: representative language matrix fixtures that verify the main architecture rules, source folder filtering, nested layer detection, and disabled-language behavior for each supported language.
 
 Language syntax variations belong in extractor tests under the relevant package test suite, not in duplicated architecture scenarios for every language.
 
 Reusable scenario definitions live in `test/scenarios`. Adapter-specific test runners load those scenarios and translate their expectations into adapter assertions.
+
+Scenario selection is controlled by environment variables:
+
+- `TEST_LANGUAGE` defaults to `typescript`.
+- `TEST_LANGUAGE=all` runs every supported language matrix.
+- `TEST_LANGUAGE=<language>` runs one language matrix.
+- `TEST_SCENARIO_SET` defaults to `fast`.
+- `TEST_SCENARIO_SET=full` includes the optional full matrix suites.
 
 Integration test jobs should check out the full repository. If a CI workflow uses sparse checkout, include `test/fixtures` along with the adapter package and its workspace dependencies.

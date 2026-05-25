@@ -120,6 +120,16 @@ suite('Extension Test Suite', () => {
 			return severityMatches && messageMatches && startMatch && endMatch;
 		});
 
-		assert.ok(found, `Not existing diagnostic with message "${message}", severity "${severity}" in lines ${startLine}-${endLine}`);
+		const actualDiagnostics = existingDiagnostics.map(diag => ({
+			message: diag.message,
+			severity: vscode.DiagnosticSeverity[diag.severity],
+			startLine: diag.range.start.line,
+			endLine: diag.range.end.line
+		}));
+
+		assert.ok(
+			found,
+			`Not existing diagnostic with message "${message}", severity "${severity}" in lines ${startLine}-${endLine}. Actual diagnostics: ${JSON.stringify(actualDiagnostics)}`
+		);
 	}
 });
