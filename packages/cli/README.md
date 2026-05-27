@@ -100,10 +100,10 @@ clean-arch check . --format json
 
 ## Exit codes
 
-| Code | Meaning |
-| ---- | ------- |
-| `0`  | No violations found |
-| `1`  | Violations found |
+| Code | Meaning                                |
+| ---- | -------------------------------------- |
+| `0`  | No violations found                    |
+| `1`  | Violations found                       |
 | `2`  | Usage, configuration, or runtime error |
 
 ## Configuration

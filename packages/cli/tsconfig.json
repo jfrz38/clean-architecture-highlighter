@@ -4,6 +4,7 @@
     "moduleResolution": "Node16",
     "outDir": "out",
     "rootDir": ".",
+    "resolveJsonModule": true,
     "types": [
       "node",
       "mocha"

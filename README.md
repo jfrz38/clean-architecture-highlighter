@@ -27,6 +27,23 @@ infrastructure → application → domain
 
 If a file imports something from a forbidden layer, the extension shows a **VS Code warning/error**.
 
+## Command-line usage
+
+The CLI can be installed globally from npm and used in local projects or CI pipelines:
+
+```bash
+pnpm add -g @jfrz38/clean-architecture-highlighter-cli
+clean-arch check .
+```
+
+The package also exposes the long binary name:
+
+```bash
+clean-architecture-highlighter check .
+```
+
+See the [CLI README](packages/cli/README.md) for all options and configuration details.
+
 ## Extension Settings
 
 The extension can be customized via workspace or user settings.

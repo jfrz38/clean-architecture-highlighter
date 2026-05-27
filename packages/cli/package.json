@@ -1,6 +1,8 @@
 {
   "name": "@jfrz38/clean-architecture-highlighter-cli",
   "version": "0.1.0",
+  "description": "Command-line checker for Clean Architecture dependency boundaries.",
+  "author": "José F. Ruiz <jrz899@inlumine.ual.es>",
   "license": "Apache-2.0",
   "type": "commonjs",
   "engines": {
@@ -14,8 +16,25 @@
   },
   "files": [
     "dist",
+    "README.md",
     "out/src/**/*.d.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jfrz38/clean-architecture-highlighter.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/cli#readme",
+  "keywords": [
+    "clean-architecture",
+    "architecture",
+    "dependency-rule",
+    "static-analysis",
+    "cli",
+    "typescript",
+    "javascript"
+  ],
+  "packageManager": "pnpm@11.1.3",
   "publishConfig": {
     "access": "public"
   },

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
+import packageJson from '../package.json';
 import { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
 import { Check } from './check/check';
 import { CheckInput } from './check/check-input';
@@ -13,7 +14,7 @@ const program = new Command();
 program
     .name('clean-architecture-highlighter')
     .description('Check Clean Architecture dependency boundaries from the terminal.')
-    .version('0.1.0');
+    .version(packageJson.version);
 
 program
     .command('check')
