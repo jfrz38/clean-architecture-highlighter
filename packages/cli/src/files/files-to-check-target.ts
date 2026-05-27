@@ -1,5 +1,5 @@
 import { statSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 
 export class FilesToCheckTarget {
 
@@ -18,7 +18,11 @@ export class FilesToCheckTarget {
             // The input path can already be the source folder.
         }
 
-        return new FilesToCheckTarget(dirname(targetPath), targetPath, targetPath);
+        if (basename(targetPath) === sourceFolder) {
+            return new FilesToCheckTarget(dirname(targetPath), targetPath, targetPath);
+        }
+
+        throw new Error(`Source folder '${sourceFolder}' was not found under '${targetPath}'. Use --source-folder or pass the source folder path directly.`);
     }
 
     private constructor(
