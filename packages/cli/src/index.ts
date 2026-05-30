@@ -36,7 +36,7 @@ program
 Examples:
   $ clean-arch check .
   $ clean-arch check ./src --enabled-languages typescript,csharp
-  $ clean-architecture-highlighter check . --format json`)
+  $ clean-arch check . --format json`)
     .action((path: string, options: {
         sourceFolder?: string;
         enabledLanguages?: EnabledLanguages;

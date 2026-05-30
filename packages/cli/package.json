@@ -32,7 +32,10 @@
     "static-analysis",
     "cli",
     "typescript",
-    "javascript"
+    "javascript",
+    "dependency-analysis",
+    "architecture-rules",
+    "code-quality"
   ],
   "packageManager": "pnpm@11.1.3",
   "publishConfig": {
