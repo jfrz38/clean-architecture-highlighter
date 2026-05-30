@@ -10,7 +10,7 @@ permissions:
 jobs:
   check-version:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     outputs:
       changed: ${{ steps.version-check.outputs.changed }}
       local-version: ${{ steps.version-check.outputs.local-version }}
@@ -52,7 +52,7 @@ jobs:
     needs: check-version
     if: needs.check-version.outputs.changed == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
