@@ -1,7 +1,8 @@
+import { suite, test } from 'mocha';
 import * as assert from 'node:assert';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { suite, test } from 'mocha';
+import { SourceFolderNotFoundError } from '../../src/files/errors/source-folder-not-found-error';
 import { FilesToCheckTarget } from '../../src/files/files-to-check-target';
 
 suite('FilesToCheckTarget', () => {
@@ -50,7 +51,7 @@ suite('FilesToCheckTarget', () => {
 
         assert.throws(
             () => FilesToCheckTarget.fromPath(projectPath, 'src'),
-            /Source folder 'src' was not found/
+            SourceFolderNotFoundError
         );
     });
 });

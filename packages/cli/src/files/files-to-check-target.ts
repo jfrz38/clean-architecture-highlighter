@@ -1,5 +1,6 @@
 import { statSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
+import { SourceFolderNotFoundError } from './errors/source-folder-not-found-error';
 
 export class FilesToCheckTarget {
 
@@ -22,7 +23,7 @@ export class FilesToCheckTarget {
             return new FilesToCheckTarget(dirname(targetPath), targetPath, targetPath);
         }
 
-        throw new Error(`Source folder '${sourceFolder}' was not found under '${targetPath}'. Use --source-folder or pass the source folder path directly.`);
+        throw new SourceFolderNotFoundError(sourceFolder, targetPath);
     }
 
     private constructor(
