@@ -231,8 +231,7 @@
         },
         "clean-architecture-highlighter.sourceFolder": {
           "type": "string",
-          "default": "src",
-          "description": "The source folder relative to the workspace root."
+          "description": "Optional source folder relative to the workspace root. When unset, all supported files in the workspace are analyzed."
         },
         "clean-architecture-highlighter.enabledLanguages": {
           "type": "array",

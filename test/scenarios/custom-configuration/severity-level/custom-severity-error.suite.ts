@@ -90,14 +90,34 @@ export const customSeverityErrorSuite: Suite = {
             diagnostics: []
         },
         {
-            name: 'Other source folder should not fail for application layer',
+            name: 'Other source folder should produce the same violations for application layer',
             file: 'architecture/typescript/newSrc/application/application.ts',
-            diagnostics: []
+            diagnostics: [
+                {
+                    message: 'application layer should not depend on infrastructure layer.',
+                    severity: 'Error',
+                    startLine: 0,
+                    endLine: 0
+                }
+            ]
         },
         {
             file: 'architecture/typescript/newSrc/domain/domain.ts',
-            name: 'Other source folder should not fail for domain layer',
-            diagnostics: []
+            name: 'Other source folder should produce the same violations for domain layer',
+            diagnostics: [
+                {
+                    message: 'domain layer should not depend on infrastructure layer.',
+                    severity: 'Error',
+                    startLine: 0,
+                    endLine: 0
+                },
+                {
+                    message: 'domain layer should not depend on application layer.',
+                    severity: 'Error',
+                    startLine: 1,
+                    endLine: 1
+                }
+            ]
         },
         {
             name: 'Other source folder should not fail for infrastructure layer',

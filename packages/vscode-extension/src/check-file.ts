@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { DependencyExtractorRegistry, LayerAlias, SourceFile } from '@jfrz38/clean-architecture-highlighter-core';
 import { State } from './state';
@@ -38,6 +39,20 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
     }));
 }
 
-function isDocumentInSourceFolder(uri: vscode.Uri, sourceFolder: string): boolean {
-    return uri.path.includes(`/${sourceFolder}/`);
+function isDocumentInSourceFolder(uri: vscode.Uri, sourceFolder: string | undefined): boolean {
+    if (!sourceFolder) {
+        return true;
+    }
+
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+    if (!workspaceFolder) {
+        return false;
+    }
+
+    const relativePath = path.relative(workspaceFolder.uri.fsPath, uri.fsPath).split(path.sep).join('/');
+    const normalizedSourceFolder = sourceFolder.split(path.sep).join('/');
+
+    return relativePath === normalizedSourceFolder
+        || relativePath.startsWith(normalizedSourceFolder + '/')
+        || relativePath.includes('/' + normalizedSourceFolder + '/');
 }

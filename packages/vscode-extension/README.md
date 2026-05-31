@@ -36,7 +36,6 @@ Below is the default configuration, which enforces a standard Clean Architecture
 // settings.json
 {
     "clean-architecture-highlighter.severityLevel": "warning",
-    "clean-architecture-highlighter.sourceFolder": "src",
     "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
     
     "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
@@ -53,7 +52,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | Setting                              | Type     | Default   | Possible values                           | Description                                                                                                    |
 | ------------------------------------ | -------- | --------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
-| `sourceFolder`                       | string   | `src`     | any folder name                           | Root folder where the source code is analyzed. Only files below this folder (and subfolders) will be analyzed. |
+| `sourceFolder`                       | string   | —         | any folder name                           | Optional root folder where the source code is analyzed. Only files under this folder (and subfolders) are analyzed. When unset, all supported files in the workspace are analyzed. |
 | `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
