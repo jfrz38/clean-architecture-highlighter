@@ -8,7 +8,7 @@
 
 Command-line checker for [Clean Architecture Highlighter](https://github.com/jfrz38/clean-architecture-highlighter).
 
-It statically analyzes source imports and reports dependency violations between Clean Architecture layers. It uses the same core rules as the VS Code extension, but is designed for terminal usage, scripts, and CI pipelines.
+It statically analyzes source imports and reports dependency violations between Clean Architecture layers. This package is the CLI adapter for the shared analysis engine in [`packages/core`](https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/core), so it uses the same rules as the VS Code extension while being designed for terminal usage, scripts, and CI pipelines.
 
 ## Core idea
 
@@ -197,6 +197,10 @@ They can also be enabled directly from the command line:
 clean-arch check . --enabled-languages csharp,dart,go
 ```
 
+## Known Limitations
+
+For the current analysis limitations, see the [core Known Limitations](https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/core#known-limitations).
+
 ## CI usage
 
 The CLI is designed to fail the pipeline when architecture violations are found:
@@ -209,6 +213,6 @@ For GitHub Actions, a dedicated action wrapper is planned. Until then, the CLI c
 
 ## Relationship with the VS Code extension
 
-The VS Code extension provides real-time diagnostics while editing.
+The [VS Code extension](https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/vscode-extension) provides real-time diagnostics while editing.
 
 This CLI provides the same kind of architecture validation from the terminal, making it suitable for CI checks, local scripts, and repositories where editor integration is not enough.

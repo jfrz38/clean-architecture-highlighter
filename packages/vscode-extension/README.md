@@ -5,11 +5,13 @@
 [![Downloads](https://vsmarketplacebadges.dev/downloads-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
 [![Rating](https://vsmarketplacebadges.dev/rating-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter&ssr=false#review-details)
 [![Build](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-vscode-extension.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-vscode-extension.yml)
-[![License](https://img.shields.io/github/license/jfrz38/clean-architecture-highlighter)](LICENSE)
+[![License](https://img.shields.io/github/license/jfrz38/clean-architecture-highlighter)](https://github.com/jfrz38/clean-architecture-highlighter/blob/main/LICENSE)
 
-VS Code extension to **enforce Clean Architecture rules** in Node.js projects by **statically analyzing imports**.
+VS Code extension to **enforce Clean Architecture rules** by **statically analyzing imports** and reporting dependency violations as editor diagnostics.
 
-![Demo](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/demo.gif)
+This package is the VS Code adapter for the shared analysis engine in [`packages/core`](https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/core). The same rules are also available from the [CLI](https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/cli).
+
+![Demo](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/demo_extension.gif)
 
 ## Features
 
@@ -25,7 +27,7 @@ Checks that dependencies between layers follow the configured architecture, by d
 infrastructure → application → domain
 ```
 
-If a file imports something from a forbidden layer, the extension shows a **VS Code warning/error**.
+If a file imports something from a forbidden layer, the extension shows a **VS Code diagnostic** using the configured severity.
 
 ## Extension Settings
 
@@ -92,29 +94,14 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 ## Requirements
 
-This extension analyzes JavaScript and TypeScript by default. C#, Dart, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
+This extension analyzes JavaScript and TypeScript by default. Additional languages listed in the Supported Languages section can be enabled through `enabledLanguages`.
 
 - **Folder Structure**: It assumes a layered architecture. Use `sourceFolder` to restrict analysis to a specific folder; when unset, all supported files in the workspace are analyzed.
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations
 
-- **Import Syntax Only**: The extension analyzes the static dependency forms listed in the Supported Languages table. Unsupported forms are ignored:
-  - JavaScript/TypeScript: CommonJS `require()` and dynamic imports are not supported.
-  - C#: project-level MSBuild references and runtime dependency injection are not resolved.
-  - Dart: `pubspec.yaml`, generated part files, and runtime dependency loading are not resolved.
-  - Elixir: macro expansion, behaviours, and runtime application configuration are not resolved.
-  - Go: runtime dependency injection and non-import-based dependencies are not supported.
-  - Groovy: default imports, runtime metaprogramming, and non-import-based dependencies are not supported.
-  - Java: runtime dependency injection and non-import-based dependencies are not supported.
-  - Kotlin: runtime dependency injection and non-import-based dependencies are not supported.
-  - Lua: custom `package.path` loaders and runtime dependency loading are not resolved.
-  - PHP: Composer PSR-4 autoload metadata and runtime dependency loading are not resolved.
-  - Python: dynamic imports and runtime dependency loading are not supported.
-  - Ruby: Rails-style autoloaded constants and runtime dependency loading are not supported.
-  - Rust: Cargo crate metadata and file-system module resolution are not resolved.
-  - Scala: runtime dependency injection and non-import-based dependencies are not supported.
-- **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
+For the current analysis limitations, see the [core Known Limitations](https://github.com/jfrz38/clean-architecture-highlighter/tree/main/packages/core#known-limitations).
 
 ## The Dependency Rule
 
