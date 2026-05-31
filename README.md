@@ -4,7 +4,7 @@
 [![Installs](https://vsmarketplacebadges.dev/installs-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
 [![Downloads](https://vsmarketplacebadges.dev/downloads-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
 [![Rating](https://vsmarketplacebadges.dev/rating-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter&ssr=false#review-details)
-[![Build](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml)
+[![Build](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-vscode-extension.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-vscode-extension.yml)
 [![License](https://img.shields.io/github/license/jfrz38/clean-architecture-highlighter)](LICENSE)
 
 VS Code extension to **enforce Clean Architecture rules** in Node.js projects by **statically analyzing imports**.
@@ -27,6 +27,23 @@ infrastructure → application → domain
 
 If a file imports something from a forbidden layer, the extension shows a **VS Code warning/error**.
 
+## Command-line usage
+
+The CLI can be installed globally from npm and used in local projects or CI pipelines:
+
+```bash
+pnpm add -g @jfrz38/clean-architecture-highlighter-cli
+clean-arch check .
+```
+
+The package also exposes the long binary name:
+
+```bash
+clean-architecture-highlighter check .
+```
+
+See the [CLI README](packages/cli/README.md) for all options and configuration details.
+
 ## Extension Settings
 
 The extension can be customized via workspace or user settings.
@@ -36,7 +53,6 @@ Below is the default configuration, which enforces a standard Clean Architecture
 // settings.json
 {
     "clean-architecture-highlighter.severityLevel": "warning",
-    "clean-architecture-highlighter.sourceFolder": "src",
     "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
     
     "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
@@ -53,7 +69,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | Setting                              | Type     | Default   | Possible values                           | Description                                                                                                    |
 | ------------------------------------ | -------- | --------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
-| `sourceFolder`                       | string   | `src`     | any folder name                           | Root folder where the source code is analyzed. Only files below this folder (and subfolders) will be analyzed. |
+| `sourceFolder`                       | string   | —         | any folder name                           | Optional root folder where the source code is analyzed. Only files under this folder and subfolders are analyzed. When unset, all supported files in the workspace are analyzed. |
 | `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
@@ -95,7 +111,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 This extension analyzes JavaScript and TypeScript by default. C#, Dart, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
 
-- **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
+- **Folder Structure**: It assumes a layered architecture. Use `sourceFolder` to restrict analysis to a specific folder; when unset, all supported files in the workspace are analyzed.
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations

@@ -1,3 +1,0 @@
-local CreateUser = {}
-
-return CreateUser

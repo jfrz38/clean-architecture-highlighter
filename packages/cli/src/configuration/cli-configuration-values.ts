@@ -1,0 +1,31 @@
+import {
+    ConfigurationOptions,
+    EnabledLanguages,
+    Layers,
+    SourceFolderPath
+} from '@jfrz38/clean-architecture-highlighter-core';
+
+export class CliConfigurationValues {
+
+    public static empty(): CliConfigurationValues {
+        return new CliConfigurationValues({});
+    }
+
+    public static fromJson(json: unknown): CliConfigurationValues {
+        return new CliConfigurationValues(json as Partial<ConfigurationOptions>);
+    }
+
+    private constructor(private readonly values: Partial<ConfigurationOptions>) { }
+
+    public get layers(): Partial<Layers> {
+        return this.values.layers ?? {};
+    }
+
+    public get sourceFolder(): SourceFolderPath | undefined {
+        return this.values.sourceFolder;
+    }
+
+    public get enabledLanguages(): EnabledLanguages | undefined {
+        return this.values.enabledLanguages;
+    }
+}

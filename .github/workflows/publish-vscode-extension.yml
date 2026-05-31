@@ -1,0 +1,113 @@
+name: Publish VS Code Extension
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-vscode-extension:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify workflow runs from main
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Publish VS Code Extension must be run from main. Current ref is $GITHUB_REF" >&2
+            exit 1
+          fi
+
+      - name: Resolve latest VS Code extension release
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_PREFIX: vscode-extension-v
+        run: |
+          TAG="$(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName --jq '.[].tagName' | grep "^${TAG_PREFIX}" | head -n 1)"
+          if [ -z "$TAG" ]; then
+            echo "No GitHub release found for VS Code extension prefix $TAG_PREFIX." >&2
+            exit 1
+          fi
+          VERSION="${TAG#${TAG_PREFIX}}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Verify GitHub release exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: gh release view "$TAG" --repo "$GITHUB_REPOSITORY"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.version.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Verify release tag is on main
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git fetch origin main --tags
+          if ! git merge-base --is-ancestor "$TAG" origin/main; then
+            echo "Release tag $TAG is not reachable from main" >&2
+            exit 1
+          fi
+
+      - name: Verify package version matches release
+        env:
+          EXPECTED_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./packages/vscode-extension/package.json').version")"
+          if [ "$PACKAGE_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "Release version $EXPECTED_VERSION does not match package version $PACKAGE_VERSION" >&2
+            exit 1
+          fi
+
+      - id: version-check
+        name: Check version is not already published to VS Code Marketplace
+        uses: jfrz38/check-version-change@v1
+        with:
+          file-path: packages/vscode-extension/package.json
+          compare-source: registry
+          registry: vscode-marketplace
+
+      - name: Verify version can be published
+        run: |
+          if [ "${{ steps.version-check.outputs.changed }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is already published to VS Code Marketplace" >&2
+            exit 1
+          fi
+
+          if [ -n "${{ steps.version-check.outputs.compared-version }}" ] && [ "${{ steps.version-check.outputs.is-higher }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is not higher than published version ${{ steps.version-check.outputs.compared-version }}" >&2
+            exit 1
+          fi
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: make ci-install
+
+      - name: Validate VS Code extension
+        run: xvfb-run -a make validate-vscode-extension
+
+      - name: Build VS Code extension
+        run: make build-vscode-extension
+
+      - name: Package VS Code extension
+        run: make package-vscode-extension
+
+      - name: Publish VS Code extension to Marketplace
+        run: npx @vscode/vsce publish --packagePath packages/vscode-extension/clean-architecture-highlighter-${{ steps.version.outputs.version }}.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VS_CODE_TOKEN }}

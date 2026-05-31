@@ -73,11 +73,14 @@ web_modules/
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
+.tmp-vsix-deploy-test/
 .parcel-cache
 
 # Next.js build output
 .next
 out
+**/out
+*.tsbuildinfo
 
 # Nuxt.js build / generate output
 .nuxt
@@ -125,6 +128,7 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+**/.vscode-test
 *.vsix
 .vscode
 
