@@ -94,9 +94,10 @@ clean-arch check . --format json
 | -------------------------- | ------------------------------------------ | --------- | ------- |
 | `<path>`                   | Project, source folder, or file to analyze | Yes       | -       |
 | `--config <path>`          | Path to a JSON configuration file          | No        | -       |
-| `--source-folder <folder>` | Source folder relative to the project root | No        | `src`   |
+| `--source-folder <folder>` | Source folder relative to the project root | No        | -       |
 | `--enabled-languages <languages>` | Comma-separated language identifiers to analyze | No | `javascript,typescript` |
 | `--format <format>`        | Output format: `text` or `json`            | No        | `text`  |
+| `--verbose`                | Print analysis details to stderr           | No        | `false` |
 
 ## Exit codes
 
@@ -118,7 +119,6 @@ Example configuration:
 
 ```json
 {
-  "sourceFolder": "src",
   "enabledLanguages": ["javascript", "typescript"],
   "layers": {
     "domain": {
@@ -137,16 +137,24 @@ Example configuration:
 }
 ```
 
-`--source-folder` can be used to override the configured `sourceFolder` from the command line:
+`--source-folder` can be used to limit analysis to a specific subfolder:
 
 ```bash
-clean-arch check . --source-folder code
+clean-arch check . --source-folder src
 ```
+
+When `--source-folder` is not set, the CLI analyzes the provided `<path>` directly.
 
 `--enabled-languages` can be used to override the configured `enabledLanguages` from the command line:
 
 ```bash
 clean-arch check . --enabled-languages csharp,typescript
+```
+
+`--verbose` prints analysis details to stderr, keeping stdout reserved for normal text or JSON output:
+
+```bash
+clean-arch check . --verbose
 ```
 
 ## Supported languages

@@ -31,6 +31,7 @@ program
     .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', CliEnabledLanguagesParser.parse)
     .option('--config <path>', 'Path to a JSON configuration file.')
     .option('--format <format>', 'Output format: text or json.', CliOutputFormatParser.parse, 'text')
+    .option('--verbose', 'Print analysis details to stderr.')
     .addHelpText('after', `
 
 Examples:
@@ -42,14 +43,20 @@ Examples:
         enabledLanguages?: EnabledLanguages;
         config?: string;
         format: OutputFormat;
+        verbose?: boolean;
     }) => {
         try {
-            const violations = new Check(new CheckInput(CheckInputOptions.fromCli(
+            const input = new CheckInput(CheckInputOptions.fromCli(
                 path,
                 options.config,
                 options.sourceFolder,
-                options.enabledLanguages
-            ))).violations;
+                options.enabledLanguages,
+                options.verbose ?? false
+            ));
+            input.logSummary();
+            const violations = new Check(input).violations;
+            input.options.logger.info(`Checked files: ${input.checkedFilesCount}`);
+            input.options.logger.info(`Violations found: ${violations.length}`);
             const output = new ViolationFormatter(violations, options.format).output;
             if (output) {
                 console.log(output);

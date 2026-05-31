@@ -1,4 +1,5 @@
 import { EnabledLanguages, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
+import { CliLogger } from '../output/cli-logger';
 import { CliConfigurationFile } from './cli-configuration-file';
 
 export class CliConfigurationSource {
@@ -6,10 +7,11 @@ export class CliConfigurationSource {
     public static fromOptions(
         configPath?: string,
         sourceFolder?: string,
-        enabledLanguages?: EnabledLanguages
+        enabledLanguages?: EnabledLanguages,
+        logger = CliLogger.silent
     ): CliConfigurationSource {
         return new CliConfigurationSource(
-            configPath ? CliConfigurationFile.fromPath(configPath) : CliConfigurationFile.empty(),
+            configPath ? CliConfigurationFile.fromPath(configPath, logger) : CliConfigurationFile.empty(),
             sourceFolder,
             enabledLanguages
         );
