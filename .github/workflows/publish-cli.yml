@@ -8,9 +8,12 @@ permissions:
   id-token: write
 
 jobs:
-  publish:
+  check-version:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
+    outputs:
+      changed: ${{ steps.version-check.outputs.changed }}
+      local-version: ${{ steps.version-check.outputs.local-version }}
     steps:
       - name: Verify workflow runs from main
         run: |
@@ -36,14 +39,23 @@ jobs:
       - name: Verify version can be published
         run: |
           if [ "${{ steps.version-check.outputs.changed }}" != "true" ]; then
-            echo "Version ${{ steps.version-check.outputs.local-version }} is already published to npm" >&2
-            exit 1
+            echo "Version ${{ steps.version-check.outputs.local-version }} is already published to npm; skipping CLI publish."
+            exit 0
           fi
 
           if [ -n "${{ steps.version-check.outputs.compared-version }}" ] && [ "${{ steps.version-check.outputs.is-higher }}" != "true" ]; then
             echo "Version ${{ steps.version-check.outputs.local-version }} is not higher than published version ${{ steps.version-check.outputs.compared-version }}" >&2
             exit 1
           fi
+
+  publish:
+    needs: check-version
+    if: needs.check-version.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6.0.3
@@ -69,6 +81,10 @@ jobs:
 
       - name: Package CLI
         run: make package-cli
+
+      - name: Verify npm package contents
+        working-directory: packages/cli
+        run: npm pack --dry-run
 
       - name: Publish CLI to npm
         working-directory: packages/cli

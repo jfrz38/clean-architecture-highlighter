@@ -1,7 +1,7 @@
 import { InvalidArgumentError } from 'commander';
 import { OutputFormat } from '../output/output-format';
 
-export class CliOutputFormat {
+export class CliOutputFormatParser {
 
     public static parse(value: string): OutputFormat {
         if (value === 'text' || value === 'json') {

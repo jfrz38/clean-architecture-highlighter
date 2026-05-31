@@ -1,5 +1,6 @@
 import { statSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
+import { SourceFolderNotFoundError } from './errors/source-folder-not-found-error';
 
 export class FilesToCheckTarget {
 
@@ -18,7 +19,11 @@ export class FilesToCheckTarget {
             // The input path can already be the source folder.
         }
 
-        return new FilesToCheckTarget(dirname(targetPath), targetPath, targetPath);
+        if (basename(targetPath) === sourceFolder) {
+            return new FilesToCheckTarget(dirname(targetPath), targetPath, targetPath);
+        }
+
+        throw new SourceFolderNotFoundError(sourceFolder, targetPath);
     }
 
     private constructor(

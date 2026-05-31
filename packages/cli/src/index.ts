@@ -1,28 +1,42 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
+import type { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
 import { Check } from './check/check';
 import { CheckInput } from './check/check-input';
 import { CheckInputOptions } from './check/check-input-options';
-import { CliEnabledLanguages } from './command/cli-enabled-languages';
-import { CliOutputFormat } from './command/cli-output-format';
+import { CliEnabledLanguagesParser } from './command/cli-enabled-languages-parser';
+import { CliOutputFormatParser } from './command/cli-output-format-parser';
 import { OutputFormat, ViolationFormatter } from './output/violation-formatter';
+
+declare global {
+    var CLI_VERSION: string | undefined;
+}
+
+const cliVersion = globalThis.CLI_VERSION ?? '0.0.0';
 
 const program = new Command();
 
 program
-    .name('clean-architecture-highlighter')
+    .name('clean-arch')
     .description('Check Clean Architecture dependency boundaries from the terminal.')
-    .version('0.1.0');
+    .version(cliVersion)
+    .showHelpAfterError()
+    .showSuggestionAfterError();
 
 program
     .command('check')
     .description('Check a project or source folder.')
     .argument('<path>', 'Project path or source folder path to analyze.')
     .option('--source-folder <folder>', 'Source folder relative to the project root.')
-    .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', CliEnabledLanguages.parse)
+    .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', CliEnabledLanguagesParser.parse)
     .option('--config <path>', 'Path to a JSON configuration file.')
-    .option('--format <format>', 'Output format: text or json.', CliOutputFormat.parse, 'text')
+    .option('--format <format>', 'Output format: text or json.', CliOutputFormatParser.parse, 'text')
+    .addHelpText('after', `
+
+Examples:
+  $ clean-arch check .
+  $ clean-arch check ./src --enabled-languages typescript,csharp
+  $ clean-arch check . --format json`)
     .action((path: string, options: {
         sourceFolder?: string;
         enabledLanguages?: EnabledLanguages;

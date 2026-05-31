@@ -1,7 +1,7 @@
 import { InvalidArgumentError } from 'commander';
 import { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
 
-export class CliEnabledLanguages {
+export class CliEnabledLanguagesParser {
 
     public static parse(value: string): EnabledLanguages {
         const languages = value.split(',')
