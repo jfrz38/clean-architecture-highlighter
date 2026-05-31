@@ -1,4 +1,4 @@
-name: Publish Extension
+name: Publish VS Code Extension
 
 on:
   workflow_dispatch:
@@ -7,30 +7,37 @@ permissions:
   contents: read
 
 jobs:
-  publish:
+  publish-vscode-extension:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Verify workflow runs from main
         run: |
           if [ "$GITHUB_REF" != "refs/heads/main" ]; then
-            echo "Publish must be run from main. Current ref is $GITHUB_REF" >&2
+            echo "Publish VS Code Extension must be run from main. Current ref is $GITHUB_REF" >&2
             exit 1
           fi
 
-      - name: Resolve latest release
+      - name: Resolve latest VS Code extension release
         id: version
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG_PREFIX: vscode-extension-v
         run: |
-          TAG="$(gh release list --repo "$GITHUB_REPOSITORY" --limit 1 --json tagName --jq '.[0].tagName')"
-          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
-            echo "No GitHub releases found." >&2
+          TAG="$(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName --jq '.[].tagName' | grep "^${TAG_PREFIX}" | head -n 1)"
+          if [ -z "$TAG" ]; then
+            echo "No GitHub release found for VS Code extension prefix $TAG_PREFIX." >&2
             exit 1
           fi
-          VERSION="${TAG#v}"
+          VERSION="${TAG#${TAG_PREFIX}}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Verify GitHub release exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: gh release view "$TAG" --repo "$GITHUB_REPOSITORY"
 
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -59,7 +66,7 @@ jobs:
           fi
 
       - id: version-check
-        name: Check version is not already published
+        name: Check version is not already published to VS Code Marketplace
         uses: jfrz38/check-version-change@v1
         with:
           file-path: packages/vscode-extension/package.json
@@ -91,16 +98,16 @@ jobs:
       - name: Install dependencies
         run: make ci-install
 
-      - name: Run tests
+      - name: Validate VS Code extension
         run: xvfb-run -a make validate-vscode-extension
 
-      - name: Compile
+      - name: Build VS Code extension
         run: make build-vscode-extension
 
-      - name: Package extension
+      - name: Package VS Code extension
         run: make package-vscode-extension
 
-      - name: Publish to Marketplace
+      - name: Publish VS Code extension to Marketplace
         run: npx @vscode/vsce publish --packagePath packages/vscode-extension/clean-architecture-highlighter-${{ steps.version.outputs.version }}.vsix
         env:
           VSCE_PAT: ${{ secrets.VS_CODE_TOKEN }}
