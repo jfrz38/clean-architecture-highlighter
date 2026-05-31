@@ -59,7 +59,7 @@ clean-architecture-highlighter check .
 
 See the 🔗 [CLI README](packages/cli/README.md) for options, JSON output, exit codes, and CI usage.
 
-![CLI output example](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/cli_example.png)
+![CLI output example](./images/cli_example.png)
 
 ### VS Code Extension
 
@@ -69,7 +69,7 @@ The extension analyzes supported files in the workspace and reports dependency v
 
 See the 🔗 [VS Code extension README](packages/vscode-extension/README.md) for marketplace details, settings, and editor behavior.
 
-![VS Code extension demo](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/demo_extension.gif)
+![VS Code extension demo](./images/demo_extension.gif)
 
 ## Configuration
 
