@@ -107,8 +107,8 @@ clean-arch check . --format json
 
 | Code | Meaning                                |
 | ---- | -------------------------------------- |
-| `0`  | No violations found                    |
-| `1`  | Violations found                       |
+| `0`  | No violations found, or violations found with `--no-fail` |
+| `1`  | Violations found in strict mode        |
 | `2`  | Usage, configuration, or runtime error |
 
 By default, the CLI is strict and returns exit code `1` when architecture violations are found. Use `--no-fail` to report violations without failing the process. `--format json` keeps stdout machine-readable and does not include colors.

@@ -94,7 +94,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 This extension analyzes JavaScript and TypeScript by default. C#, Dart, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
 
-- **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
+- **Folder Structure**: It assumes a layered architecture. Use `sourceFolder` to restrict analysis to a specific folder; when unset, all supported files in the workspace are analyzed.
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations

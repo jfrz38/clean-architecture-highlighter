@@ -5,7 +5,6 @@ export type {
     ConfigurationOptions,
     EnabledLanguages,
     Layers,
-    SeverityLevel,
     SourceFolderPath
 } from './configuration/types.configuration';
 export * from './clean-architecture/restrictions/architecture-violation';

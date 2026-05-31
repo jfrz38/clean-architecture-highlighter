@@ -27,6 +27,36 @@ suite('Extension Test Suite', () => {
 		});
 	});
 
+	test('uses configured diagnostic severity level', async () => {
+		const workspaceRootPath = loadWorkspace();
+
+		try {
+			await setDefaultConfigurations();
+			await setConfigurations({ severityLevel: 'error' });
+			await assertScenario(workspaceRootPath, {
+				name: 'Domain layer should use error severity',
+				file: 'architecture/typescript/src/domain/domain.ts',
+				diagnostics: [
+					{
+						message: 'domain layer should not depend on infrastructure layer.',
+						severity: 'Error',
+						startLine: 0,
+						endLine: 0
+					},
+					{
+						message: 'domain layer should not depend on application layer.',
+						severity: 'Error',
+						startLine: 1,
+						endLine: 1
+					}
+				]
+			});
+		} finally {
+			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			await setDefaultConfigurations();
+		}
+	});
+
 	async function setConfigurations(configuration: any): Promise<void> {
 		if (!configuration) {
 			return;
@@ -62,7 +92,7 @@ suite('Extension Test Suite', () => {
 	}
 
 	async function setDefaultConfigurations(): Promise<void> {
-		await setConfigurations(DefaultConfiguration.default);
+		await setConfigurations({ ...DefaultConfiguration.default, severityLevel: 'warning' });
 	}
 
 	async function assertScenario(workspaceRootPath: string, scenario: Scenario) {

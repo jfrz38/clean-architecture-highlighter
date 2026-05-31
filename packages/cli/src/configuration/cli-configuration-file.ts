@@ -25,10 +25,6 @@ export class CliConfigurationFile {
         return this.values.layers;
     }
 
-    public get severityLevel() {
-        return this.values.severityLevel;
-    }
-
     public get sourceFolder() {
         return this.values.sourceFolder;
     }

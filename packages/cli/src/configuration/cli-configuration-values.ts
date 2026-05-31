@@ -2,8 +2,7 @@ import {
     ConfigurationOptions,
     EnabledLanguages,
     Layers,
-    SourceFolderPath,
-    SeverityLevel
+    SourceFolderPath
 } from '@jfrz38/clean-architecture-highlighter-core';
 
 export class CliConfigurationValues {
@@ -20,10 +19,6 @@ export class CliConfigurationValues {
 
     public get layers(): Partial<Layers> {
         return this.values.layers ?? {};
-    }
-
-    public get severityLevel(): SeverityLevel | undefined {
-        return this.values.severityLevel;
     }
 
     public get sourceFolder(): SourceFolderPath | undefined {

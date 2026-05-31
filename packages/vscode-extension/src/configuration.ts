@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
-import { ConfigurationOptions, DefaultConfiguration, EnabledLanguages, Layers, SeverityLevel, SourceFolderPath } from '@jfrz38/clean-architecture-highlighter-core';
+import { ConfigurationOptions, DefaultConfiguration, EnabledLanguages, Layers, SourceFolderPath } from '@jfrz38/clean-architecture-highlighter-core';
+
+export type SeverityLevel = 'warning' | 'error' | 'info';
 
 export class Configuration {
 
@@ -8,10 +10,15 @@ export class Configuration {
         
         return new DefaultConfiguration(
             config.get<Partial<Layers>>('layers', {}),
-            config.get<Partial<SeverityLevel>>('severityLevel'),
             config.get<SourceFolderPath>('sourceFolder'),
             config.get<EnabledLanguages>('enabledLanguages')
         ).config;
+    }
+
+    public static get severityLevel(): SeverityLevel {
+        return vscode.workspace
+            .getConfiguration('clean-architecture-highlighter')
+            .get<SeverityLevel>('severityLevel', 'warning');
     }
 }
 

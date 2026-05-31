@@ -3,7 +3,6 @@ import { Suite } from "../../types";
 export const allConfigs: Suite = {
     name: 'All configs created',
     configuration: {
-        severityLevel: 'error',
         sourceFolder: 'newSrc',
         layers: {
             domain: {
@@ -26,7 +25,7 @@ export const allConfigs: Suite = {
             diagnostics: [
                 {
                     message: 'domain layer should not depend on infrastructure layer.',
-                    severity: 'Error',
+                    severity: 'Warning',
                     startLine: 2,
                     endLine: 2
                 }

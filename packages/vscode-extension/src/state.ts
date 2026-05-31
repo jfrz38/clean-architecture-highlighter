@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions, EnabledLanguagesValidator, UnsupportedLanguageError } from "@jfrz38/clean-architecture-highlighter-core";
-import { Configuration } from "./configuration";
+import { Configuration, SeverityLevel } from "./configuration";
 
 export class State {
   config: ConfigurationOptions;
@@ -21,7 +21,7 @@ export class State {
       new AllowedInfrastructureDependencies(this.config.layers.infrastructure.allowedDependencies).value,
     );
 
-    this.severityLevel = this.getSeverityLevel(this.config.severityLevel);
+    this.severityLevel = this.getSeverityLevel(Configuration.severityLevel);
   }
 
   private withValidatedLanguages(config: ConfigurationOptions): ConfigurationOptions {
@@ -43,7 +43,7 @@ export class State {
     return config;
   }
 
-  private getSeverityLevel(level: 'warning' | 'error' | 'info'): vscode.DiagnosticSeverity {
+  private getSeverityLevel(level: SeverityLevel): vscode.DiagnosticSeverity {
     if (level === 'error') {
       return vscode.DiagnosticSeverity.Error;
     }

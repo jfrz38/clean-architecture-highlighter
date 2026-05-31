@@ -1,6 +1,5 @@
 export type ConfigurationOptions = {
     layers: Layers;
-    severityLevel: SeverityLevel;
     sourceFolder?: SourceFolderPath;
     enabledLanguages: EnabledLanguages;
 }
@@ -19,8 +18,7 @@ export type Layer = {
 export type Aliases = string[];
 export type AllowedDependencies = string[];
 
-export type SeverityLevel = 'warning' | 'error';
 export type SourceFolderPath = string;
 export type EnabledLanguages = string[];
 
-export type ConfigValue = SeverityLevel | SourceFolderPath | EnabledLanguages | Layers | Layer | undefined;
+export type ConfigValue = SourceFolderPath | EnabledLanguages | Layers | Layer | undefined;
