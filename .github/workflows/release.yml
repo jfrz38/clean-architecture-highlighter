@@ -1,4 +1,4 @@
-name: Create Release
+name: Create Releases
 
 on:
   push:
@@ -10,49 +10,114 @@ permissions:
 
 jobs:
   create-release:
+    name: Create ${{ matrix.package.release_name }} release
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - release_name: CLI
+            package_key: cli
+            tag_prefix: cli-v
+            package_name: "@jfrz38/clean-architecture-highlighter-cli"
+            package_dir: packages/cli
+            package_file: packages/cli/package.json
+            registry: npm
+            validate_command: make validate-cli TEST_LANGUAGE=all
+            package_command: make package-cli
+            asset_path: ""
+          - release_name: VS Code Extension
+            package_key: vscode-extension
+            tag_prefix: vscode-extension-v
+            package_name: clean-architecture-highlighter
+            package_dir: packages/vscode-extension
+            package_file: packages/vscode-extension/package.json
+            registry: vscode-marketplace
+            validate_command: xvfb-run -a make validate-vscode-extension
+            package_command: make package-vscode-extension
+            asset_path: packages/vscode-extension/clean-architecture-highlighter-{version}.vsix
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
+      - id: version-check
+        name: Check version is releasable
+        uses: jfrz38/check-version-change@v1
+        with:
+          file-path: ${{ matrix.package.package_file }}
+          package-name: ${{ matrix.package.package_name }}
+          compare-source: registry
+          registry: ${{ matrix.package.registry }}
+
+      - name: Skip already published version
+        if: steps.version-check.outputs.changed != 'true'
+        run: |
+          echo "${{ matrix.package.package_name }} ${{ steps.version-check.outputs.local-version }} is already published; no release to create."
+
+      - name: Verify version can be released
+        if: steps.version-check.outputs.changed == 'true'
+        run: |
+          if [ -n "${{ steps.version-check.outputs.compared-version }}" ] && [ "${{ steps.version-check.outputs.is-higher }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is not higher than published version ${{ steps.version-check.outputs.compared-version }}" >&2
+            exit 1
+          fi
+
       - name: Install pnpm
+        if: steps.version-check.outputs.changed == 'true'
         uses: pnpm/action-setup@v6.0.3
+        with:
+          version: 11.1.3
 
       - name: Setup Node
+        if: steps.version-check.outputs.changed == 'true'
         uses: actions/setup-node@v6
         with:
-          node-version: '24.x'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
+        if: steps.version-check.outputs.changed == 'true'
         run: make ci-install
 
-      - name: Run tests
-        run: xvfb-run -a make validate-vscode-extension
+      - name: Validate package
+        if: steps.version-check.outputs.changed == 'true'
+        run: ${{ matrix.package.validate_command }}
 
       - name: Resolve release version
+        if: steps.version-check.outputs.changed == 'true'
         id: version
+        working-directory: ${{ matrix.package.package_dir }}
         run: |
-          VERSION="$(node -p "require('./packages/vscode-extension/package.json').version")"
+          VERSION="$(node -p "require('./package.json').version")"
           if [ -z "$VERSION" ]; then
             echo "Could not resolve package version" >&2
             exit 1
           fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Package extension
-        run: make package-vscode-extension
+          if [ "$VERSION" != "${{ steps.version-check.outputs.local-version }}" ]; then
+            echo "Resolved version $VERSION does not match checked version ${{ steps.version-check.outputs.local-version }}" >&2
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=${{ matrix.package.tag_prefix }}$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Package release asset
+        if: steps.version-check.outputs.changed == 'true' && matrix.package.asset_path != ''
+        run: ${{ matrix.package.package_command }}
 
       - name: Create GitHub release
+        if: steps.version-check.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.version.outputs.tag }}
           VERSION: ${{ steps.version.outputs.version }}
+          ASSET_PATH_TEMPLATE: ${{ matrix.package.asset_path }}
         run: |
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release $TAG already exists; nothing to create."
@@ -66,8 +131,18 @@ jobs:
             git push origin "$TAG"
           fi
 
-          gh release create "$TAG" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "$TAG" \
-            --generate-notes \
-            "packages/vscode-extension/clean-architecture-highlighter-$VERSION.vsix"
+          if [ -n "$ASSET_PATH_TEMPLATE" ]; then
+            ASSET_PATH="${ASSET_PATH_TEMPLATE//\{version\}/$VERSION}"
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TAG" \
+              --generate-notes \
+              --latest=false \
+              "$ASSET_PATH"
+          else
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TAG" \
+              --generate-notes \
+              --latest=false
+          fi
