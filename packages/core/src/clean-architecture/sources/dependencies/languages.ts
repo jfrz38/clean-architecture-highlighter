@@ -33,7 +33,13 @@ export class SupportedLanguageRegistry {
         ['.sc', 'scala']
     ]);
 
+    private readonly supportedLanguageIds: ReadonlySet<string> = new Set(this.languagesByExtension.values());
+
     public getLanguageIdFromExtension(extension: string): string | undefined {
         return this.languagesByExtension.get(extension.toLowerCase());
+    }
+
+    public isSupportedLanguageId(languageId: string): boolean {
+        return this.supportedLanguageIds.has(languageId);
     }
 }

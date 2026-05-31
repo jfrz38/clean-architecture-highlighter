@@ -1,7 +1,9 @@
 import { InvalidArgumentError } from 'commander';
-import { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
+import { EnabledLanguages, EnabledLanguagesValidator, UnsupportedLanguageError } from '@jfrz38/clean-architecture-highlighter-core';
 
 export class CliEnabledLanguagesParser {
+
+    private static readonly validator = new EnabledLanguagesValidator();
 
     public static parse(value: string): EnabledLanguages {
         const languages = value.split(',')
@@ -10,6 +12,15 @@ export class CliEnabledLanguagesParser {
 
         if (languages.length === 0) {
             throw new InvalidArgumentError('Expected at least one language identifier.');
+        }
+
+        try {
+            CliEnabledLanguagesParser.validator.validate(languages);
+        } catch (error) {
+            if (error instanceof UnsupportedLanguageError) {
+                throw new InvalidArgumentError(error.message);
+            }
+            throw error;
         }
 
         return languages;

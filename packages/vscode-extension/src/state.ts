@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions } from "@jfrz38/clean-architecture-highlighter-core";
+import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions, EnabledLanguagesValidator, UnsupportedLanguageError } from "@jfrz38/clean-architecture-highlighter-core";
 import { Configuration } from "./configuration";
 
 export class State {
@@ -13,6 +13,7 @@ export class State {
 
   load() {
     this.config = Configuration.configuration;
+    this.config = this.withValidatedLanguages(this.config);
 
     this.allowedDependencies = new AllowedDependencies(
       new AllowedDomainDependencies(this.config.layers.domain.allowedDependencies).value,
@@ -21,6 +22,25 @@ export class State {
     );
 
     this.severityLevel = this.getSeverityLevel(this.config.severityLevel);
+  }
+
+  private withValidatedLanguages(config: ConfigurationOptions): ConfigurationOptions {
+    const validator = new EnabledLanguagesValidator();
+    try {
+      validator.validate(config.enabledLanguages);
+    } catch (error) {
+      if (error instanceof UnsupportedLanguageError) {
+        const validLanguages = config.enabledLanguages.filter(
+          language => !error.unsupportedLanguages.includes(language)
+        );
+        vscode.window.showWarningMessage(
+          `Clean Architecture Highlighter: ${error.message} Proceeding with supported languages only.`
+        );
+        return { ...config, enabledLanguages: validLanguages };
+      }
+    }
+
+    return config;
   }
 
   private getSeverityLevel(level: 'warning' | 'error' | 'info'): vscode.DiagnosticSeverity {
