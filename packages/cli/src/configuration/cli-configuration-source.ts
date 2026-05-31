@@ -1,4 +1,4 @@
-import { EnabledLanguages, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
+import { EnabledLanguages, SourceFolderPath } from '@jfrz38/clean-architecture-highlighter-core';
 import { CliLogger } from '../output/cli-logger';
 import { CliConfigurationFile } from './cli-configuration-file';
 
@@ -19,7 +19,7 @@ export class CliConfigurationSource {
 
     private constructor(
         public readonly fileConfiguration: CliConfigurationFile,
-        public readonly sourceFolder?: SourceFolder,
+        public readonly sourceFolder?: SourceFolderPath,
         public readonly enabledLanguages?: EnabledLanguages
     ) { }
 }

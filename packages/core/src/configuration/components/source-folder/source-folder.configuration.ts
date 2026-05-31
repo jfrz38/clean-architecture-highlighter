@@ -1,9 +1,9 @@
-import { SourceFolder } from "../../types.configuration";
+import { SourceFolderPath } from "../../types.configuration";
 
 export class SourceFolderConfiguration {
-    constructor(private readonly sourceFolder?: SourceFolder) {}
+    constructor(private readonly sourceFolder?: SourceFolderPath) {}
 
-    public get config(): SourceFolder | undefined {
+    public get config(): SourceFolderPath | undefined {
         return this.sourceFolder;
     }
 }

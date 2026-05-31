@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { DefaultConfiguration } from '@jfrz38/clean-architecture-highlighter-core';
 import type { Diagnostic, Scenario, Suite } from '../../../test/scenarios/out/types';
 
 const { suites } = require('../../../../test/scenarios/out/scenarios') as { suites: Suite[] };
@@ -35,7 +36,7 @@ suite('Extension Test Suite', () => {
 		const updates: Thenable<void>[] = [];
 
 		for (const key of ['severityLevel', 'sourceFolder', 'enabledLanguages']) {
-			if (configuration[key] !== undefined) {
+			if (Object.prototype.hasOwnProperty.call(configuration, key)) {
 				updates.push(config.update(key, configuration[key], vscode.ConfigurationTarget.Global));
 			}
 		}
@@ -61,16 +62,7 @@ suite('Extension Test Suite', () => {
 	}
 
 	async function setDefaultConfigurations(): Promise<void> {
-		const config = vscode.workspace.getConfiguration('clean-architecture-highlighter');
-		await config.update('severityLevel', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('sourceFolder', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('enabledLanguages', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('layers.domain.aliases', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('layers.domain.allowedDependencies', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('layers.application.aliases', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('layers.application.allowedDependencies', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('layers.infrastructure.aliases', undefined, vscode.ConfigurationTarget.Global);
-		await config.update('layers.infrastructure.allowedDependencies', undefined, vscode.ConfigurationTarget.Global);
+		await setConfigurations(DefaultConfiguration.default);
 	}
 
 	async function assertScenario(workspaceRootPath: string, scenario: Scenario) {

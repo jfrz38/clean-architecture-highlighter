@@ -2,7 +2,7 @@ import { LayersConfiguration } from "./components/layers/layers.configuration";
 import { SeverityLevelConfiguration } from "./components/severity-level/severity-level.configuration";
 import { SourceFolderConfiguration } from "./components/source-folder/source-folder.configuration";
 import { EnabledLanguagesConfiguration } from "./components/enabled-languages/enabled-languages.configuration";
-import { ConfigurationOptions, EnabledLanguages, Layers, SeverityLevel, SourceFolder } from "./types.configuration";
+import { ConfigurationOptions, EnabledLanguages, Layers, SeverityLevel, SourceFolderPath } from "./types.configuration";
 
 export class DefaultConfiguration {
 
@@ -15,7 +15,7 @@ export class DefaultConfiguration {
     constructor(
         private readonly layers: Partial<Layers>,
         private readonly severityLevel: SeverityLevel | undefined,
-        private readonly sourceFolder: SourceFolder | undefined,
+        private readonly sourceFolder: SourceFolderPath | undefined,
         private readonly enabledLanguages: EnabledLanguages | undefined
     ) {
         const built: ConfigurationOptions = {
