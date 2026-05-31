@@ -31,21 +31,30 @@ program
     .option('--enabled-languages <languages>', 'Comma-separated language identifiers to analyze.', CliEnabledLanguagesParser.parse)
     .option('--config <path>', 'Path to a JSON configuration file.')
     .option('--format <format>', 'Output format: text or json.', CliOutputFormatParser.parse, 'text')
+    .option('--strict', 'Fail with exit code 1 when architecture violations are found. This is the default behavior.')
+    .option('--no-fail', 'Report architecture violations without returning exit code 1.')
     .option('--verbose', 'Print analysis details to stderr.')
     .addHelpText('after', `
 
 Examples:
   $ clean-arch check .
   $ clean-arch check ./src --enabled-languages typescript,csharp
-  $ clean-arch check . --format json`)
+  $ clean-arch check . --format json
+  $ clean-arch check . --no-fail`)
     .action((path: string, options: {
         sourceFolder?: string;
         enabledLanguages?: EnabledLanguages;
         config?: string;
         format: OutputFormat;
+        strict?: boolean;
+        fail?: boolean;
         verbose?: boolean;
     }) => {
         try {
+            if (options.strict && options.fail === false) {
+                throw new Error('Options --strict and --no-fail cannot be used together.');
+            }
+
             const input = new CheckInput(CheckInputOptions.fromCli(
                 path,
                 options.config,
@@ -61,9 +70,9 @@ Examples:
             if (output) {
                 console.log(output);
             }
-            process.exitCode = violations.length > 0 ? 1 : 0;
+            process.exitCode = violations.length > 0 && options.fail !== false ? 1 : 0;
         } catch (error) {
-            console.error(error instanceof Error ? error.message : error);
+            console.error(error instanceof Error ? `Error: ${error.message}` : error);
             process.exitCode = 2;
         }
     });

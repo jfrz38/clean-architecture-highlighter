@@ -79,7 +79,9 @@ clean-architecture-highlighter check .
 Default output is text:
 
 ```text
-src/domain/user.ts:1:1 domain layer should not depend on infrastructure layer.
+violation: src/domain/user.ts:1:1 domain layer should not depend on infrastructure layer.
+
+VIOLATION 1 architecture violation found.
 ```
 
 JSON output is also available:
@@ -97,6 +99,8 @@ clean-arch check . --format json
 | `--source-folder <folder>` | Source folder relative to the project root | No        | -       |
 | `--enabled-languages <languages>` | Comma-separated language identifiers to analyze | No | `javascript,typescript` |
 | `--format <format>`        | Output format: `text` or `json`            | No        | `text`  |
+| `--strict`                 | Return exit code `1` when violations are found | No     | enabled |
+| `--no-fail`                | Report violations without returning exit code `1` | No  | -       |
 | `--verbose`                | Print analysis details to stderr           | No        | `false` |
 
 ## Exit codes
@@ -106,6 +110,8 @@ clean-arch check . --format json
 | `0`  | No violations found                    |
 | `1`  | Violations found                       |
 | `2`  | Usage, configuration, or runtime error |
+
+By default, the CLI is strict and returns exit code `1` when architecture violations are found. Use `--no-fail` to report violations without failing the process. `--format json` keeps stdout machine-readable and does not include colors.
 
 ## Configuration
 

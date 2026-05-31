@@ -17,12 +17,25 @@ suite('TextOutput', () => {
         }]).value;
 
         assert.strictEqual(output, [
-            'src/domain/user.ts:3:5 domain layer should not depend on infrastructure layer.',
-            'src/application/use-case.ts:1:1 application layer should not depend on infrastructure layer.'
+            'violation: src/domain/user.ts:3:5 domain layer should not depend on infrastructure layer.',
+            'violation: src/application/use-case.ts:1:1 application layer should not depend on infrastructure layer.',
+            '',
+            'VIOLATION 2 architecture violations found.'
         ].join('\n'));
     });
 
-    test('returns empty output without violations', () => {
-        assert.strictEqual(new TextOutput([]).value, '');
+    test('prints success summary without violations', () => {
+        assert.strictEqual(new TextOutput([]).value, 'OK No architecture violations found.');
+    });
+
+    test('colors text output when enabled', () => {
+        const output = new TextOutput([{
+            filePath: 'src/domain/user.ts',
+            line: 3,
+            character: 5,
+            message: 'domain layer should not depend on infrastructure layer.'
+        }], true).value;
+
+        assert.match(output, /\u001b\[31mviolation:\u001b\[0m/);
     });
 });

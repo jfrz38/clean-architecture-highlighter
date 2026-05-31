@@ -11,7 +11,11 @@ suite('ViolationFormatter', () => {
             message: 'application layer should not depend on infrastructure layer.'
         }], 'text').output;
 
-        assert.strictEqual(output, 'src/application/use-case.ts:1:1 application layer should not depend on infrastructure layer.');
+        assert.strictEqual(output, [
+            'violation: src/application/use-case.ts:1:1 application layer should not depend on infrastructure layer.',
+            '',
+            'VIOLATION 1 architecture violation found.'
+        ].join('\n'));
     });
 
     test('formats violations as json', () => {
