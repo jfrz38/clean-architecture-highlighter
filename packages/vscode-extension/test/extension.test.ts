@@ -15,6 +15,7 @@ suite('Extension Test Suite', () => {
 			_suite.scenarios.forEach(async (scenario: Scenario) => {
 				test(scenario.name, async () => {
 					try {
+						await setDefaultConfigurations();
 						await setConfigurations(_suite.configuration);
 						await assertScenario(workspaceRootPath, scenario);
 					} finally {
@@ -26,6 +27,36 @@ suite('Extension Test Suite', () => {
 		});
 	});
 
+	test('uses configured diagnostic severity level', async () => {
+		const workspaceRootPath = loadWorkspace();
+
+		try {
+			await setDefaultConfigurations();
+			await setConfigurations({ severityLevel: 'error' });
+			await assertScenario(workspaceRootPath, {
+				name: 'Domain layer should use error severity',
+				file: 'architecture/typescript/src/domain/domain.ts',
+				diagnostics: [
+					{
+						message: 'domain layer should not depend on infrastructure layer.',
+						severity: 'Error',
+						startLine: 0,
+						endLine: 0
+					},
+					{
+						message: 'domain layer should not depend on application layer.',
+						severity: 'Error',
+						startLine: 1,
+						endLine: 1
+					}
+				]
+			});
+		} finally {
+			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			await setDefaultConfigurations();
+		}
+	});
+
 	async function setConfigurations(configuration: any): Promise<void> {
 		if (!configuration) {
 			return;
@@ -35,7 +66,7 @@ suite('Extension Test Suite', () => {
 		const updates: Thenable<void>[] = [];
 
 		for (const key of ['severityLevel', 'sourceFolder', 'enabledLanguages']) {
-			if (configuration[key] !== undefined) {
+			if (Object.prototype.hasOwnProperty.call(configuration, key)) {
 				updates.push(config.update(key, configuration[key], vscode.ConfigurationTarget.Global));
 			}
 		}
@@ -61,7 +92,7 @@ suite('Extension Test Suite', () => {
 	}
 
 	async function setDefaultConfigurations(): Promise<void> {
-		await setConfigurations(DefaultConfiguration.default);
+		await setConfigurations({ ...DefaultConfiguration.default, severityLevel: 'warning' });
 	}
 
 	async function assertScenario(workspaceRootPath: string, scenario: Scenario) {
@@ -88,7 +119,7 @@ suite('Extension Test Suite', () => {
 	async function openFile(workspaceRootPath: string, assertion: Scenario): Promise<vscode.Uri> {
 		const targetFilePath = path.join(workspaceRootPath, assertion.file);
 		const fileUri = vscode.Uri.file(targetFilePath);
-		const document = vscode.workspace.openTextDocument(fileUri);
+		const document = await vscode.workspace.openTextDocument(fileUri);
 
 		assert.ok(document, `Could not open specified file: ${targetFilePath}`);
 
@@ -96,15 +127,28 @@ suite('Extension Test Suite', () => {
 	}
 
 	function assertDiagnostics(fileUri: vscode.Uri, diagnostics: Diagnostic[]) {
-		const existingDiagnostics = vscode.languages.getDiagnostics(fileUri);
+		const existingDiagnostics = vscode.languages.getDiagnostics(fileUri)
+			.filter(diagnostic => diagnostic.message.includes('layer should not depend on'));
+		const actualDiagnostics = existingDiagnostics.map(diag => ({
+			message: diag.message,
+			severity: vscode.DiagnosticSeverity[diag.severity],
+			startLine: diag.range.start.line,
+			endLine: diag.range.end.line
+		}));
 
-		assert.strictEqual(existingDiagnostics.length, diagnostics.length, 'Diagnostics count does not match');
+		assert.strictEqual(existingDiagnostics.length, diagnostics.length, `Diagnostics count does not match. Actual diagnostics: ${JSON.stringify(actualDiagnostics)}`);
 
 		diagnostics.forEach(diagnostic => assertExistsDiagnostic(existingDiagnostics, diagnostic));
 	}
 
 	function assertExistsDiagnostic(existingDiagnostics: vscode.Diagnostic[], expectedDiagnostic: Diagnostic) {
 		const { message, severity, startLine, endLine } = expectedDiagnostic;
+		const actualDiagnostics = existingDiagnostics.map(diag => ({
+			message: diag.message,
+			severity: vscode.DiagnosticSeverity[diag.severity],
+			startLine: diag.range.start.line,
+			endLine: diag.range.end.line
+		}));
 
 		const found = existingDiagnostics.find((diag) => {
 			const actualSeverityName = vscode.DiagnosticSeverity[diag.severity];
@@ -119,13 +163,6 @@ suite('Extension Test Suite', () => {
 
 			return severityMatches && messageMatches && startMatch && endMatch;
 		});
-
-		const actualDiagnostics = existingDiagnostics.map(diag => ({
-			message: diag.message,
-			severity: vscode.DiagnosticSeverity[diag.severity],
-			startLine: diag.range.start.line,
-			endLine: diag.range.end.line
-		}));
 
 		assert.ok(
 			found,

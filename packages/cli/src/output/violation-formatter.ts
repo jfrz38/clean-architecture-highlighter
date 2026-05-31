@@ -7,7 +7,8 @@ export class ViolationFormatter {
 
     constructor(
         private readonly violations: CliViolation[],
-        private readonly format: OutputFormat
+        private readonly format: OutputFormat,
+        private readonly useColor = ViolationFormatter.shouldUseColor(format)
     ) { }
 
     public get output(): string {
@@ -15,7 +16,13 @@ export class ViolationFormatter {
             return new JsonOutput(this.violations).value;
         }
 
-        return new TextOutput(this.violations).value;
+        return new TextOutput(this.violations, this.useColor).value;
+    }
+
+    private static shouldUseColor(format: OutputFormat): boolean {
+        return format === 'text'
+            && process.stdout.isTTY
+            && process.env.NO_COLOR === undefined;
     }
 }
 

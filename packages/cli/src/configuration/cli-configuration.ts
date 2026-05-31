@@ -18,7 +18,6 @@ export class CliConfiguration {
     public get config(): ConfigurationOptions {
         return new DefaultConfiguration(
             this.fileConfiguration.layers ?? {},
-            this.fileConfiguration.severityLevel,
             this.source.sourceFolder ?? this.fileConfiguration.sourceFolder,
             this.source.enabledLanguages ?? this.fileConfiguration.enabledLanguages
         ).config;

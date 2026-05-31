@@ -32,6 +32,8 @@ export class Check {
             return [];
         }
 
+        this.input.options.logger.info(`Checking file: ${this.toOutputPath(relative(this.input.files.outputRoot, filePath))}`);
+
         const documentPath = this.toDocumentPath(relative(this.input.files.projectRoot, filePath));
         const document = new CliDocument(documentPath, readFileSync(filePath, 'utf8'));
         const sourceFile = new SourceFile(

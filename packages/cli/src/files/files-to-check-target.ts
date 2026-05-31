@@ -4,10 +4,14 @@ import { SourceFolderNotFoundError } from './errors/source-folder-not-found-erro
 
 export class FilesToCheckTarget {
 
-    public static fromPath(targetPath: string, sourceFolder: string): FilesToCheckTarget {
+    public static fromPath(targetPath: string, sourceFolder?: string): FilesToCheckTarget {
         const targetStat = statSync(targetPath);
         if (targetStat.isFile()) {
             return new FilesToCheckTarget(dirname(dirname(targetPath)), dirname(targetPath), targetPath, targetPath);
+        }
+
+        if (sourceFolder === undefined) {
+            return new FilesToCheckTarget(targetPath, targetPath, targetPath);
         }
 
         const sourceFolderPath = join(targetPath, sourceFolder);

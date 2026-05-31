@@ -6,11 +6,13 @@ export class FilesToCheck {
 
     public readonly projectRoot: string;
     public readonly outputRoot: string;
+    public readonly sourcePath: string;
     public readonly paths: string[];
 
     constructor(target: FilesToCheckTarget) {
         this.projectRoot = target.projectRoot;
         this.outputRoot = target.outputRoot;
+        this.sourcePath = target.sourcePath;
         this.paths = this.collectFilesFrom(target);
     }
 

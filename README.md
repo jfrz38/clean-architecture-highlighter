@@ -53,7 +53,6 @@ Below is the default configuration, which enforces a standard Clean Architecture
 // settings.json
 {
     "clean-architecture-highlighter.severityLevel": "warning",
-    "clean-architecture-highlighter.sourceFolder": "src",
     "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
     
     "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
@@ -70,7 +69,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | Setting                              | Type     | Default   | Possible values                           | Description                                                                                                    |
 | ------------------------------------ | -------- | --------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
-| `sourceFolder`                       | string   | `src`     | any folder name                           | Root folder where the source code is analyzed. Only files below this folder (and subfolders) will be analyzed. |
+| `sourceFolder`                       | string   | —         | any folder name                           | Optional root folder where the source code is analyzed. Only files under this folder and subfolders are analyzed. When unset, all supported files in the workspace are analyzed. |
 | `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
@@ -112,7 +111,7 @@ Note that the default `aliases` and `allowedDependencies` **do not need to be se
 
 This extension analyzes JavaScript and TypeScript by default. C#, Dart, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
 
-- **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
+- **Folder Structure**: It assumes a layered architecture. Use `sourceFolder` to restrict analysis to a specific folder; when unset, all supported files in the workspace are analyzed.
 - **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
 
 ## Known Limitations

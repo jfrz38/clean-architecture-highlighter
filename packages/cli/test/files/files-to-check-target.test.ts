@@ -45,7 +45,19 @@ suite('FilesToCheckTarget', () => {
         assert.strictEqual(target.filePath, filePath);
     });
 
-    test('rejects project path without configured source folder', () => {
+    test('uses input path as source path when source folder is not set', () => {
+        const projectPath = join(rootPath, 'project-no-source-folder');
+        recreateDirectory(projectPath);
+        recreateDirectory(join(projectPath, 'my-code'));
+
+        const target = FilesToCheckTarget.fromPath(projectPath);
+
+        assert.strictEqual(target.projectRoot, projectPath);
+        assert.strictEqual(target.outputRoot, projectPath);
+        assert.strictEqual(target.sourcePath, projectPath);
+    });
+
+    test('rejects project path when explicit source folder is not found', () => {
         const projectPath = join(rootPath, 'project-without-src');
         recreateDirectory(projectPath);
 

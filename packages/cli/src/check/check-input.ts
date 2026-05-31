@@ -10,7 +10,7 @@ export class CheckInput {
     public readonly files: FilesToCheck;
     public readonly aliases: LayerAlias;
 
-    constructor(private readonly options: CheckInputOptions) {
+    constructor(public readonly options: CheckInputOptions) {
         this.configuration = new CliConfiguration(this.options.configurationSource);
         this.files = new FilesToCheck(FilesToCheckTarget.fromPath(
             this.options.targetPath,
@@ -21,5 +21,18 @@ export class CheckInput {
             this.configuration.config.layers.application.aliases,
             this.configuration.config.layers.infrastructure.aliases
         );
+    }
+
+    public logSummary(): void {
+        const config = this.configuration.config;
+        this.options.logger.info(`Analyzing path: ${this.options.targetPath}`);
+        this.options.logger.info(`Source folder: ${config.sourceFolder ?? 'not set'}`);
+        this.options.logger.info(`Enabled languages: ${config.enabledLanguages.join(', ')}`);
+        this.options.logger.info(`Project root: ${this.files.projectRoot}`);
+        this.options.logger.info(`Source path: ${this.files.sourcePath}`);
+    }
+
+    public get checkedFilesCount(): number {
+        return this.files.paths.length;
     }
 }

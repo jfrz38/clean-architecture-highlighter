@@ -88,14 +88,34 @@ export const defaultConfigSuite: Suite = {
             diagnostics: []
         },
         {
-            name: "Other source folder should not fail for application layer",
+            name: "Other source folder should produce the same violations for application layer",
             file: "architecture/typescript/newSrc/application/application.ts",
-            diagnostics: []
+            diagnostics: [
+                {
+                    message: "application layer should not depend on infrastructure layer.",
+                    severity: "Warning",
+                    startLine: 0,
+                    endLine: 0
+                }
+            ]
         },
         {
-            name: "Other source folder should not fail for domain layer",
+            name: "Other source folder should produce the same violations for domain layer",
             file: "architecture/typescript/newSrc/domain/domain.ts",
-            diagnostics: []
+            diagnostics: [
+                {
+                    message: "domain layer should not depend on infrastructure layer.",
+                    severity: "Warning",
+                    startLine: 0,
+                    endLine: 0
+                },
+                {
+                    message: "domain layer should not depend on application layer.",
+                    severity: "Warning",
+                    startLine: 1,
+                    endLine: 1
+                }
+            ]
         },
         {
             name: "Other source folder should not fail for infrastructure layer",

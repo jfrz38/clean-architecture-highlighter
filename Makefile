@@ -11,7 +11,7 @@ CORE_PACKAGE := @jfrz38/clean-architecture-highlighter-core
 CLI_PACKAGE := @jfrz38/clean-architecture-highlighter-cli
 VSCODE_EXTENSION_PACKAGE := clean-architecture-highlighter
 
-.PHONY: install ci-install build compile test clean-test lint package package-vscode-extension test-integration test-integration-full validate-release dev
+.PHONY: install ci-install
 
 install: ## install project dependencies from the lockfile
 	$(PNPM) install
@@ -19,62 +19,80 @@ install: ## install project dependencies from the lockfile
 ci-install: ## install project dependencies without modifying the lockfile
 	$(PNPM) install --frozen-lockfile
 
+# Build and quality
+.PHONY: build compile build-core build-cli build-vscode-extension lint
+
 build: ## remove previous build output and compile all workspace packages
 	$(PNPM) run clean:compile
 
 compile: ## compile all workspace packages without cleaning generated output first
 	$(PNPM) run compile
 
+build-core: ## build the core package
+	$(PNPM) --filter "$(CORE_PACKAGE)" run clean:compile
+
+build-cli: ## build the CLI package and its dependencies
+	$(PNPM) --filter "$(CLI_PACKAGE)..." run clean:compile
+
+build-vscode-extension: ## build the VS Code extension package and its dependencies
+	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)..." run clean:compile
+
+lint: ## run all workspace linters
+	$(PNPM) run lint
+
+# Tests
+.PHONY: test clean-test test-core test-cli test-vscode-extension test-integration test-integration-full
+
 test: ## run the full test suite
 	$(PNPM) test
+
+clean-test: ## clean generated output and run the full test suite
+	$(PNPM) run clean:tests
+
+test-core: ## test the core package
+	$(PNPM) --filter "$(CORE_PACKAGE)" test
+
+test-cli: ## test the CLI package
+	$(PNPM) --filter "$(CLI_PACKAGE)" test
+
+test-vscode-extension: ## test the VS Code extension package
+	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" test
 
 test-integration: test-cli test-vscode-extension ## run shared CLI and VS Code integration scenarios
 
 test-integration-full: ## run the full shared integration matrix
 	$(MAKE) test-integration TEST_SCENARIO_SET=full TEST_LANGUAGE=all
 
-validate-release: ci-install build package-cli package-vscode-extension test-integration-full ## build, package, and run release validation
-
-clean-test: ## clean generated output and run the full test suite
-	$(PNPM) run clean:tests
-
-lint: ## run all workspace linters
-	$(PNPM) run lint
+# Local generation and linking
+.PHONY: package package-cli package-vscode-extension vsix vscode-vsix link-cli cli-link dev
 
 package: package-vscode-extension ## package the VS Code extension
-
-package-vscode-extension: ## package the VS Code extension
-	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" run package
-
-.PHONY: build-core test-core validate-core
-build-core: ## build the core package
-	$(PNPM) --filter "$(CORE_PACKAGE)" run clean:compile
-
-test-core: ## test the core package
-	$(PNPM) --filter "$(CORE_PACKAGE)" test
-
-validate-core: ci-install build-core test-core ## install, build, and test core
-
-.PHONY: build-cli test-cli package-cli validate-cli
-build-cli: ## build the CLI package and its dependencies
-	$(PNPM) --filter "$(CLI_PACKAGE)..." run clean:compile
-
-test-cli: ## test the CLI package
-	$(PNPM) --filter "$(CLI_PACKAGE)" test
 
 package-cli: ## bundle the CLI package for publishing
 	$(PNPM) --filter "$(CLI_PACKAGE)" run package
 
-validate-cli: ci-install build-cli test-cli ## install, build, and test CLI
+package-vscode-extension: ## package the VS Code extension
+	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" run package
 
-.PHONY: build-vscode-extension test-vscode-extension validate-vscode-extension
-build-vscode-extension: ## build the VS Code extension package and its dependencies
-	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)..." run clean:compile
+vsix: package-vscode-extension ## generate the VS Code .vsix package
 
-test-vscode-extension: ## test the VS Code extension package
-	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" test
+vscode-vsix: vsix ## alias for vsix
 
-validate-vscode-extension: ci-install build-vscode-extension test-vscode-extension ## install, build, and test the VS Code extension
+link-cli: package-cli ## package and globally link the CLI package
+	$(PNPM) --dir packages/cli add -g .
+
+cli-link: link-cli ## alias for link-cli
 
 dev: compile ## open test workspace with this extension loaded in development mode
 	code --extensionDevelopmentPath=packages/vscode-extension test/fixtures
+
+# Validation
+.PHONY: validate-core validate-cli validate-vscode-extension validate-release
+
+validate-core: ci-install build-core test-core ## install, build, and test core
+
+validate-cli: ci-install build-cli test-cli ## install, build, and test CLI
+
+validate-vscode-extension: ci-install build-vscode-extension test-vscode-extension ## install, build, and test the VS Code extension
+
+validate-release: ci-install build package-cli package-vscode-extension test-integration-full ## build, package, and run release validation

@@ -1,5 +1,6 @@
+import * as path from 'path';
 import * as vscode from 'vscode';
-import { DependencyExtractorRegistry, LayerAlias, SourceFile } from '@jfrz38/clean-architecture-highlighter-core';
+import { DependencyExtractorRegistry, LayerAlias, SourceFile, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
 import { State } from './state';
 
 const dependencyExtractors = new DependencyExtractorRegistry();
@@ -10,7 +11,9 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
         return;
     }
 
-    if (!isDocumentInSourceFolder(document.uri, state.config.sourceFolder)) {
+    const sourceFolder = new SourceFolder(state.config.sourceFolder);
+    const workspaceRelativePath = getWorkspaceRelativePath(document.uri);
+    if (!sourceFolder.contains(workspaceRelativePath ?? '')) {
         diagnostics.delete(document.uri);
         return;
     }
@@ -38,6 +41,11 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
     }));
 }
 
-function isDocumentInSourceFolder(uri: vscode.Uri, sourceFolder: string): boolean {
-    return uri.path.includes(`/${sourceFolder}/`);
+function getWorkspaceRelativePath(uri: vscode.Uri): string | undefined {
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+    if (!workspaceFolder) {
+        return undefined;
+    }
+
+    return path.relative(workspaceFolder.uri.fsPath, uri.fsPath);
 }

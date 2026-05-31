@@ -79,7 +79,9 @@ clean-architecture-highlighter check .
 Default output is text:
 
 ```text
-src/domain/user.ts:1:1 domain layer should not depend on infrastructure layer.
+violation: src/domain/user.ts:1:1 domain layer should not depend on infrastructure layer.
+
+VIOLATION 1 architecture violation found.
 ```
 
 JSON output is also available:
@@ -94,17 +96,22 @@ clean-arch check . --format json
 | -------------------------- | ------------------------------------------ | --------- | ------- |
 | `<path>`                   | Project, source folder, or file to analyze | Yes       | -       |
 | `--config <path>`          | Path to a JSON configuration file          | No        | -       |
-| `--source-folder <folder>` | Source folder relative to the project root | No        | `src`   |
+| `--source-folder <folder>` | Source folder relative to the project root | No        | -       |
 | `--enabled-languages <languages>` | Comma-separated language identifiers to analyze | No | `javascript,typescript` |
 | `--format <format>`        | Output format: `text` or `json`            | No        | `text`  |
+| `--strict`                 | Return exit code `1` when violations are found | No     | enabled |
+| `--no-fail`                | Report violations without returning exit code `1` | No  | -       |
+| `--verbose`                | Print analysis details to stderr           | No        | `false` |
 
 ## Exit codes
 
 | Code | Meaning                                |
 | ---- | -------------------------------------- |
-| `0`  | No violations found                    |
-| `1`  | Violations found                       |
+| `0`  | No violations found, or violations found with `--no-fail` |
+| `1`  | Violations found in strict mode        |
 | `2`  | Usage, configuration, or runtime error |
+
+By default, the CLI is strict and returns exit code `1` when architecture violations are found. Use `--no-fail` to report violations without failing the process. `--format json` keeps stdout machine-readable and does not include colors.
 
 ## Configuration
 
@@ -118,7 +125,6 @@ Example configuration:
 
 ```json
 {
-  "sourceFolder": "src",
   "enabledLanguages": ["javascript", "typescript"],
   "layers": {
     "domain": {
@@ -137,16 +143,24 @@ Example configuration:
 }
 ```
 
-`--source-folder` can be used to override the configured `sourceFolder` from the command line:
+`--source-folder` can be used to limit analysis to a specific subfolder:
 
 ```bash
-clean-arch check . --source-folder code
+clean-arch check . --source-folder src
 ```
+
+When `--source-folder` is not set, the CLI analyzes the provided `<path>` directly.
 
 `--enabled-languages` can be used to override the configured `enabledLanguages` from the command line:
 
 ```bash
 clean-arch check . --enabled-languages csharp,typescript
+```
+
+`--verbose` prints analysis details to stderr, keeping stdout reserved for normal text or JSON output:
+
+```bash
+clean-arch check . --verbose
 ```
 
 ## Supported languages

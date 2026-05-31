@@ -19,4 +19,12 @@ suite('CliEnabledLanguagesParser', () => {
     test('rejects empty language list', () => {
         assert.throws(() => CliEnabledLanguagesParser.parse(' , '), InvalidArgumentError);
     });
+
+    test('rejects unsupported language identifiers', () => {
+        assert.throws(() => CliEnabledLanguagesParser.parse('javacsript'), InvalidArgumentError);
+    });
+
+    test('rejects when any language is unsupported', () => {
+        assert.throws(() => CliEnabledLanguagesParser.parse('typescript,javacsript'), InvalidArgumentError);
+    });
 });
