@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - main
-      - develop
   push:
     branches:
       - main
@@ -21,7 +20,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

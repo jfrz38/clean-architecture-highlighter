@@ -1,125 +1,143 @@
 # Clean Architecture Highlighter
 
-[![Marketplace Version](https://vsmarketplacebadges.dev/version-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
-[![Installs](https://vsmarketplacebadges.dev/installs-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
-[![Downloads](https://vsmarketplacebadges.dev/downloads-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter)
-[![Rating](https://vsmarketplacebadges.dev/rating-short/jfrz38.clean-architecture-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter&ssr=false#review-details)
-[![Build](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build_and_tests.yml)
+[![Build VS Code Extension](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-vscode-extension.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-vscode-extension.yml)
+[![Build CLI](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-cli.yml/badge.svg)](https://github.com/jfrz38/clean-architecture-highlighter/actions/workflows/build-cli.yml)
 [![License](https://img.shields.io/github/license/jfrz38/clean-architecture-highlighter)](LICENSE)
 
-VS Code extension to **enforce Clean Architecture rules** in Node.js projects by **statically analyzing imports**.
+Clean Architecture Highlighter is a monorepo for checking Clean Architecture dependency boundaries by statically analyzing imports.
 
-![Demo](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/demo.gif)
+The project contains a shared analysis engine in [`packages/core`](packages/core) and two user-facing adapters:
 
-## Features
+| Package | Purpose |
+| ------- | ------- |
+| 🔗 [`packages/core`](packages/core) | Shared layer configuration, import extraction, dependency analysis, and violation reporting logic. |
+| 🔗 [`packages/cli`](packages/cli) | Command-line checker for local scripts and CI pipelines. |
+| 🔗 [`packages/vscode-extension`](packages/vscode-extension) | VS Code extension that reports architecture violations as editor diagnostics. |
 
-- ⚙️**Configurable layers and dependency rules**  
-- ⚡**Real-time diagnostics** on file open / change  
-- 🗺️ **Path alias support**  
-- 🧅**Default Clean Architecture rules** out of the box  
-- 🧩 **Non-intrusive** (no code changes required)
+Use the **CLI** when you want a repeatable terminal or CI check. Use the **VS Code extension** when you want immediate feedback while editing. Both use the same core rules.
 
-Checks that dependencies between layers follow the configured architecture, by default:
+## Core Idea
 
-```bash
-infrastructure → application → domain
+The analyzer checks that dependencies between layers follow the configured architecture.
+
+By default, the expected dependency direction is:
+
+```text
+infrastructure -> application -> domain
 ```
 
-If a file imports something from a forbidden layer, the extension shows a **VS Code warning/error**.
+That means:
 
-## Extension Settings
+- `domain` can only depend on `domain`.
+- `application` can depend on `application` and `domain`.
+- `infrastructure` can depend on `infrastructure`, `application`, and `domain`.
 
-The extension can be customized via workspace or user settings.
-Below is the default configuration, which enforces a standard Clean Architecture layout.
+If a source file imports something from a forbidden layer, the adapter reports a violation. The CLI prints it and can fail the process; the VS Code extension shows a diagnostic in the editor.
+
+## Quick Start
+
+### CLI
+
+Install the CLI globally:
+
+```bash
+pnpm add -g @jfrz38/clean-architecture-highlighter-cli
+```
+
+Check a project or source folder:
+
+```bash
+clean-arch check .
+clean-arch check ./src
+```
+
+The package also exposes the long binary name:
+
+```bash
+clean-architecture-highlighter check .
+```
+
+See the 🔗 [CLI README](packages/cli/README.md) for options, JSON output, exit codes, and CI usage.
+
+![CLI output example](./images/cli_example.png)
+
+### VS Code Extension
+
+Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jfrz38.clean-architecture-highlighter).
+
+The extension analyzes supported files in the workspace and reports dependency violations as VS Code diagnostics on file open and change.
+
+See the 🔗 [VS Code extension README](packages/vscode-extension/README.md) for marketplace details, settings, and editor behavior.
+
+![VS Code extension demo](./images/demo_extension.gif)
+
+## Configuration
+
+Both adapters use the same layer model from `packages/core`.
+
+Default configuration:
 
 ```json
-// settings.json
 {
-    "clean-architecture-highlighter.severityLevel": "warning",
-    "clean-architecture-highlighter.sourceFolder": "src",
-    "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
-    
-    "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
-    "clean-architecture-highlighter.layers.domain.allowedDependencies": ["domain"],
-
-    "clean-architecture-highlighter.layers.application.aliases": ["application"],
-    "clean-architecture-highlighter.layers.application.allowedDependencies": ["application", "domain"],
-
-    "clean-architecture-highlighter.layers.infrastructure.aliases": ["infrastructure"],
-    "clean-architecture-highlighter.layers.infrastructure.allowedDependencies": ["infrastructure", "application", "domain"]
+  "enabledLanguages": ["javascript", "typescript"],
+  "layers": {
+    "domain": {
+      "aliases": ["domain"],
+      "allowedDependencies": ["domain"]
+    },
+    "application": {
+      "aliases": ["application"],
+      "allowedDependencies": ["application", "domain"]
+    },
+    "infrastructure": {
+      "aliases": ["infrastructure"],
+      "allowedDependencies": ["infrastructure", "application", "domain"]
+    }
+  }
 }
 ```
 
-| Setting                              | Type     | Default   | Possible values                           | Description                                                                                                    |
-| ------------------------------------ | -------- | --------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
-| `sourceFolder`                       | string   | `src`     | any folder name                           | Root folder where the source code is analyzed. Only files below this folder (and subfolders) will be analyzed. |
-| `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
-| `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
-| `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
+`aliases` identify the folder names or import path fragments that belong to each layer. For example, if your application layer is stored in `business`, configure `business` as an alias for `application`.
 
-JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces the full analyzed-language list, so include every language you want to analyze:
+Adapter-specific configuration format differs slightly:
 
-```json
-"clean-architecture-highlighter.enabledLanguages": ["<language-id>", "<another-language-id>"]
-```
+- The CLI reads JSON configuration files and command-line flags. See [CLI configuration](packages/cli/README.md#configuration).
+- The VS Code extension reads workspace or user settings under the `clean-architecture-highlighter.*` namespace. See [extension settings](packages/vscode-extension/README.md#extension-settings).
 
-### Supported Languages
+## Supported Languages
 
-| Language   | VS Code language id | Enabled by default | Supported dependency syntax |
-| ---------- | ------------------- | ------------------ | --------------------------- |
-| JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...` |
-| TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...` |
-| C#         | `csharp`            | No                 | `using ...`, alias directives, static imports, and global usings |
-| Dart       | `dart`              | No                 | `import ...`, `export ...`, `part ...`, aliases, and `show`/`hide` combinators |
-| Elixir     | `elixir`            | No                 | `alias ...`, grouped aliases, `import ...`, `require ...`, and `use ...` |
-| Go         | `go`                | No                 | Single-line imports, import blocks, aliased imports, dot imports, and blank imports |
-| Groovy     | `groovy`            | No                 | Static `import ...`, `import static ...`, alias imports, and wildcard imports |
-| Java       | `java`              | No                 | Static `import ...`, `import static ...`, and wildcard imports |
-| Kotlin     | `kotlin`            | No                 | Static `import ...`, aliased `import ... as ...`, and wildcard imports |
-| Lua        | `lua`               | No                 | `require(...)`, `require '...'`, and local assignment requires |
-| PHP        | `php`               | No                 | Namespace `use ...`, aliases, grouped imports, and function/constant imports |
-| Python     | `python`            | No                 | Static `import ...` and `from ... import ...` |
-| Ruby       | `ruby`              | No                 | `require ...` and `require_relative ...` |
-| Rust       | `rust`              | No                 | `use ...`, grouped imports, aliases, glob imports, and `mod ...` declarations |
-| Scala      | `scala`             | No                 | Static `import ...`, grouped imports, aliases, exclusions, and wildcard imports |
+JavaScript and TypeScript are enabled by default. Other languages are supported as opt-in languages through `enabledLanguages`.
 
-Note that the default `aliases` and `allowedDependencies` **do not need to be set**; they are applied automatically.  
-`aliases` are used when your layer folder has a different name. For example, if your `application` folder is called `business`, you can add it here using:
-
-```json
-"clean-architecture-highlighter.layers.application.aliases": ["business"]
-```
-
-## Requirements
-
-This extension analyzes JavaScript and TypeScript by default. C#, Dart, Elixir, Go, Groovy, Java, Kotlin, Lua, PHP, Python, Ruby, Rust, and Scala are supported as opt-in languages through `enabledLanguages`.
-
-- **Folder Structure**: It assumes a layered architecture (by default under a `src` folder but configurable via `sourceFolder`).
-- **Language-aware design**: import extraction is handled per language internally, so additional languages can be added in future versions without changing the architecture rules.
+| Language | Identifier | Enabled by default | Supported dependency syntax |
+| -------- | ---------- | ------------------ | --------------------------- |
+| JavaScript | `javascript` | Yes | Static ES Module `import ... from ...` |
+| TypeScript | `typescript` | Yes | Static ES Module `import ... from ...` |
+| C# | `csharp` | No | `using ...`, alias directives, static imports, and global usings |
+| Dart | `dart` | No | `import ...`, `export ...`, `part ...`, aliases, and `show`/`hide` combinators |
+| Elixir | `elixir` | No | `alias ...`, grouped aliases, `import ...`, `require ...`, and `use ...` |
+| Go | `go` | No | Single-line imports, import blocks, aliased imports, dot imports, and blank imports |
+| Groovy | `groovy` | No | Static `import ...`, `import static ...`, alias imports, and wildcard imports |
+| Java | `java` | No | Static `import ...`, `import static ...`, and wildcard imports |
+| Kotlin | `kotlin` | No | Static `import ...`, aliased `import ... as ...`, and wildcard imports |
+| Lua | `lua` | No | `require(...)`, `require '...'`, and local assignment requires |
+| PHP | `php` | No | Namespace `use ...`, aliases, grouped imports, and function/constant imports |
+| Python | `python` | No | Static `import ...` and `from ... import ...` |
+| Ruby | `ruby` | No | `require ...` and `require_relative ...` |
+| Rust | `rust` | No | `use ...`, grouped imports, aliases, glob imports, and `mod ...` declarations |
+| Scala | `scala` | No | Static `import ...`, grouped imports, aliases, exclusions, and wildcard imports |
 
 ## Known Limitations
 
-- **Import Syntax Only**: The extension analyzes the static dependency forms listed in the Supported Languages table. Unsupported forms are ignored:
-  - JavaScript/TypeScript: CommonJS `require()` and dynamic imports are not supported.
-  - C#: project-level MSBuild references and runtime dependency injection are not resolved.
-  - Dart: `pubspec.yaml`, generated part files, and runtime dependency loading are not resolved.
-  - Elixir: macro expansion, behaviours, and runtime application configuration are not resolved.
-  - Go: runtime dependency injection and non-import-based dependencies are not supported.
-  - Groovy: default imports, runtime metaprogramming, and non-import-based dependencies are not supported.
-  - Java: runtime dependency injection and non-import-based dependencies are not supported.
-  - Kotlin: runtime dependency injection and non-import-based dependencies are not supported.
-  - Lua: custom `package.path` loaders and runtime dependency loading are not resolved.
-  - PHP: Composer PSR-4 autoload metadata and runtime dependency loading are not resolved.
-  - Python: dynamic imports and runtime dependency loading are not supported.
-  - Ruby: Rails-style autoloaded constants and runtime dependency loading are not supported.
-  - Rust: Cargo crate metadata and file-system module resolution are not resolved.
-  - Scala: runtime dependency injection and non-import-based dependencies are not supported.
-- **Static Analysis**: The extension checks path strings. It does not resolve complex runtime dependency injection containers if they are not reflected in the file's import statements.
+For the current analysis limitations, see the 🔗 [core Known Limitations](packages/core/README.md#known-limitations).
+
+## Integration Fixtures
+
+Shared integration fixtures live in [`test/fixtures`](test/fixtures). They validate the same architecture scenarios across adapters and supported languages.
+
+See the 🔗 [fixtures README](test/fixtures/README.md) for scenario organization and test matrix controls.
 
 ## The Dependency Rule
 
-The arrows in the diagram below represent the only allowed direction for dependencies.  
-Inner layers **must not know anything** about outer layers.
+The arrows in the diagram below represent the only allowed direction for dependencies. Inner layers must not know anything about outer layers.
 
 ![Dependency rule](https://raw.githubusercontent.com/jfrz38/clean-architecture-highlighter/main/images/dependency_rule.png)

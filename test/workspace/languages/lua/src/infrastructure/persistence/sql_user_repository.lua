@@ -1,3 +1,0 @@
-local SqlUserRepository = {}
-
-return SqlUserRepository

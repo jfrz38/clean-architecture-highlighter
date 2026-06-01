@@ -1,6 +1,11 @@
+packages:
+  - 'packages/*'
+
 allowBuilds:
   '@vscode/vsce-sign': true
+  esbuild: true
   keytar: true
 enablePrePostScripts: false
 minimumReleaseAge: 4320
 saveExact: true
+verifyDepsBeforeRun: false

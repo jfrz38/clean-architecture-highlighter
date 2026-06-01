@@ -3,6 +3,15 @@ name: Bump Version
 on:
   workflow_dispatch:
     inputs:
+      package:
+        description: Package to bump
+        required: true
+        default: vscode-extension
+        type: choice
+        options:
+          - cli
+          - core
+          - vscode-extension
       bump:
         description: Version component to bump
         required: true
@@ -25,7 +34,7 @@ permissions:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 1
 
     steps:
       - name: Checkout repository
@@ -35,12 +44,41 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve package metadata
+        id: package
+        run: |
+          case "${{ inputs.package }}" in
+            cli)
+              echo "package_name=@jfrz38/clean-architecture-highlighter-cli" >> "$GITHUB_OUTPUT"
+              echo "version_file=packages/cli/package.json" >> "$GITHUB_OUTPUT"
+              echo "tag_prefix=cli-v" >> "$GITHUB_OUTPUT"
+              ;;
+            core)
+              echo "package_name=@jfrz38/clean-architecture-highlighter-core" >> "$GITHUB_OUTPUT"
+              echo "version_file=packages/core/package.json" >> "$GITHUB_OUTPUT"
+              echo "tag_prefix=core-v" >> "$GITHUB_OUTPUT"
+              ;;
+            vscode-extension)
+              echo "package_name=clean-architecture-highlighter" >> "$GITHUB_OUTPUT"
+              echo "version_file=packages/vscode-extension/package.json" >> "$GITHUB_OUTPUT"
+              echo "tag_prefix=vscode-extension-v" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported package: ${{ inputs.package }}" >&2
+              exit 1
+              ;;
+          esac
+
       - name: Bump version
         uses: jfrz38/version-bump-action@v0
         with:
           bump: ${{ inputs.bump }}
           strategy: npm
-          version-file: package.json
+          version-file: ${{ steps.package.outputs.version_file }}
           base-branch: ${{ inputs.base_branch }}
+          branch-prefix: chore/bump-${{ inputs.package }}-version-
+          tag-prefix: ${{ steps.package.outputs.tag_prefix }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          pr-body: Bumps clean-architecture-highlighter from {current-version} to {next-version} using a {bump} release bump.
+          commit-message: Bump ${{ steps.package.outputs.package_name }} to {next-version}
+          pr-title: Bump ${{ steps.package.outputs.package_name }} to {next-version}
+          pr-body: Bumps ${{ steps.package.outputs.package_name }} from {current-version} to {next-version} using a {bump} release bump.
