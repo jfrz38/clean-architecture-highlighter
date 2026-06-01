@@ -30,7 +30,7 @@ jobs:
           - release_name: VS Code Extension
             package_key: vscode-extension
             tag_prefix: vscode-extension-v
-            package_name: clean-architecture-highlighter
+            package_name: jfrz38.clean-architecture-highlighter
             package_dir: packages/vscode-extension
             package_file: packages/vscode-extension/package.json
             registry: vscode-marketplace
