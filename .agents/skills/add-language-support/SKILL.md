@@ -1,6 +1,6 @@
 ---
 name: add-language-support
-description: Add opt-in support for a new language by updating the core dependency extractor package, the VS Code extension adapter, integration fixtures, documentation, and verification.
+description: Add opt-in support for a new language by updating core language registration, dependency extractors, adapters, integration fixtures, documentation, and verification.
 ---
 
 # Add Language Support
@@ -17,7 +17,7 @@ The goal is to add a language-specific dependency extractor without changing the
 - Do **not** add `onLanguage:<languageId>` for an opt-in language by default.
   - Keep `onLanguage` for default languages.
   - `onStartupFinished` lets opt-in languages work after the extension starts.
-- Keep architecture rules language-agnostic in `packages/core`; language additions should only change dependency extraction and VS Code registration/integration.
+- Keep architecture rules language-agnostic in `packages/core`; language additions should only change supported-language registration, dependency extraction, adapter registration/integration, and documentation.
 - Add VS Code integration coverage beyond enabled/disabled smoke tests when practical.
   - Use the existing TypeScript scenarios as the reference shape.
   - Prefer idiomatic fixtures for the target language over mechanically copying TypeScript syntax.
@@ -26,6 +26,33 @@ The goal is to add a language-specific dependency extractor without changing the
 - Use VS Code `languageId`, not file extension, as the runtime language key.
 
 ## Implementation workflow
+
+### 0. Register the supported language in core
+
+Update:
+
+```text
+packages/core/src/clean-architecture/sources/dependencies/languages.ts
+```
+
+Add the language's file extensions to `SupportedLanguageRegistry.languagesByExtension` using the runtime language identifier as the value:
+
+```ts
+['.<ext>', '<languageId>']
+```
+
+This registry is the source of truth for supported language identifiers outside VS Code, including CLI file-extension resolution and `enabledLanguages` validation.
+
+Also update:
+
+```text
+packages/core/test/languages.test.ts
+```
+
+Cover at least:
+
+- one representative extension resolving to the language id;
+- the language id being accepted by `isSupportedLanguageId` or `EnabledLanguagesValidator`.
 
 ### 1. Add the extractor
 
@@ -67,6 +94,12 @@ Add the new VS Code `languageId` to the registry:
 ['<languageId>', new <Language>DependencyExtractor()]
 ```
 
+The extractor registry and `SupportedLanguageRegistry` are separate on purpose:
+
+- `SupportedLanguageRegistry` defines which language identifiers/extensions are supported.
+- `DependencyExtractorRegistry` maps supported language identifiers to extraction behavior.
+- A new language normally needs both.
+
 ### 3. Activation and configuration
 
 Update the VS Code extension package manifest only where appropriate:
@@ -80,6 +113,7 @@ packages/vscode-extension/package.json
 - For opt-in languages, prefer relying on `onStartupFinished` unless the user explicitly wants early activation.
 - Do **not** add the language to the default `enabledLanguages` unless explicitly requested.
 - Keep the `enabledLanguages` default in `package.json` and `EnabledLanguagesConfiguration` aligned.
+- Do not rely on the VS Code manifest alone as the supported-language source of truth; core must also know the language in `languages.ts`.
 
 If the language is opt-in, document that users must configure:
 
@@ -110,6 +144,12 @@ Cover representative cases such as:
 - correct diagnostic range.
 
 Do not rely only on integration tests for parser behavior. If the test runner does not already discover nested test files, update it to load `*.test` files recursively.
+
+The current core test command already discovers nested tests through:
+
+```text
+mocha "out/test/**/*.test.js" --ui tdd --timeout 10000
+```
 
 ### 5. Add minimal language integration fixtures
 
@@ -152,13 +192,32 @@ This keeps the architecture rule engine unchanged.
 
 ### 6. Add language integration suites
 
-Create:
+Create a language case:
 
 ```text
-test/scenarios/languages/<language>.suite.ts
+test/scenarios/languages/cases/<language>.case.ts
 ```
 
-Add enabled/disabled scenarios and, when practical, fuller architecture scenarios equivalent to the TypeScript reference suite.
+Use the existing language cases as the reference shape. The case should include:
+
+- `language`;
+- `displayName`;
+- `enabledLanguages`;
+- `disabledLanguages`;
+- the fixture file paths used by the shared suite builder;
+- diagnostic line numbers for expected violations.
+
+Register the case in:
+
+```text
+test/scenarios/languages/language-cases.ts
+```
+
+Import the new case and add it to `languageCases`.
+
+The shared builder in `test/scenarios/languages/language-suite-builder.ts` generates the standard enabled/disabled and architecture scenarios from the case. Do not add manual registration to `test/scenarios/scenarios.ts`; it delegates to `getSelectedSuites()` in `test/scenarios/scenario-selection.ts`.
+
+Add enabled/disabled scenarios through the case and, when practical, fuller architecture scenarios equivalent to the TypeScript reference coverage.
 
 At minimum include:
 
@@ -179,15 +238,27 @@ Prefer also covering:
 - nested layer folders are detected correctly;
 - files outside the configured `sourceFolder` are ignored.
 
-Register the suite in:
+Only create a dedicated suite file under `test/scenarios/languages/suites/` if the current project still uses those files for the target workflow. In the current scenario-selection flow, the generated suites come from `languageCases`.
+
+The old manual registration target:
 
 ```text
 test/scenarios/scenarios.ts
 ```
 
+should normally not be edited for new languages.
+
 ### 7. Update documentation
 
-Update `README.md`:
+Update:
+
+```text
+README.md
+packages/cli/README.md
+packages/vscode-extension/README.md
+```
+
+At minimum, update `README.md`:
 
 - mention the new supported language;
 - explain that JavaScript and TypeScript are enabled by default and new languages are opt-in, unless explicitly changed;
@@ -195,7 +266,11 @@ Update `README.md`:
 - list the supported static import/dependency syntax at a high level;
 - keep default configuration examples unchanged unless defaults actually changed.
 
-For local manual testing, ensure `test/fixtures/.vscode/settings.json` includes the opt-in language if such a workspace settings file is present:
+Update `packages/cli/README.md` when the language is available through the CLI. Add the language id to the opt-in supported-language example.
+
+Update `packages/vscode-extension/README.md` if the extension-facing language support text or requirements need to mention the new language explicitly.
+
+For local manual testing, ensure `test/fixtures/.vscode/settings.json` includes the opt-in language if such a workspace settings file is present. Do not create it only for this unless local manual testing needs it:
 
 ```json
 {
@@ -224,14 +299,21 @@ Run these commands before finishing:
 
 ```bash
 make compile
-pnpm run lint
+make lint
 make test-core
 ```
 
-Run the integration suite command as well:
+Run CLI and VS Code integration tests as well:
 
 ```bash
+make test-cli
 make test-vscode-extension
+```
+
+For full language-matrix integration coverage, run:
+
+```bash
+make test-integration-full
 ```
 
 In CI or Linux environments where VS Code tests need a display, use:
@@ -246,14 +328,22 @@ If `make test-vscode-extension` fails before executing tests because the VS Code
 
 - [ ] New extractor added.
 - [ ] Extractor registered by VS Code `languageId`.
+- [ ] Core `SupportedLanguageRegistry` updated with language id and extensions.
 - [ ] `package.json` `contributes.languages` includes the language id, aliases, and extensions.
 - [ ] Default `enabledLanguages` unchanged unless explicitly requested.
 - [ ] Extractor unit tests added for language syntax.
+- [ ] Core supported-language tests updated.
 - [ ] Minimal `test/fixtures/languages/<languageId>/` fixtures added.
-- [ ] Enabled/disabled integration scenarios added.
-- [ ] Full architecture-style integration scenarios added or intentionally deferred with an issue/note.
+- [ ] `test/scenarios/languages/cases/<language>.case.ts` added.
+- [ ] New language case imported and added to `test/scenarios/languages/language-cases.ts`.
+- [ ] Enabled/disabled integration coverage generated through the shared language suite builder.
+- [ ] Full architecture-style integration coverage added or intentionally deferred with an issue/note.
 - [ ] README updated.
+- [ ] CLI README updated when CLI support applies.
+- [ ] VS Code extension README updated when extension-facing docs change.
 - [ ] `make compile` passes.
-- [ ] `pnpm run lint` passes.
+- [ ] `make lint` passes.
 - [ ] `make test-core` passes.
+- [ ] `make test-cli` passes.
 - [ ] `make test-vscode-extension` or `xvfb-run -a make test-vscode-extension` executed and result reported.
+- [ ] `make test-integration-full` executed when full language-matrix coverage is required.
