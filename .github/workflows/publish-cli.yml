@@ -90,7 +90,7 @@ jobs:
           fi
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v6.0.3
+        uses: pnpm/action-setup@v6.0.8
         with:
           version: 11.1.3
 
