@@ -9,7 +9,7 @@ suite('ViolationFormatter', () => {
             line: 1,
             character: 1,
             message: 'application layer should not depend on infrastructure layer.'
-        }], 'text').output;
+        }], 'text', false).output;
 
         assert.strictEqual(output, [
             'violation: src/application/use-case.ts:1:1 application layer should not depend on infrastructure layer.',
