@@ -26,6 +26,7 @@ suite('GitHub Action runner', () => {
             path: 'project',
             config: 'config.json',
             'source-folder': 'src',
+            'enabled-languages': 'typescript,csharp',
             format: 'json'
         });
         let runnerInput: RunCheckInput | undefined;
@@ -39,6 +40,7 @@ suite('GitHub Action runner', () => {
             path: 'project',
             config: 'config.json',
             sourceFolder: 'src',
+            enabledLanguages: ['typescript', 'csharp'],
             format: 'json',
             failOnViolations: true
         });

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@actions/core": "1.11.1",
+    "@jfrz38/clean-architecture-highlighter-core": "workspace:*",
     "@jfrz38/clean-architecture-highlighter-cli": "workspace:*"
   },
   "devDependencies": {

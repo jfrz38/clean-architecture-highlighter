@@ -28,6 +28,7 @@ jobs:
         with:
           path: .
           source-folder: src
+          enabled-languages: typescript,csharp
           format: text
 ```
 
@@ -55,6 +56,7 @@ uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action
 | `path` | Project path or source folder to check. | No | `.` |
 | `config` | Path to a JSON configuration file. | No | - |
 | `source-folder` | Source folder relative to the project root. | No | - |
+| `enabled-languages` | Comma-separated language identifiers to analyze. | No | - |
 | `format` | Output format: `text` or `json`. | No | `text` |
 
 ## Behavior
@@ -68,6 +70,16 @@ It fails the workflow when architecture violations are found or when configurati
 The action delegates to the CLI check flow, so it uses the same JSON configuration format as the CLI.
 
 See the [CLI configuration documentation](../cli/README.md#configuration) for examples.
+
+`enabled-languages` can be used to override the configured `enabledLanguages` from the workflow:
+
+```yaml
+- name: Check Clean Architecture boundaries
+  uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0
+  with:
+    path: .
+    enabled-languages: typescript,csharp,java
+```
 
 ## Version Tags
 

@@ -87,6 +87,7 @@ jobs:
         with:
           path: .
           source-folder: src
+          enabled-languages: typescript,csharp
 ```
 
 See the 🔗 [GitHub Action README](packages/github-action/README.md) for inputs, version tags, and configuration examples.

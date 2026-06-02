@@ -11,6 +11,9 @@ inputs:
   source-folder:
     description: Optional source folder relative to the project root.
     required: false
+  enabled-languages:
+    description: Optional comma-separated language identifiers to analyze.
+    required: false
   format:
     description: Output format. Supported values are text and json.
     required: false

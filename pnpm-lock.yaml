@@ -74,6 +74,9 @@ importers:
       '@jfrz38/clean-architecture-highlighter-cli':
         specifier: workspace:*
         version: link:../cli
+      '@jfrz38/clean-architecture-highlighter-core':
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: 25.x
