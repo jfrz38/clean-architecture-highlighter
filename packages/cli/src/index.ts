@@ -7,6 +7,7 @@ import { runCheck } from './check/run-check';
 import { OutputFormat } from './output/violation-formatter';
 
 export { runCheck } from './check/run-check';
+export type { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
 export type { RunCheckInput, RunCheckResult } from './check/run-check';
 export type { OutputFormat } from './output/violation-formatter';
 

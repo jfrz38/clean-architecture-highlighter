@@ -1,4 +1,4 @@
-import type { OutputFormat, RunCheckInput } from '@jfrz38/clean-architecture-highlighter-cli';
+import type { EnabledLanguages, OutputFormat, RunCheckInput } from '@jfrz38/clean-architecture-highlighter-cli';
 
 export type ActionInputs = Pick<RunCheckInput, 'path' | 'config' | 'sourceFolder' | 'enabledLanguages' | 'format'>;
 
@@ -24,7 +24,7 @@ function parseFormat(value: string): OutputFormat {
     throw new Error('Input format must be text or json.');
 }
 
-function parseEnabledLanguages(value: string | undefined): RunCheckInput['enabledLanguages'] {
+function parseEnabledLanguages(value: string | undefined): EnabledLanguages | undefined {
     if (!value) {
         return undefined;
     }
