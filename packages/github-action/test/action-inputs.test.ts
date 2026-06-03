@@ -33,10 +33,10 @@ suite('Action inputs', () => {
         });
     });
 
-    test('rejects unsupported enabled languages', () => {
+    test('rejects empty enabled language lists', () => {
         assert.throws(
-            () => parseActionInputs(name => name === 'enabled-languages' ? 'typescript,unknown' : ''),
-            /Unsupported language identifier/
+            () => parseActionInputs(name => name === 'enabled-languages' ? ',' : ''),
+            /at least one language identifier/
         );
     });
 
