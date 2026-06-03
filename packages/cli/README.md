@@ -209,7 +209,7 @@ The CLI is designed to fail the pipeline when architecture violations are found:
 clean-arch check .
 ```
 
-For GitHub Actions, use the dedicated [GitHub Action wrapper](../github-action/README.md) when you do not want to install the CLI manually in the workflow.
+For GitHub Actions, a dedicated action wrapper is planned. Until then, the CLI can be installed and executed directly in a workflow.
 
 ## Relationship with the VS Code extension
 
