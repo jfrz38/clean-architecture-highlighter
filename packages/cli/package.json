@@ -1,6 +1,6 @@
 {
   "name": "@jfrz38/clean-architecture-highlighter-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Command-line checker for Clean Architecture dependency boundaries.",
   "author": "José F. Ruiz <jrz899@inlumine.ual.es>",
   "license": "Apache-2.0",
