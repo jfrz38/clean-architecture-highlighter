@@ -21,3 +21,7 @@ inputs:
 runs:
   using: node20
   main: packages/github-action/dist/index.js
+
+branding:
+  icon: shield
+  color: blue

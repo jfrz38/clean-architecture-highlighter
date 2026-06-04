@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Check Clean Architecture boundaries
-        uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0
+        uses: jfrz38/clean-architecture-highlighter@v0
         with:
           path: .
           source-folder: src
@@ -36,7 +36,7 @@ Use a configuration file:
 
 ```yaml
 - name: Check Clean Architecture boundaries
-  uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0
+  uses: jfrz38/clean-architecture-highlighter@v0
   with:
     path: .
     config: clean-architecture.json
@@ -46,7 +46,7 @@ Use a configuration file:
 Pin an exact action version if you prefer reproducible workflow behavior:
 
 ```yaml
-uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0.1.0
+uses: jfrz38/clean-architecture-highlighter@v0.1.0
 ```
 
 ## Inputs
@@ -75,7 +75,7 @@ See the [CLI configuration documentation](../cli/README.md#configuration) for ex
 
 ```yaml
 - name: Check Clean Architecture boundaries
-  uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0
+  uses: jfrz38/clean-architecture-highlighter@v0
   with:
     path: .
     enabled-languages: typescript,csharp,java
@@ -86,11 +86,11 @@ See the [CLI configuration documentation](../cli/README.md#configuration) for ex
 Recommended tag for most workflows:
 
 ```yaml
-uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0
+uses: jfrz38/clean-architecture-highlighter@v0
 ```
 
 Exact release tags are also available:
 
 ```yaml
-uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0.1.0
+uses: jfrz38/clean-architecture-highlighter@v0.1.0
 ```

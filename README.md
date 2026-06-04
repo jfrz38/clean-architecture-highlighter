@@ -83,7 +83,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Check Clean Architecture boundaries
-        uses: jfrz38/clean-architecture-highlighter/packages/github-action@github-action-v0
+        uses: jfrz38/clean-architecture-highlighter@v0
         with:
           path: .
           source-folder: src
