@@ -19808,1312 +19808,6 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   }
 });
 
-// ../core/out/src/document.js
-var require_document = __commonJS({
-  "../core/out/src/document.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-  }
-});
-
-// ../core/out/src/configuration/components/layers/allowed-dependencies/allowed-layer-dependencies.js
-var require_allowed_layer_dependencies = __commonJS({
-  "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-layer-dependencies.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AllowedLayerDependencies = void 0;
-    var AllowedLayerDependencies = class {
-      defaults;
-      overrides;
-      value;
-      constructor(defaults, overrides = []) {
-        this.defaults = defaults;
-        this.overrides = overrides;
-        this.value = Array.from(new Set([...defaults, ...overrides].map((layer) => layer.trim()).filter((layer) => layer.length > 0)));
-      }
-    };
-    exports2.AllowedLayerDependencies = AllowedLayerDependencies;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/layer-component.js
-var require_layer_component = __commonJS({
-  "../core/out/src/configuration/components/layers/layer-component.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LayerComponent = void 0;
-    var LayerComponent = class {
-      aliases;
-      allowedDependencies;
-      _config;
-      static DEFAULT_LAYERS = {
-        domain: {
-          aliases: ["domain"],
-          allowedDependencies: ["domain"]
-        },
-        application: {
-          aliases: ["application"],
-          allowedDependencies: ["domain", "application"]
-        },
-        infrastructure: {
-          aliases: ["infrastructure"],
-          allowedDependencies: ["domain", "application", "infrastructure"]
-        }
-      };
-      constructor(aliases, allowedDependencies) {
-        this.aliases = aliases;
-        this.allowedDependencies = allowedDependencies;
-        this._config = {
-          aliases: this.aliases,
-          allowedDependencies: this.allowedDependencies.value
-        };
-      }
-      get config() {
-        return this._config;
-      }
-    };
-    exports2.LayerComponent = LayerComponent;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/application-layer.configuration.js
-var require_application_layer_configuration = __commonJS({
-  "../core/out/src/configuration/components/layers/application-layer.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ApplicationLayerConfiguration = void 0;
-    var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
-    var layer_component_1 = require_layer_component();
-    var ApplicationLayerConfiguration = class _ApplicationLayerConfiguration extends layer_component_1.LayerComponent {
-      static DEFAULT_APPLICATION_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.application;
-      constructor(layer) {
-        super(layer?.aliases ?? _ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.aliases, new allowed_layer_dependencies_1.AllowedLayerDependencies(_ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies, layer?.allowedDependencies));
-      }
-    };
-    exports2.ApplicationLayerConfiguration = ApplicationLayerConfiguration;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/domain-layer.configuration.js
-var require_domain_layer_configuration = __commonJS({
-  "../core/out/src/configuration/components/layers/domain-layer.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DomainLayerConfiguration = void 0;
-    var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
-    var layer_component_1 = require_layer_component();
-    var DomainLayerConfiguration = class _DomainLayerConfiguration extends layer_component_1.LayerComponent {
-      static DEFAULT_DOMAIN_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.domain;
-      constructor(layer) {
-        super(layer?.aliases ?? _DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.aliases, new allowed_layer_dependencies_1.AllowedLayerDependencies(_DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies, layer?.allowedDependencies));
-      }
-    };
-    exports2.DomainLayerConfiguration = DomainLayerConfiguration;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/infrastructure-layer.configuration.js
-var require_infrastructure_layer_configuration = __commonJS({
-  "../core/out/src/configuration/components/layers/infrastructure-layer.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.InfrastructureLayerConfiguration = void 0;
-    var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
-    var layer_component_1 = require_layer_component();
-    var InfrastructureLayerConfiguration = class _InfrastructureLayerConfiguration extends layer_component_1.LayerComponent {
-      static DEFAULT_INFRASTRUCTURE_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.infrastructure;
-      constructor(layer) {
-        super(layer?.aliases ?? _InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.aliases, new allowed_layer_dependencies_1.AllowedLayerDependencies(_InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies, layer?.allowedDependencies));
-      }
-    };
-    exports2.InfrastructureLayerConfiguration = InfrastructureLayerConfiguration;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/layers.configuration.js
-var require_layers_configuration = __commonJS({
-  "../core/out/src/configuration/components/layers/layers.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LayersConfiguration = void 0;
-    var application_layer_configuration_1 = require_application_layer_configuration();
-    var domain_layer_configuration_1 = require_domain_layer_configuration();
-    var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration();
-    var LayersConfiguration = class {
-      domain;
-      application;
-      infrastructure;
-      constructor(layers) {
-        this.domain = new domain_layer_configuration_1.DomainLayerConfiguration(layers.domain).config;
-        this.application = new application_layer_configuration_1.ApplicationLayerConfiguration(layers.application).config;
-        this.infrastructure = new infrastructure_layer_configuration_1.InfrastructureLayerConfiguration(layers.infrastructure).config;
-      }
-      get config() {
-        return {
-          domain: this.domain,
-          application: this.application,
-          infrastructure: this.infrastructure
-        };
-      }
-    };
-    exports2.LayersConfiguration = LayersConfiguration;
-  }
-});
-
-// ../core/out/src/configuration/components/source-folder/source-folder.configuration.js
-var require_source_folder_configuration = __commonJS({
-  "../core/out/src/configuration/components/source-folder/source-folder.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SourceFolderConfiguration = void 0;
-    var SourceFolderConfiguration = class {
-      sourceFolder;
-      constructor(sourceFolder) {
-        this.sourceFolder = sourceFolder;
-      }
-      get config() {
-        return this.sourceFolder;
-      }
-    };
-    exports2.SourceFolderConfiguration = SourceFolderConfiguration;
-  }
-});
-
-// ../core/out/src/configuration/components/configuration-component.js
-var require_configuration_component = __commonJS({
-  "../core/out/src/configuration/components/configuration-component.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ConfigurationComponent = void 0;
-    var ConfigurationComponent = class {
-      _config;
-      constructor(config, defaultValue) {
-        this._config = config ?? defaultValue;
-      }
-      get config() {
-        return this._config;
-      }
-    };
-    exports2.ConfigurationComponent = ConfigurationComponent;
-  }
-});
-
-// ../core/out/src/configuration/components/enabled-languages/enabled-languages.configuration.js
-var require_enabled_languages_configuration = __commonJS({
-  "../core/out/src/configuration/components/enabled-languages/enabled-languages.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EnabledLanguagesConfiguration = void 0;
-    var configuration_component_1 = require_configuration_component();
-    var EnabledLanguagesConfiguration = class _EnabledLanguagesConfiguration extends configuration_component_1.ConfigurationComponent {
-      static DEFAULT_ENABLED_LANGUAGES = ["javascript", "typescript"];
-      constructor(enabledLanguages) {
-        super(enabledLanguages, _EnabledLanguagesConfiguration.DEFAULT_ENABLED_LANGUAGES);
-      }
-    };
-    exports2.EnabledLanguagesConfiguration = EnabledLanguagesConfiguration;
-  }
-});
-
-// ../core/out/src/configuration/default.configuration.js
-var require_default_configuration = __commonJS({
-  "../core/out/src/configuration/default.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DefaultConfiguration = void 0;
-    var layers_configuration_1 = require_layers_configuration();
-    var source_folder_configuration_1 = require_source_folder_configuration();
-    var enabled_languages_configuration_1 = require_enabled_languages_configuration();
-    var DefaultConfiguration = class _DefaultConfiguration {
-      layers;
-      sourceFolder;
-      enabledLanguages;
-      config;
-      static get default() {
-        return new _DefaultConfiguration({}, void 0, void 0).config;
-      }
-      constructor(layers, sourceFolder, enabledLanguages) {
-        this.layers = layers;
-        this.sourceFolder = sourceFolder;
-        this.enabledLanguages = enabledLanguages;
-        const built = {
-          layers: new layers_configuration_1.LayersConfiguration(this.layers).config,
-          sourceFolder: new source_folder_configuration_1.SourceFolderConfiguration(this.sourceFolder).config,
-          enabledLanguages: new enabled_languages_configuration_1.EnabledLanguagesConfiguration(this.enabledLanguages).config
-        };
-        this.config = Object.freeze(built);
-      }
-    };
-    exports2.DefaultConfiguration = DefaultConfiguration;
-  }
-});
-
-// ../core/out/src/clean-architecture/restrictions/allowed-dependencies.js
-var require_allowed_dependencies = __commonJS({
-  "../core/out/src/clean-architecture/restrictions/allowed-dependencies.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AllowedDependencies = void 0;
-    var AllowedDependencies = class {
-      allowedDependencies;
-      constructor(domainDependencies, applicationDependencies, infrastructureDependencies) {
-        this.allowedDependencies = {
-          domain: domainDependencies,
-          application: applicationDependencies,
-          infrastructure: infrastructureDependencies
-        };
-      }
-      isAllowed(fromLayer, toLayer) {
-        return this.allowedDependencies[fromLayer]?.includes(toLayer);
-      }
-    };
-    exports2.AllowedDependencies = AllowedDependencies;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/allowed-dependencies/allowed-application-dependencies.js
-var require_allowed_application_dependencies = __commonJS({
-  "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-application-dependencies.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AllowedApplicationDependencies = void 0;
-    var application_layer_configuration_1 = require_application_layer_configuration();
-    var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
-    var AllowedApplicationDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
-      overrides;
-      constructor(overrides) {
-        super(application_layer_configuration_1.ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies, overrides);
-        this.overrides = overrides;
-      }
-    };
-    exports2.AllowedApplicationDependencies = AllowedApplicationDependencies;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/allowed-dependencies/allowed-domain-dependencies.js
-var require_allowed_domain_dependencies = __commonJS({
-  "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-domain-dependencies.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AllowedDomainDependencies = void 0;
-    var domain_layer_configuration_1 = require_domain_layer_configuration();
-    var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
-    var AllowedDomainDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
-      overrides;
-      constructor(overrides) {
-        super(domain_layer_configuration_1.DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies, overrides);
-        this.overrides = overrides;
-      }
-    };
-    exports2.AllowedDomainDependencies = AllowedDomainDependencies;
-  }
-});
-
-// ../core/out/src/configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies.js
-var require_allowed_infrastructure_dependencies = __commonJS({
-  "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AllowedInfrastructureDependencies = void 0;
-    var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration();
-    var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
-    var AllowedInfrastructureDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
-      overrides;
-      constructor(overrides) {
-        super(infrastructure_layer_configuration_1.InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies, overrides);
-        this.overrides = overrides;
-      }
-    };
-    exports2.AllowedInfrastructureDependencies = AllowedInfrastructureDependencies;
-  }
-});
-
-// ../core/out/src/configuration/allowed-dependencies.configuration.js
-var require_allowed_dependencies_configuration = __commonJS({
-  "../core/out/src/configuration/allowed-dependencies.configuration.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.AllowedDependenciesConfiguration = void 0;
-    var allowed_dependencies_1 = require_allowed_dependencies();
-    var allowed_application_dependencies_1 = require_allowed_application_dependencies();
-    var allowed_domain_dependencies_1 = require_allowed_domain_dependencies();
-    var allowed_infrastructure_dependencies_1 = require_allowed_infrastructure_dependencies();
-    var AllowedDependenciesConfiguration = class {
-      allowedDependencies;
-      constructor(config) {
-        this.allowedDependencies = new allowed_dependencies_1.AllowedDependencies(new allowed_domain_dependencies_1.AllowedDomainDependencies(config.layers.domain.allowedDependencies).value, new allowed_application_dependencies_1.AllowedApplicationDependencies(config.layers.application.allowedDependencies).value, new allowed_infrastructure_dependencies_1.AllowedInfrastructureDependencies(config.layers.infrastructure.allowedDependencies).value);
-      }
-    };
-    exports2.AllowedDependenciesConfiguration = AllowedDependenciesConfiguration;
-  }
-});
-
-// ../core/out/src/clean-architecture/restrictions/architecture-violation.js
-var require_architecture_violation = __commonJS({
-  "../core/out/src/clean-architecture/restrictions/architecture-violation.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ArchitectureViolation = void 0;
-    var ArchitectureViolation = class {
-      violation;
-      position;
-      constructor(violation, position) {
-        this.violation = violation;
-        this.position = position;
-      }
-      isViolation() {
-        return this.violation.isViolation();
-      }
-      get message() {
-        return this.violation.message;
-      }
-      get startLine() {
-        return this.position.lineStart;
-      }
-      get startCharacter() {
-        return this.position.start;
-      }
-      get endLine() {
-        return this.position.lineEnd;
-      }
-      get endCharacter() {
-        return this.position.end;
-      }
-    };
-    exports2.ArchitectureViolation = ArchitectureViolation;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/languages.js
-var require_languages = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/languages.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SupportedLanguageRegistry = void 0;
-    var SupportedLanguageRegistry = class {
-      languagesByExtension = /* @__PURE__ */ new Map([
-        [".js", "javascript"],
-        [".mjs", "javascript"],
-        [".cjs", "javascript"],
-        [".ts", "typescript"],
-        [".mts", "typescript"],
-        [".cts", "typescript"],
-        [".cs", "csharp"],
-        [".csx", "csharp"],
-        [".dart", "dart"],
-        [".ex", "elixir"],
-        [".exs", "elixir"],
-        [".go", "go"],
-        [".groovy", "groovy"],
-        [".gvy", "groovy"],
-        [".gy", "groovy"],
-        [".gsh", "groovy"],
-        [".java", "java"],
-        [".kt", "kotlin"],
-        [".kts", "kotlin"],
-        [".lua", "lua"],
-        [".php", "php"],
-        [".php3", "php"],
-        [".php4", "php"],
-        [".php5", "php"],
-        [".phtml", "php"],
-        [".py", "python"],
-        [".rb", "ruby"],
-        [".rs", "rust"],
-        [".scala", "scala"],
-        [".sc", "scala"]
-      ]);
-      supportedLanguageIds = new Set(this.languagesByExtension.values());
-      getLanguageIdFromExtension(extension) {
-        return this.languagesByExtension.get(extension.toLowerCase());
-      }
-      isSupportedLanguageId(languageId) {
-        return this.supportedLanguageIds.has(languageId);
-      }
-    };
-    exports2.SupportedLanguageRegistry = SupportedLanguageRegistry;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/enabled-languages-validation-error.js
-var require_enabled_languages_validation_error = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/enabled-languages-validation-error.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.UnsupportedLanguageError = void 0;
-    var UnsupportedLanguageError2 = class extends Error {
-      unsupportedLanguages;
-      constructor(unsupportedLanguages) {
-        const message = unsupportedLanguages.length === 1 ? `Unsupported language identifier: ${unsupportedLanguages[0]}.` : `Unsupported language identifiers: ${unsupportedLanguages.join(", ")}.`;
-        super(message);
-        this.name = "UnsupportedLanguageError";
-        this.unsupportedLanguages = unsupportedLanguages;
-      }
-    };
-    exports2.UnsupportedLanguageError = UnsupportedLanguageError2;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/enabled-languages-validator.js
-var require_enabled_languages_validator = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/enabled-languages-validator.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EnabledLanguagesValidator = void 0;
-    var languages_1 = require_languages();
-    var enabled_languages_validation_error_1 = require_enabled_languages_validation_error();
-    var EnabledLanguagesValidator2 = class {
-      supportedLanguages = new languages_1.SupportedLanguageRegistry();
-      validate(languages) {
-        const unsupported = languages.filter((language) => !this.supportedLanguages.isSupportedLanguageId(language));
-        if (unsupported.length > 0) {
-          throw new enabled_languages_validation_error_1.UnsupportedLanguageError(unsupported);
-        }
-      }
-    };
-    exports2.EnabledLanguagesValidator = EnabledLanguagesValidator2;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/dependency-position.js
-var require_dependency_position = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/dependency-position.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DependencyPosition = void 0;
-    var DependencyPosition = class {
-      lineStart;
-      start;
-      lineEnd;
-      end;
-      constructor(lineStart, start, lineEnd, end) {
-        this.lineStart = lineStart;
-        this.start = start;
-        this.lineEnd = lineEnd;
-        this.end = end;
-      }
-    };
-    exports2.DependencyPosition = DependencyPosition;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extracted-dependency.js
-var require_extracted_dependency = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extracted-dependency.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ExtractedDependency = void 0;
-    var ExtractedDependency = class {
-      path;
-      position;
-      constructor(path, position) {
-        this.path = path;
-        this.position = position;
-      }
-    };
-    exports2.ExtractedDependency = ExtractedDependency;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/delimited-dependency-extractor.js
-var require_delimited_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/delimited-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DelimitedDependencyExtractor = void 0;
-    var dependency_position_1 = require_dependency_position();
-    var extracted_dependency_1 = require_extracted_dependency();
-    var DelimitedDependencyExtractor = class {
-      delimiterRegex;
-      addTrailingSeparator;
-      patterns;
-      constructor(patterns, delimiter = "/", addTrailingSeparator = false) {
-        this.patterns = patterns;
-        this.delimiterRegex = new RegExp(this.escapeRegExp(delimiter), "g");
-        this.addTrailingSeparator = addTrailingSeparator;
-      }
-      extract(document) {
-        return this.patterns.flatMap((pattern) => this.extractMatches(document, pattern));
-      }
-      extractMatches(document, pattern) {
-        const dependencies = [];
-        const text = document.getText();
-        let match;
-        pattern.regex.lastIndex = 0;
-        while (match = pattern.regex.exec(text)) {
-          const startPos = document.positionAt(match.index);
-          const endPos = document.positionAt(match.index + match[0].length);
-          const position = new dependency_position_1.DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-          dependencies.push(...this.getDependencyPaths(pattern, match).map((path) => new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(path), position)));
-        }
-        return dependencies;
-      }
-      getDependencyPaths(pattern, match) {
-        return pattern.dependencyPaths ? pattern.dependencyPaths(match) : [match[1]];
-      }
-      normalizeDependencyPath(path) {
-        const normalized = path.replace(this.delimiterRegex, "/");
-        return this.addTrailingSeparator ? `/${normalized}/` : `/${normalized}`;
-      }
-      escapeRegExp(value) {
-        return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      }
-    };
-    exports2.DelimitedDependencyExtractor = DelimitedDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/csharp-dependency-extractor.js
-var require_csharp_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/csharp-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CsharpDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var CsharpDependencyExtractor = class _CsharpDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static USING_REGEX = /^[ \t]*(?:global[ \t]+)?using[ \t]+(?:static[ \t]+)?(?:(?:[A-Za-z_]\w*)[ \t]*=[ \t]*)?([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
-      constructor() {
-        super([{
-          regex: _CsharpDependencyExtractor.USING_REGEX,
-          dependencyPaths: (match) => [match[1].toLowerCase()]
-        }], ".", true);
-      }
-    };
-    exports2.CsharpDependencyExtractor = CsharpDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/dart-dependency-extractor.js
-var require_dart_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/dart-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DartDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var DartDependencyExtractor = class _DartDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static DIRECTIVE_REGEX = /^[ \t]*(?:@[A-Za-z_]\w*(?:\([^)]*\))?[ \t]*)*(?:import|export|part)[ \t]+["']([^"'\r\n]+)["'](?:[ \t]+(?:as|show|hide)[^;\r\n]*)?[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
-      constructor() {
-        super([{
-          regex: _DartDependencyExtractor.DIRECTIVE_REGEX,
-          dependencyPaths: (match) => [_DartDependencyExtractor.normalizeDartDependency(match[1])]
-        }], "/", true);
-      }
-      static normalizeDartDependency(path) {
-        return path.replace(/^package:[^/]+\//, "").replace(/\\/g, "/");
-      }
-    };
-    exports2.DartDependencyExtractor = DartDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/ecmascript-dependency-extractor.js
-var require_ecmascript_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/ecmascript-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EcmaScriptDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var EcmaScriptDependencyExtractor = class _EcmaScriptDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static IMPORT_REGEX = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
-      constructor() {
-        super([
-          {
-            regex: _EcmaScriptDependencyExtractor.IMPORT_REGEX,
-            dependencyPaths: (match) => [match[2]]
-          }
-        ]);
-      }
-    };
-    exports2.EcmaScriptDependencyExtractor = EcmaScriptDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/elixir-dependency-extractor.js
-var require_elixir_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/elixir-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ElixirDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var ElixirDependencyExtractor = class _ElixirDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static DIRECTIVE_REGEX = /^[ \t]*(?:alias|import|require|use)[ \t]+([A-Z][A-Za-z0-9_.]*(?:\.\{[^}\r\n]+\})?)(?:[ \t]*,[^\r\n]*)?$/gm;
-      constructor() {
-        super([{
-          regex: _ElixirDependencyExtractor.DIRECTIVE_REGEX,
-          dependencyPaths: (match) => _ElixirDependencyExtractor.getDependencyPaths(match)
-        }], ".", true);
-      }
-      static getDependencyPaths(match) {
-        const modulePath = match[1];
-        const groupedAlias = modulePath.match(/^(.*)\.\{([^}]+)\}$/);
-        if (!groupedAlias) {
-          return [modulePath.toLowerCase()];
-        }
-        const [, basePath, groupedModules] = groupedAlias;
-        return groupedModules.split(",").map((moduleName) => moduleName.trim()).filter(Boolean).map((moduleName) => `${basePath}.${moduleName}`.toLowerCase());
-      }
-    };
-    exports2.ElixirDependencyExtractor = ElixirDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/go-dependency-extractor.js
-var require_go_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/go-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.GoDependencyExtractor = void 0;
-    var dependency_position_1 = require_dependency_position();
-    var extracted_dependency_1 = require_extracted_dependency();
-    var GoDependencyExtractor = class _GoDependencyExtractor {
-      static SINGLE_IMPORT_REGEX = /^[ \t]*import[ \t]+(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
-      static IMPORT_BLOCK_REGEX = /^[ \t]*import[ \t]*\([ \t]*(?:\/\/.*)?\r?\n([\s\S]*?)^[ \t]*\)[ \t]*(?:\/\/.*)?$/gm;
-      static IMPORT_BLOCK_ENTRY_REGEX = /^[ \t]*(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
-      extract(document) {
-        return [
-          ...this.extractSingleImports(document),
-          ...this.extractBlockImports(document)
-        ];
-      }
-      extractSingleImports(document) {
-        const dependencies = [];
-        const text = document.getText();
-        let match;
-        _GoDependencyExtractor.SINGLE_IMPORT_REGEX.lastIndex = 0;
-        while (match = _GoDependencyExtractor.SINGLE_IMPORT_REGEX.exec(text)) {
-          dependencies.push(this.toExtractedDependency(document, match[1], match.index, match[0].length));
-        }
-        return dependencies;
-      }
-      extractBlockImports(document) {
-        const dependencies = [];
-        const text = document.getText();
-        let blockMatch;
-        _GoDependencyExtractor.IMPORT_BLOCK_REGEX.lastIndex = 0;
-        while (blockMatch = _GoDependencyExtractor.IMPORT_BLOCK_REGEX.exec(text)) {
-          const blockContent = blockMatch[1];
-          const blockContentStart = blockMatch.index + blockMatch[0].indexOf(blockContent);
-          let entryMatch;
-          _GoDependencyExtractor.IMPORT_BLOCK_ENTRY_REGEX.lastIndex = 0;
-          while (entryMatch = _GoDependencyExtractor.IMPORT_BLOCK_ENTRY_REGEX.exec(blockContent)) {
-            dependencies.push(this.toExtractedDependency(document, entryMatch[1], blockContentStart + entryMatch.index, entryMatch[0].length));
-          }
-        }
-        return dependencies;
-      }
-      toExtractedDependency(document, dependencyPath, matchIndex, matchLength) {
-        const startPos = document.positionAt(matchIndex);
-        const endPos = document.positionAt(matchIndex + matchLength);
-        const position = new dependency_position_1.DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-        return new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(dependencyPath), position);
-      }
-      normalizeDependencyPath(path) {
-        return `/${path.replace(/\\/g, "/")}/`;
-      }
-    };
-    exports2.GoDependencyExtractor = GoDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/groovy-dependency-extractor.js
-var require_groovy_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/groovy-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.GroovyDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var GroovyDependencyExtractor = class _GroovyDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_$][\w$]*)?[ \t]*(?:;[ \t]*)?(?:\/\/.*)?$/gm;
-      constructor() {
-        super([{ regex: _GroovyDependencyExtractor.IMPORT_REGEX }], ".", true);
-      }
-    };
-    exports2.GroovyDependencyExtractor = GroovyDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/java-dependency-extractor.js
-var require_java_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/java-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.JavaDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var JavaDependencyExtractor = class _JavaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)[ \t]*;/gm;
-      constructor() {
-        super([{ regex: _JavaDependencyExtractor.IMPORT_REGEX }], ".", true);
-      }
-    };
-    exports2.JavaDependencyExtractor = JavaDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/kotlin-dependency-extractor.js
-var require_kotlin_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/kotlin-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.KotlinDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var KotlinDependencyExtractor = class _KotlinDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_][\w]*)?[ \t]*(?:\/\/.*)?$/gm;
-      constructor() {
-        super([{ regex: _KotlinDependencyExtractor.IMPORT_REGEX }], ".", true);
-      }
-    };
-    exports2.KotlinDependencyExtractor = KotlinDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/lua-dependency-extractor.js
-var require_lua_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/lua-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LuaDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var LuaDependencyExtractor = class _LuaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static REQUIRE_REGEX = /^[ \t]*(?:local[ \t]+[A-Za-z_]\w*[ \t]*=[ \t]*)?require[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:--.*)?$/gm;
-      constructor() {
-        super([{
-          regex: _LuaDependencyExtractor.REQUIRE_REGEX,
-          dependencyPaths: (match) => [match[1].replace(/\./g, "/")]
-        }], "/", true);
-      }
-    };
-    exports2.LuaDependencyExtractor = LuaDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/php-dependency-extractor.js
-var require_php_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/php-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.PhpDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var PhpDependencyExtractor = class _PhpDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static USE_REGEX = /^[ \t]*use[ \t]+(?:(?:function|const)[ \t]+)?([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
-      constructor() {
-        super([{
-          regex: _PhpDependencyExtractor.USE_REGEX,
-          dependencyPaths: (match) => _PhpDependencyExtractor.getDependencyPaths(match)
-        }], "\\", true);
-      }
-      static getDependencyPaths(match) {
-        const usePath = match[1].trim();
-        const groupedUse = usePath.match(/^(.+)\\\{(.+)\}$/);
-        if (!groupedUse) {
-          return [_PhpDependencyExtractor.withoutAlias(usePath).toLowerCase()];
-        }
-        const [, basePath, groupedImports] = groupedUse;
-        return groupedImports.split(",").map((selector) => selector.trim()).filter(Boolean).map((selector) => `${basePath}\\${_PhpDependencyExtractor.withoutAlias(selector)}`.toLowerCase());
-      }
-      static withoutAlias(path) {
-        return path.split(/\s+as\s+/i)[0].trim();
-      }
-    };
-    exports2.PhpDependencyExtractor = PhpDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/python-dependency-extractor.js
-var require_python_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/python-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.PythonDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var PythonDependencyExtractor = class _PythonDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static IMPORT_REGEX = /^\s*import\s+(.+)$/gm;
-      static FROM_IMPORT_REGEX = /^\s*from\s+([A-Za-z_][\w.]*)\s+import\s+.+$/gm;
-      constructor() {
-        super([
-          {
-            regex: _PythonDependencyExtractor.IMPORT_REGEX,
-            dependencyPaths: (match) => match[1].split(",").map((module3) => module3.trim().split(/\s+as\s+/)[0].trim()).filter(Boolean)
-          },
-          { regex: _PythonDependencyExtractor.FROM_IMPORT_REGEX }
-        ], ".", true);
-      }
-    };
-    exports2.PythonDependencyExtractor = PythonDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/ruby-dependency-extractor.js
-var require_ruby_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/ruby-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.RubyDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var RubyDependencyExtractor = class _RubyDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static REQUIRE_REGEX = /^[ \t]*require(?:_relative)?[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:#.*)?$/gm;
-      constructor() {
-        super([{ regex: _RubyDependencyExtractor.REQUIRE_REGEX }], "/", true);
-      }
-    };
-    exports2.RubyDependencyExtractor = RubyDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/rust-dependency-extractor.js
-var require_rust_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/rust-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.RustDependencyExtractor = void 0;
-    var dependency_position_1 = require_dependency_position();
-    var extracted_dependency_1 = require_extracted_dependency();
-    var RustDependencyExtractor = class _RustDependencyExtractor {
-      static USE_REGEX = /^[ \t]*use[ \t]+([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
-      static MOD_REGEX = /^[ \t]*(?:pub[ \t]+)?mod[ \t]+([A-Za-z_]\w*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
-      extract(document) {
-        return [
-          ...this.extractUseDeclarations(document),
-          ...this.extractModDeclarations(document)
-        ];
-      }
-      extractUseDeclarations(document) {
-        const dependencies = [];
-        const text = document.getText();
-        let match;
-        _RustDependencyExtractor.USE_REGEX.lastIndex = 0;
-        while (match = _RustDependencyExtractor.USE_REGEX.exec(text)) {
-          const position = this.toPosition(document, match.index, match[0].length);
-          dependencies.push(..._RustDependencyExtractor.expandUsePath(match[1]).map((path) => new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(path), position)));
-        }
-        return dependencies;
-      }
-      extractModDeclarations(document) {
-        const dependencies = [];
-        const text = document.getText();
-        let match;
-        _RustDependencyExtractor.MOD_REGEX.lastIndex = 0;
-        while (match = _RustDependencyExtractor.MOD_REGEX.exec(text)) {
-          const position = this.toPosition(document, match.index, match[0].length);
-          dependencies.push(new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(match[1]), position));
-        }
-        return dependencies;
-      }
-      static expandUsePath(path) {
-        const normalizedPath = path.trim();
-        const groupStart = normalizedPath.indexOf("{");
-        if (groupStart === -1) {
-          return [_RustDependencyExtractor.withoutAlias(normalizedPath)];
-        }
-        const groupEnd = _RustDependencyExtractor.findMatchingBrace(normalizedPath, groupStart);
-        if (groupEnd === -1) {
-          return [_RustDependencyExtractor.withoutAlias(normalizedPath)];
-        }
-        const prefix = normalizedPath.slice(0, groupStart);
-        const groupContent = normalizedPath.slice(groupStart + 1, groupEnd);
-        const suffix = normalizedPath.slice(groupEnd + 1);
-        return _RustDependencyExtractor.splitTopLevel(groupContent).flatMap((item) => _RustDependencyExtractor.expandUsePath(`${prefix}${item.trim()}${suffix}`)).filter(Boolean);
-      }
-      static findMatchingBrace(value, startIndex) {
-        let depth = 0;
-        for (let index = startIndex; index < value.length; index++) {
-          const char = value[index];
-          if (char === "{") {
-            depth++;
-          }
-          if (char === "}") {
-            depth--;
-          }
-          if (depth === 0) {
-            return index;
-          }
-        }
-        return -1;
-      }
-      static splitTopLevel(value) {
-        const items = [];
-        let depth = 0;
-        let itemStart = 0;
-        for (let index = 0; index < value.length; index++) {
-          const char = value[index];
-          if (char === "{") {
-            depth++;
-          } else if (char === "}") {
-            depth--;
-          } else if (char === "," && depth === 0) {
-            items.push(value.slice(itemStart, index));
-            itemStart = index + 1;
-          }
-        }
-        items.push(value.slice(itemStart));
-        return items;
-      }
-      static withoutAlias(path) {
-        return path.split(/\s+as\s+/)[0].trim();
-      }
-      toPosition(document, matchIndex, matchLength) {
-        const startPos = document.positionAt(matchIndex);
-        const endPos = document.positionAt(matchIndex + matchLength);
-        return new dependency_position_1.DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-      }
-      normalizeDependencyPath(path) {
-        const normalized = path.replace(/::/g, "/");
-        return `/${normalized}/`;
-      }
-    };
-    exports2.RustDependencyExtractor = RustDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/scala-dependency-extractor.js
-var require_scala_dependency_extractor = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/scala-dependency-extractor.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ScalaDependencyExtractor = void 0;
-    var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
-    var ScalaDependencyExtractor = class _ScalaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
-      static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.(?:[A-Za-z]\w*|_\w+|_|\*))*(?:\.\{[^}\r\n]+\})?)[ \t]*(?:\/\/.*)?$/gm;
-      constructor() {
-        super([{
-          regex: _ScalaDependencyExtractor.IMPORT_REGEX,
-          dependencyPaths: (match) => _ScalaDependencyExtractor.getDependencyPaths(match)
-        }], ".", true);
-      }
-      static getDependencyPaths(match) {
-        const importPath = match[1];
-        const groupedImport = importPath.match(/^(.*)\.\{([^}]+)\}$/);
-        if (!groupedImport) {
-          return [_ScalaDependencyExtractor.normalizeWildcard(importPath)];
-        }
-        const [, basePath, groupedImports] = groupedImport;
-        return groupedImports.split(",").map((selector) => _ScalaDependencyExtractor.getGroupedImportPath(basePath, selector)).filter((path) => path !== void 0);
-      }
-      static getGroupedImportPath(basePath, selector) {
-        const [importedName, alias] = selector.trim().split(/\s*=>\s*/).map((part) => part.trim());
-        if (!importedName || alias === "_") {
-          return void 0;
-        }
-        return `${basePath}.${_ScalaDependencyExtractor.normalizeWildcard(importedName)}`;
-      }
-      static normalizeWildcard(value) {
-        if (value === "_") {
-          return "*";
-        }
-        return value.replace(/\._(?=\.|$)/g, ".*");
-      }
-    };
-    exports2.ScalaDependencyExtractor = ScalaDependencyExtractor;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/extractors/dependency-extractor-registry.js
-var require_dependency_extractor_registry = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/extractors/dependency-extractor-registry.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DependencyExtractorRegistry = void 0;
-    var csharp_dependency_extractor_1 = require_csharp_dependency_extractor();
-    var dart_dependency_extractor_1 = require_dart_dependency_extractor();
-    var ecmascript_dependency_extractor_1 = require_ecmascript_dependency_extractor();
-    var elixir_dependency_extractor_1 = require_elixir_dependency_extractor();
-    var go_dependency_extractor_1 = require_go_dependency_extractor();
-    var groovy_dependency_extractor_1 = require_groovy_dependency_extractor();
-    var java_dependency_extractor_1 = require_java_dependency_extractor();
-    var kotlin_dependency_extractor_1 = require_kotlin_dependency_extractor();
-    var lua_dependency_extractor_1 = require_lua_dependency_extractor();
-    var php_dependency_extractor_1 = require_php_dependency_extractor();
-    var python_dependency_extractor_1 = require_python_dependency_extractor();
-    var ruby_dependency_extractor_1 = require_ruby_dependency_extractor();
-    var rust_dependency_extractor_1 = require_rust_dependency_extractor();
-    var scala_dependency_extractor_1 = require_scala_dependency_extractor();
-    var DependencyExtractorRegistry = class {
-      extractors = /* @__PURE__ */ new Map([
-        ["javascript", new ecmascript_dependency_extractor_1.EcmaScriptDependencyExtractor()],
-        ["typescript", new ecmascript_dependency_extractor_1.EcmaScriptDependencyExtractor()],
-        ["csharp", new csharp_dependency_extractor_1.CsharpDependencyExtractor()],
-        ["dart", new dart_dependency_extractor_1.DartDependencyExtractor()],
-        ["elixir", new elixir_dependency_extractor_1.ElixirDependencyExtractor()],
-        ["go", new go_dependency_extractor_1.GoDependencyExtractor()],
-        ["groovy", new groovy_dependency_extractor_1.GroovyDependencyExtractor()],
-        ["java", new java_dependency_extractor_1.JavaDependencyExtractor()],
-        ["kotlin", new kotlin_dependency_extractor_1.KotlinDependencyExtractor()],
-        ["lua", new lua_dependency_extractor_1.LuaDependencyExtractor()],
-        ["php", new php_dependency_extractor_1.PhpDependencyExtractor()],
-        ["python", new python_dependency_extractor_1.PythonDependencyExtractor()],
-        ["ruby", new ruby_dependency_extractor_1.RubyDependencyExtractor()],
-        ["rust", new rust_dependency_extractor_1.RustDependencyExtractor()],
-        ["scala", new scala_dependency_extractor_1.ScalaDependencyExtractor()]
-      ]);
-      get(languageId) {
-        return this.extractors.get(languageId);
-      }
-    };
-    exports2.DependencyExtractorRegistry = DependencyExtractorRegistry;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/layer/layer-alias.js
-var require_layer_alias = __commonJS({
-  "../core/out/src/clean-architecture/sources/layer/layer-alias.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LayerAlias = void 0;
-    var LayerAlias = class {
-      domainAliases;
-      applicationAliases;
-      infrastructureAliases;
-      LAYERS = {
-        domain: (path) => this.isDomain(path),
-        application: (path) => this.isApplication(path),
-        infrastructure: (path) => this.isInfrastructure(path)
-      };
-      aliases;
-      constructor(domainAliases, applicationAliases, infrastructureAliases) {
-        this.domainAliases = domainAliases;
-        this.applicationAliases = applicationAliases;
-        this.infrastructureAliases = infrastructureAliases;
-        this.aliases = {
-          domain: this.domainAliases.map(this.setAliasAsPath),
-          application: this.applicationAliases.map(this.setAliasAsPath),
-          infrastructure: this.infrastructureAliases.map(this.setAliasAsPath)
-        };
-      }
-      setAliasAsPath(alias) {
-        return `/${alias}/`;
-      }
-      isDomain(path) {
-        return this.isAliasInLayer(path, this.aliases.domain);
-      }
-      isApplication(path) {
-        return this.isAliasInLayer(path, this.aliases.application);
-      }
-      isInfrastructure(path) {
-        return this.isAliasInLayer(path, this.aliases.infrastructure);
-      }
-      isAliasInLayer(path, aliases) {
-        const normalizedPath = this.normalizeForAliasLookup(path);
-        return aliases.some((alias) => normalizedPath.includes(this.normalizeForAliasLookup(alias)));
-      }
-      normalizeForAliasLookup(path) {
-        return path.toLowerCase().replace(/[.\\]/g, "/");
-      }
-      getLayer(path) {
-        return Object.keys(this.LAYERS).find((layer) => this.LAYERS[layer](path));
-      }
-    };
-    exports2.LayerAlias = LayerAlias;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/source-folder.js
-var require_source_folder = __commonJS({
-  "../core/out/src/clean-architecture/sources/source-folder.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SourceFolder = void 0;
-    var SourceFolder = class {
-      sourceFolder;
-      constructor(sourceFolder) {
-        this.sourceFolder = sourceFolder;
-      }
-      contains(documentPath) {
-        if (!this.sourceFolder) {
-          return true;
-        }
-        const normalizedDocumentPath = this.normalize(documentPath);
-        const normalizedSourceFolder = this.normalize(this.sourceFolder);
-        return normalizedDocumentPath === normalizedSourceFolder || normalizedDocumentPath.startsWith(normalizedSourceFolder + "/") || normalizedDocumentPath.includes("/" + normalizedSourceFolder + "/");
-      }
-      normalize(value) {
-        return value.replace(/\\/g, "/");
-      }
-    };
-    exports2.SourceFolder = SourceFolder;
-  }
-});
-
-// ../core/out/src/clean-architecture/restrictions/layer-violation.js
-var require_layer_violation = __commonJS({
-  "../core/out/src/clean-architecture/restrictions/layer-violation.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LayerViolation = void 0;
-    var LayerViolation = class {
-      fromLayer;
-      toLayer;
-      allowedDependencies;
-      constructor(fromLayer, toLayer, allowedDependencies) {
-        this.fromLayer = fromLayer;
-        this.toLayer = toLayer;
-        this.allowedDependencies = allowedDependencies;
-      }
-      isViolation() {
-        return !this.allowedDependencies.isAllowed(this.fromLayer, this.toLayer);
-      }
-      get message() {
-        return `${this.fromLayer} layer should not depend on ${this.toLayer} layer.`;
-      }
-    };
-    exports2.LayerViolation = LayerViolation;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/dependencies/dependency-statement.js
-var require_dependency_statement = __commonJS({
-  "../core/out/src/clean-architecture/sources/dependencies/dependency-statement.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.DependencyStatement = void 0;
-    var layer_violation_1 = require_layer_violation();
-    var DependencyStatement = class {
-      text;
-      path;
-      position;
-      allowedDependencies;
-      _violation;
-      constructor(text, path, position, allowedDependencies, aliases) {
-        this.text = text;
-        this.path = path;
-        this.position = position;
-        this.allowedDependencies = allowedDependencies;
-        const layer = aliases.getLayer(path);
-        const toLayer = text.layer;
-        if (!layer || !toLayer) {
-          this._violation = null;
-          return;
-        }
-        this._violation = new layer_violation_1.LayerViolation(layer, toLayer, allowedDependencies), position;
-      }
-      isViolation() {
-        return this._violation?.isViolation() ?? false;
-      }
-      get violation() {
-        return this._violation;
-      }
-    };
-    exports2.DependencyStatement = DependencyStatement;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/layer/layered-component.js
-var require_layered_component = __commonJS({
-  "../core/out/src/clean-architecture/sources/layer/layered-component.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LayeredComponent = void 0;
-    var LayeredComponent = class {
-      path;
-      aliases;
-      layer;
-      constructor(path, aliases) {
-        this.path = path;
-        this.aliases = aliases;
-        this.layer = aliases.getLayer(path);
-      }
-      isDomain() {
-        return this.aliases.isDomain(this.path);
-      }
-      isApplication() {
-        return this.aliases.isApplication(this.path);
-      }
-      isInfrastructure() {
-        return this.aliases.isInfrastructure(this.path);
-      }
-    };
-    exports2.LayeredComponent = LayeredComponent;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/layer/layer-path.js
-var require_layer_path = __commonJS({
-  "../core/out/src/clean-architecture/sources/layer/layer-path.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.LayerPath = void 0;
-    var layered_component_1 = require_layered_component();
-    var LayerPath = class extends layered_component_1.LayeredComponent {
-      path;
-      constructor(path, aliases) {
-        super(path, aliases);
-        this.path = path;
-      }
-    };
-    exports2.LayerPath = LayerPath;
-  }
-});
-
-// ../core/out/src/clean-architecture/sources/source-file.js
-var require_source_file = __commonJS({
-  "../core/out/src/clean-architecture/sources/source-file.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.SourceFile = void 0;
-    var architecture_violation_1 = require_architecture_violation();
-    var dependency_statement_1 = require_dependency_statement();
-    var layer_path_1 = require_layer_path();
-    var layered_component_1 = require_layered_component();
-    var SourceFile = class extends layered_component_1.LayeredComponent {
-      allowedDependencies;
-      dependencies = [];
-      constructor(document, extractedDependencies, allowedDependencies, aliases) {
-        super(document.uri.path, aliases);
-        this.allowedDependencies = allowedDependencies;
-        this.dependencies = extractedDependencies.map((dependency) => new dependency_statement_1.DependencyStatement(new layer_path_1.LayerPath(dependency.path, this.aliases), this.path, dependency.position, this.allowedDependencies, this.aliases));
-      }
-      get violations() {
-        return this.dependencies.filter((dependency) => dependency.isViolation()).map((dependency) => new architecture_violation_1.ArchitectureViolation(dependency.violation, dependency.position));
-      }
-    };
-    exports2.SourceFile = SourceFile;
-  }
-});
-
-// ../core/out/src/index.js
-var require_src = __commonJS({
-  "../core/out/src/index.js"(exports2) {
-    "use strict";
-    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? (function(o, m, k, k2) {
-      if (k2 === void 0) k2 = k;
-      var desc = Object.getOwnPropertyDescriptor(m, k);
-      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function() {
-          return m[k];
-        } };
-      }
-      Object.defineProperty(o, k2, desc);
-    }) : (function(o, m, k, k2) {
-      if (k2 === void 0) k2 = k;
-      o[k2] = m[k];
-    }));
-    var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
-      for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p)) __createBinding(exports3, m, p);
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.EnabledLanguagesValidator = exports2.UnsupportedLanguageError = void 0;
-    __exportStar(require_document(), exports2);
-    __exportStar(require_default_configuration(), exports2);
-    __exportStar(require_allowed_dependencies_configuration(), exports2);
-    __exportStar(require_architecture_violation(), exports2);
-    __exportStar(require_allowed_application_dependencies(), exports2);
-    __exportStar(require_allowed_domain_dependencies(), exports2);
-    __exportStar(require_allowed_infrastructure_dependencies(), exports2);
-    __exportStar(require_allowed_dependencies(), exports2);
-    __exportStar(require_languages(), exports2);
-    var enabled_languages_validation_error_1 = require_enabled_languages_validation_error();
-    Object.defineProperty(exports2, "UnsupportedLanguageError", { enumerable: true, get: function() {
-      return enabled_languages_validation_error_1.UnsupportedLanguageError;
-    } });
-    var enabled_languages_validator_1 = require_enabled_languages_validator();
-    Object.defineProperty(exports2, "EnabledLanguagesValidator", { enumerable: true, get: function() {
-      return enabled_languages_validator_1.EnabledLanguagesValidator;
-    } });
-    __exportStar(require_dependency_extractor_registry(), exports2);
-    __exportStar(require_layer_alias(), exports2);
-    __exportStar(require_source_folder(), exports2);
-    __exportStar(require_source_file(), exports2);
-  }
-});
-
 // ../cli/dist/index.js
 var require_dist = __commonJS({
   "../cli/dist/index.js"(exports2, module2) {
@@ -24560,13 +23254,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.InvalidOptionArgumentError = InvalidArgumentError2;
       }
     });
-    var require_document2 = __commonJS2({
+    var require_document = __commonJS2({
       "../core/out/src/document.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
       }
     });
-    var require_allowed_layer_dependencies2 = __commonJS2({
+    var require_allowed_layer_dependencies = __commonJS2({
       "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-layer-dependencies.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24584,7 +23278,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.AllowedLayerDependencies = AllowedLayerDependencies;
       }
     });
-    var require_layer_component2 = __commonJS2({
+    var require_layer_component = __commonJS2({
       "../core/out/src/configuration/components/layers/layer-component.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24622,13 +23316,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LayerComponent = LayerComponent;
       }
     });
-    var require_application_layer_configuration2 = __commonJS2({
+    var require_application_layer_configuration = __commonJS2({
       "../core/out/src/configuration/components/layers/application-layer.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.ApplicationLayerConfiguration = void 0;
-        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies2();
-        var layer_component_1 = require_layer_component2();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var layer_component_1 = require_layer_component();
         var ApplicationLayerConfiguration = class _ApplicationLayerConfiguration extends layer_component_1.LayerComponent {
           static DEFAULT_APPLICATION_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.application;
           constructor(layer) {
@@ -24638,13 +23332,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.ApplicationLayerConfiguration = ApplicationLayerConfiguration;
       }
     });
-    var require_domain_layer_configuration2 = __commonJS2({
+    var require_domain_layer_configuration = __commonJS2({
       "../core/out/src/configuration/components/layers/domain-layer.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.DomainLayerConfiguration = void 0;
-        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies2();
-        var layer_component_1 = require_layer_component2();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var layer_component_1 = require_layer_component();
         var DomainLayerConfiguration = class _DomainLayerConfiguration extends layer_component_1.LayerComponent {
           static DEFAULT_DOMAIN_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.domain;
           constructor(layer) {
@@ -24654,13 +23348,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DomainLayerConfiguration = DomainLayerConfiguration;
       }
     });
-    var require_infrastructure_layer_configuration2 = __commonJS2({
+    var require_infrastructure_layer_configuration = __commonJS2({
       "../core/out/src/configuration/components/layers/infrastructure-layer.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.InfrastructureLayerConfiguration = void 0;
-        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies2();
-        var layer_component_1 = require_layer_component2();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var layer_component_1 = require_layer_component();
         var InfrastructureLayerConfiguration = class _InfrastructureLayerConfiguration extends layer_component_1.LayerComponent {
           static DEFAULT_INFRASTRUCTURE_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.infrastructure;
           constructor(layer) {
@@ -24670,14 +23364,14 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.InfrastructureLayerConfiguration = InfrastructureLayerConfiguration;
       }
     });
-    var require_layers_configuration2 = __commonJS2({
+    var require_layers_configuration = __commonJS2({
       "../core/out/src/configuration/components/layers/layers.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.LayersConfiguration = void 0;
-        var application_layer_configuration_1 = require_application_layer_configuration2();
-        var domain_layer_configuration_1 = require_domain_layer_configuration2();
-        var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration2();
+        var application_layer_configuration_1 = require_application_layer_configuration();
+        var domain_layer_configuration_1 = require_domain_layer_configuration();
+        var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration();
         var LayersConfiguration = class {
           domain;
           application;
@@ -24698,7 +23392,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LayersConfiguration = LayersConfiguration;
       }
     });
-    var require_source_folder_configuration2 = __commonJS2({
+    var require_source_folder_configuration = __commonJS2({
       "../core/out/src/configuration/components/source-folder/source-folder.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24715,7 +23409,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.SourceFolderConfiguration = SourceFolderConfiguration;
       }
     });
-    var require_configuration_component2 = __commonJS2({
+    var require_configuration_component = __commonJS2({
       "../core/out/src/configuration/components/configuration-component.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24732,12 +23426,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.ConfigurationComponent = ConfigurationComponent;
       }
     });
-    var require_enabled_languages_configuration2 = __commonJS2({
+    var require_enabled_languages_configuration = __commonJS2({
       "../core/out/src/configuration/components/enabled-languages/enabled-languages.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.EnabledLanguagesConfiguration = void 0;
-        var configuration_component_1 = require_configuration_component2();
+        var configuration_component_1 = require_configuration_component();
         var EnabledLanguagesConfiguration = class _EnabledLanguagesConfiguration extends configuration_component_1.ConfigurationComponent {
           static DEFAULT_ENABLED_LANGUAGES = ["javascript", "typescript"];
           constructor(enabledLanguages) {
@@ -24747,14 +23441,14 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.EnabledLanguagesConfiguration = EnabledLanguagesConfiguration;
       }
     });
-    var require_default_configuration2 = __commonJS2({
+    var require_default_configuration = __commonJS2({
       "../core/out/src/configuration/default.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.DefaultConfiguration = void 0;
-        var layers_configuration_1 = require_layers_configuration2();
-        var source_folder_configuration_1 = require_source_folder_configuration2();
-        var enabled_languages_configuration_1 = require_enabled_languages_configuration2();
+        var layers_configuration_1 = require_layers_configuration();
+        var source_folder_configuration_1 = require_source_folder_configuration();
+        var enabled_languages_configuration_1 = require_enabled_languages_configuration();
         var DefaultConfiguration2 = class _DefaultConfiguration {
           layers;
           sourceFolder;
@@ -24778,7 +23472,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DefaultConfiguration = DefaultConfiguration2;
       }
     });
-    var require_allowed_dependencies2 = __commonJS2({
+    var require_allowed_dependencies = __commonJS2({
       "../core/out/src/clean-architecture/restrictions/allowed-dependencies.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24799,13 +23493,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.AllowedDependencies = AllowedDependencies2;
       }
     });
-    var require_allowed_application_dependencies2 = __commonJS2({
+    var require_allowed_application_dependencies = __commonJS2({
       "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-application-dependencies.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.AllowedApplicationDependencies = void 0;
-        var application_layer_configuration_1 = require_application_layer_configuration2();
-        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies2();
+        var application_layer_configuration_1 = require_application_layer_configuration();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
         var AllowedApplicationDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
           overrides;
           constructor(overrides) {
@@ -24816,13 +23510,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.AllowedApplicationDependencies = AllowedApplicationDependencies;
       }
     });
-    var require_allowed_domain_dependencies2 = __commonJS2({
+    var require_allowed_domain_dependencies = __commonJS2({
       "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-domain-dependencies.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.AllowedDomainDependencies = void 0;
-        var domain_layer_configuration_1 = require_domain_layer_configuration2();
-        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies2();
+        var domain_layer_configuration_1 = require_domain_layer_configuration();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
         var AllowedDomainDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
           overrides;
           constructor(overrides) {
@@ -24833,13 +23527,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.AllowedDomainDependencies = AllowedDomainDependencies;
       }
     });
-    var require_allowed_infrastructure_dependencies2 = __commonJS2({
+    var require_allowed_infrastructure_dependencies = __commonJS2({
       "../core/out/src/configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.AllowedInfrastructureDependencies = void 0;
-        var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration2();
-        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies2();
+        var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
         var AllowedInfrastructureDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
           overrides;
           constructor(overrides) {
@@ -24850,15 +23544,15 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.AllowedInfrastructureDependencies = AllowedInfrastructureDependencies;
       }
     });
-    var require_allowed_dependencies_configuration2 = __commonJS2({
+    var require_allowed_dependencies_configuration = __commonJS2({
       "../core/out/src/configuration/allowed-dependencies.configuration.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.AllowedDependenciesConfiguration = void 0;
-        var allowed_dependencies_1 = require_allowed_dependencies2();
-        var allowed_application_dependencies_1 = require_allowed_application_dependencies2();
-        var allowed_domain_dependencies_1 = require_allowed_domain_dependencies2();
-        var allowed_infrastructure_dependencies_1 = require_allowed_infrastructure_dependencies2();
+        var allowed_dependencies_1 = require_allowed_dependencies();
+        var allowed_application_dependencies_1 = require_allowed_application_dependencies();
+        var allowed_domain_dependencies_1 = require_allowed_domain_dependencies();
+        var allowed_infrastructure_dependencies_1 = require_allowed_infrastructure_dependencies();
         var AllowedDependenciesConfiguration2 = class {
           allowedDependencies;
           constructor(config) {
@@ -24868,7 +23562,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.AllowedDependenciesConfiguration = AllowedDependenciesConfiguration2;
       }
     });
-    var require_architecture_violation2 = __commonJS2({
+    var require_architecture_violation = __commonJS2({
       "../core/out/src/clean-architecture/restrictions/architecture-violation.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24902,7 +23596,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.ArchitectureViolation = ArchitectureViolation;
       }
     });
-    var require_languages2 = __commonJS2({
+    var require_languages = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/languages.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24951,7 +23645,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.SupportedLanguageRegistry = SupportedLanguageRegistry2;
       }
     });
-    var require_enabled_languages_validation_error2 = __commonJS2({
+    var require_enabled_languages_validation_error = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/enabled-languages-validation-error.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -24968,13 +23662,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.UnsupportedLanguageError = UnsupportedLanguageError3;
       }
     });
-    var require_enabled_languages_validator2 = __commonJS2({
+    var require_enabled_languages_validator = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/enabled-languages-validator.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.EnabledLanguagesValidator = void 0;
-        var languages_1 = require_languages2();
-        var enabled_languages_validation_error_1 = require_enabled_languages_validation_error2();
+        var languages_1 = require_languages();
+        var enabled_languages_validation_error_1 = require_enabled_languages_validation_error();
         var EnabledLanguagesValidator3 = class {
           supportedLanguages = new languages_1.SupportedLanguageRegistry();
           validate(languages) {
@@ -24987,7 +23681,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.EnabledLanguagesValidator = EnabledLanguagesValidator3;
       }
     });
-    var require_dependency_position2 = __commonJS2({
+    var require_dependency_position = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/dependency-position.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -25007,7 +23701,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DependencyPosition = DependencyPosition;
       }
     });
-    var require_extracted_dependency2 = __commonJS2({
+    var require_extracted_dependency = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extracted-dependency.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -25023,13 +23717,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.ExtractedDependency = ExtractedDependency;
       }
     });
-    var require_delimited_dependency_extractor2 = __commonJS2({
+    var require_delimited_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/delimited-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.DelimitedDependencyExtractor = void 0;
-        var dependency_position_1 = require_dependency_position2();
-        var extracted_dependency_1 = require_extracted_dependency2();
+        var dependency_position_1 = require_dependency_position();
+        var extracted_dependency_1 = require_extracted_dependency();
         var DelimitedDependencyExtractor = class {
           delimiterRegex;
           addTrailingSeparator;
@@ -25069,12 +23763,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DelimitedDependencyExtractor = DelimitedDependencyExtractor;
       }
     });
-    var require_csharp_dependency_extractor2 = __commonJS2({
+    var require_csharp_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/csharp-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.CsharpDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var CsharpDependencyExtractor = class _CsharpDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static USING_REGEX = /^[ \t]*(?:global[ \t]+)?using[ \t]+(?:static[ \t]+)?(?:(?:[A-Za-z_]\w*)[ \t]*=[ \t]*)?([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
           constructor() {
@@ -25087,12 +23781,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.CsharpDependencyExtractor = CsharpDependencyExtractor;
       }
     });
-    var require_dart_dependency_extractor2 = __commonJS2({
+    var require_dart_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/dart-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.DartDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var DartDependencyExtractor = class _DartDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static DIRECTIVE_REGEX = /^[ \t]*(?:@[A-Za-z_]\w*(?:\([^)]*\))?[ \t]*)*(?:import|export|part)[ \t]+["']([^"'\r\n]+)["'](?:[ \t]+(?:as|show|hide)[^;\r\n]*)?[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
           constructor() {
@@ -25108,12 +23802,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DartDependencyExtractor = DartDependencyExtractor;
       }
     });
-    var require_ecmascript_dependency_extractor2 = __commonJS2({
+    var require_ecmascript_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/ecmascript-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.EcmaScriptDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var EcmaScriptDependencyExtractor = class _EcmaScriptDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static IMPORT_REGEX = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
           constructor() {
@@ -25128,12 +23822,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.EcmaScriptDependencyExtractor = EcmaScriptDependencyExtractor;
       }
     });
-    var require_elixir_dependency_extractor2 = __commonJS2({
+    var require_elixir_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/elixir-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.ElixirDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var ElixirDependencyExtractor = class _ElixirDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static DIRECTIVE_REGEX = /^[ \t]*(?:alias|import|require|use)[ \t]+([A-Z][A-Za-z0-9_.]*(?:\.\{[^}\r\n]+\})?)(?:[ \t]*,[^\r\n]*)?$/gm;
           constructor() {
@@ -25155,13 +23849,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.ElixirDependencyExtractor = ElixirDependencyExtractor;
       }
     });
-    var require_go_dependency_extractor2 = __commonJS2({
+    var require_go_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/go-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.GoDependencyExtractor = void 0;
-        var dependency_position_1 = require_dependency_position2();
-        var extracted_dependency_1 = require_extracted_dependency2();
+        var dependency_position_1 = require_dependency_position();
+        var extracted_dependency_1 = require_extracted_dependency();
         var GoDependencyExtractor = class _GoDependencyExtractor {
           static SINGLE_IMPORT_REGEX = /^[ \t]*import[ \t]+(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
           static IMPORT_BLOCK_REGEX = /^[ \t]*import[ \t]*\([ \t]*(?:\/\/.*)?\r?\n([\s\S]*?)^[ \t]*\)[ \t]*(?:\/\/.*)?$/gm;
@@ -25211,12 +23905,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.GoDependencyExtractor = GoDependencyExtractor;
       }
     });
-    var require_groovy_dependency_extractor2 = __commonJS2({
+    var require_groovy_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/groovy-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.GroovyDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var GroovyDependencyExtractor = class _GroovyDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_$][\w$]*)?[ \t]*(?:;[ \t]*)?(?:\/\/.*)?$/gm;
           constructor() {
@@ -25226,12 +23920,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.GroovyDependencyExtractor = GroovyDependencyExtractor;
       }
     });
-    var require_java_dependency_extractor2 = __commonJS2({
+    var require_java_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/java-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.JavaDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var JavaDependencyExtractor = class _JavaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)[ \t]*;/gm;
           constructor() {
@@ -25241,12 +23935,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.JavaDependencyExtractor = JavaDependencyExtractor;
       }
     });
-    var require_kotlin_dependency_extractor2 = __commonJS2({
+    var require_kotlin_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/kotlin-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.KotlinDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var KotlinDependencyExtractor = class _KotlinDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_][\w]*)?[ \t]*(?:\/\/.*)?$/gm;
           constructor() {
@@ -25256,12 +23950,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.KotlinDependencyExtractor = KotlinDependencyExtractor;
       }
     });
-    var require_lua_dependency_extractor2 = __commonJS2({
+    var require_lua_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/lua-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.LuaDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var LuaDependencyExtractor = class _LuaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static REQUIRE_REGEX = /^[ \t]*(?:local[ \t]+[A-Za-z_]\w*[ \t]*=[ \t]*)?require[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:--.*)?$/gm;
           constructor() {
@@ -25274,12 +23968,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LuaDependencyExtractor = LuaDependencyExtractor;
       }
     });
-    var require_php_dependency_extractor2 = __commonJS2({
+    var require_php_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/php-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.PhpDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var PhpDependencyExtractor = class _PhpDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static USE_REGEX = /^[ \t]*use[ \t]+(?:(?:function|const)[ \t]+)?([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
           constructor() {
@@ -25304,12 +23998,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.PhpDependencyExtractor = PhpDependencyExtractor;
       }
     });
-    var require_python_dependency_extractor2 = __commonJS2({
+    var require_python_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/python-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.PythonDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var PythonDependencyExtractor = class _PythonDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static IMPORT_REGEX = /^\s*import\s+(.+)$/gm;
           static FROM_IMPORT_REGEX = /^\s*from\s+([A-Za-z_][\w.]*)\s+import\s+.+$/gm;
@@ -25326,12 +24020,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.PythonDependencyExtractor = PythonDependencyExtractor;
       }
     });
-    var require_ruby_dependency_extractor2 = __commonJS2({
+    var require_ruby_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/ruby-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.RubyDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var RubyDependencyExtractor = class _RubyDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static REQUIRE_REGEX = /^[ \t]*require(?:_relative)?[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:#.*)?$/gm;
           constructor() {
@@ -25341,13 +24035,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.RubyDependencyExtractor = RubyDependencyExtractor;
       }
     });
-    var require_rust_dependency_extractor2 = __commonJS2({
+    var require_rust_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/rust-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.RustDependencyExtractor = void 0;
-        var dependency_position_1 = require_dependency_position2();
-        var extracted_dependency_1 = require_extracted_dependency2();
+        var dependency_position_1 = require_dependency_position();
+        var extracted_dependency_1 = require_extracted_dependency();
         var RustDependencyExtractor = class _RustDependencyExtractor {
           static USE_REGEX = /^[ \t]*use[ \t]+([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
           static MOD_REGEX = /^[ \t]*(?:pub[ \t]+)?mod[ \t]+([A-Za-z_]\w*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
@@ -25444,12 +24138,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.RustDependencyExtractor = RustDependencyExtractor;
       }
     });
-    var require_scala_dependency_extractor2 = __commonJS2({
+    var require_scala_dependency_extractor = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/scala-dependency-extractor.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.ScalaDependencyExtractor = void 0;
-        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor2();
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
         var ScalaDependencyExtractor = class _ScalaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
           static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.(?:[A-Za-z]\w*|_\w+|_|\*))*(?:\.\{[^}\r\n]+\})?)[ \t]*(?:\/\/.*)?$/gm;
           constructor() {
@@ -25484,25 +24178,25 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.ScalaDependencyExtractor = ScalaDependencyExtractor;
       }
     });
-    var require_dependency_extractor_registry2 = __commonJS2({
+    var require_dependency_extractor_registry = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/extractors/dependency-extractor-registry.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.DependencyExtractorRegistry = void 0;
-        var csharp_dependency_extractor_1 = require_csharp_dependency_extractor2();
-        var dart_dependency_extractor_1 = require_dart_dependency_extractor2();
-        var ecmascript_dependency_extractor_1 = require_ecmascript_dependency_extractor2();
-        var elixir_dependency_extractor_1 = require_elixir_dependency_extractor2();
-        var go_dependency_extractor_1 = require_go_dependency_extractor2();
-        var groovy_dependency_extractor_1 = require_groovy_dependency_extractor2();
-        var java_dependency_extractor_1 = require_java_dependency_extractor2();
-        var kotlin_dependency_extractor_1 = require_kotlin_dependency_extractor2();
-        var lua_dependency_extractor_1 = require_lua_dependency_extractor2();
-        var php_dependency_extractor_1 = require_php_dependency_extractor2();
-        var python_dependency_extractor_1 = require_python_dependency_extractor2();
-        var ruby_dependency_extractor_1 = require_ruby_dependency_extractor2();
-        var rust_dependency_extractor_1 = require_rust_dependency_extractor2();
-        var scala_dependency_extractor_1 = require_scala_dependency_extractor2();
+        var csharp_dependency_extractor_1 = require_csharp_dependency_extractor();
+        var dart_dependency_extractor_1 = require_dart_dependency_extractor();
+        var ecmascript_dependency_extractor_1 = require_ecmascript_dependency_extractor();
+        var elixir_dependency_extractor_1 = require_elixir_dependency_extractor();
+        var go_dependency_extractor_1 = require_go_dependency_extractor();
+        var groovy_dependency_extractor_1 = require_groovy_dependency_extractor();
+        var java_dependency_extractor_1 = require_java_dependency_extractor();
+        var kotlin_dependency_extractor_1 = require_kotlin_dependency_extractor();
+        var lua_dependency_extractor_1 = require_lua_dependency_extractor();
+        var php_dependency_extractor_1 = require_php_dependency_extractor();
+        var python_dependency_extractor_1 = require_python_dependency_extractor();
+        var ruby_dependency_extractor_1 = require_ruby_dependency_extractor();
+        var rust_dependency_extractor_1 = require_rust_dependency_extractor();
+        var scala_dependency_extractor_1 = require_scala_dependency_extractor();
         var DependencyExtractorRegistry2 = class {
           extractors = /* @__PURE__ */ new Map([
             ["javascript", new ecmascript_dependency_extractor_1.EcmaScriptDependencyExtractor()],
@@ -25528,7 +24222,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DependencyExtractorRegistry = DependencyExtractorRegistry2;
       }
     });
-    var require_layer_alias2 = __commonJS2({
+    var require_layer_alias = __commonJS2({
       "../core/out/src/clean-architecture/sources/layer/layer-alias.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -25579,7 +24273,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LayerAlias = LayerAlias2;
       }
     });
-    var require_source_folder2 = __commonJS2({
+    var require_source_folder = __commonJS2({
       "../core/out/src/clean-architecture/sources/source-folder.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -25604,7 +24298,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.SourceFolder = SourceFolder;
       }
     });
-    var require_layer_violation2 = __commonJS2({
+    var require_layer_violation = __commonJS2({
       "../core/out/src/clean-architecture/restrictions/layer-violation.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -25628,12 +24322,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LayerViolation = LayerViolation;
       }
     });
-    var require_dependency_statement2 = __commonJS2({
+    var require_dependency_statement = __commonJS2({
       "../core/out/src/clean-architecture/sources/dependencies/dependency-statement.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.DependencyStatement = void 0;
-        var layer_violation_1 = require_layer_violation2();
+        var layer_violation_1 = require_layer_violation();
         var DependencyStatement = class {
           text;
           path;
@@ -25663,7 +24357,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.DependencyStatement = DependencyStatement;
       }
     });
-    var require_layered_component2 = __commonJS2({
+    var require_layered_component = __commonJS2({
       "../core/out/src/clean-architecture/sources/layer/layered-component.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
@@ -25690,12 +24384,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LayeredComponent = LayeredComponent;
       }
     });
-    var require_layer_path2 = __commonJS2({
+    var require_layer_path = __commonJS2({
       "../core/out/src/clean-architecture/sources/layer/layer-path.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.LayerPath = void 0;
-        var layered_component_1 = require_layered_component2();
+        var layered_component_1 = require_layered_component();
         var LayerPath = class extends layered_component_1.LayeredComponent {
           path;
           constructor(path, aliases) {
@@ -25706,15 +24400,15 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.LayerPath = LayerPath;
       }
     });
-    var require_source_file2 = __commonJS2({
+    var require_source_file = __commonJS2({
       "../core/out/src/clean-architecture/sources/source-file.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.SourceFile = void 0;
-        var architecture_violation_1 = require_architecture_violation2();
-        var dependency_statement_1 = require_dependency_statement2();
-        var layer_path_1 = require_layer_path2();
-        var layered_component_1 = require_layered_component2();
+        var architecture_violation_1 = require_architecture_violation();
+        var dependency_statement_1 = require_dependency_statement();
+        var layer_path_1 = require_layer_path();
+        var layered_component_1 = require_layered_component();
         var SourceFile2 = class extends layered_component_1.LayeredComponent {
           allowedDependencies;
           dependencies = [];
@@ -25730,7 +24424,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.SourceFile = SourceFile2;
       }
     });
-    var require_src2 = __commonJS2({
+    var require_src = __commonJS2({
       "../core/out/src/index.js"(exports22) {
         "use strict";
         var __createBinding = exports22 && exports22.__createBinding || (Object.create ? (function(o, m, k, k2) {
@@ -25751,27 +24445,27 @@ Expecting one of '${allowedValues.join("', '")}'`);
         };
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.EnabledLanguagesValidator = exports22.UnsupportedLanguageError = void 0;
-        __exportStar(require_document2(), exports22);
-        __exportStar(require_default_configuration2(), exports22);
-        __exportStar(require_allowed_dependencies_configuration2(), exports22);
-        __exportStar(require_architecture_violation2(), exports22);
-        __exportStar(require_allowed_application_dependencies2(), exports22);
-        __exportStar(require_allowed_domain_dependencies2(), exports22);
-        __exportStar(require_allowed_infrastructure_dependencies2(), exports22);
-        __exportStar(require_allowed_dependencies2(), exports22);
-        __exportStar(require_languages2(), exports22);
-        var enabled_languages_validation_error_1 = require_enabled_languages_validation_error2();
+        __exportStar(require_document(), exports22);
+        __exportStar(require_default_configuration(), exports22);
+        __exportStar(require_allowed_dependencies_configuration(), exports22);
+        __exportStar(require_architecture_violation(), exports22);
+        __exportStar(require_allowed_application_dependencies(), exports22);
+        __exportStar(require_allowed_domain_dependencies(), exports22);
+        __exportStar(require_allowed_infrastructure_dependencies(), exports22);
+        __exportStar(require_allowed_dependencies(), exports22);
+        __exportStar(require_languages(), exports22);
+        var enabled_languages_validation_error_1 = require_enabled_languages_validation_error();
         Object.defineProperty(exports22, "UnsupportedLanguageError", { enumerable: true, get: function() {
           return enabled_languages_validation_error_1.UnsupportedLanguageError;
         } });
-        var enabled_languages_validator_1 = require_enabled_languages_validator2();
+        var enabled_languages_validator_1 = require_enabled_languages_validator();
         Object.defineProperty(exports22, "EnabledLanguagesValidator", { enumerable: true, get: function() {
           return enabled_languages_validator_1.EnabledLanguagesValidator;
         } });
-        __exportStar(require_dependency_extractor_registry2(), exports22);
-        __exportStar(require_layer_alias2(), exports22);
-        __exportStar(require_source_folder2(), exports22);
-        __exportStar(require_source_file2(), exports22);
+        __exportStar(require_dependency_extractor_registry(), exports22);
+        __exportStar(require_layer_alias(), exports22);
+        __exportStar(require_source_folder(), exports22);
+        __exportStar(require_source_file(), exports22);
       }
     });
     var index_exports = {};
@@ -25795,9 +24489,9 @@ Expecting one of '${allowedValues.join("', '")}'`);
       Option,
       Help
     } = import_index.default;
-    var import_clean_architecture_highlighter_core2 = __toESM2(require_src2());
+    var import_clean_architecture_highlighter_core = __toESM2(require_src());
     var CliEnabledLanguagesParser = class _CliEnabledLanguagesParser {
-      static validator = new import_clean_architecture_highlighter_core2.EnabledLanguagesValidator();
+      static validator = new import_clean_architecture_highlighter_core.EnabledLanguagesValidator();
       static parse(value) {
         const languages = value.split(",").map((language) => language.trim()).filter((language) => language.length > 0);
         if (languages.length === 0) {
@@ -25806,7 +24500,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         try {
           _CliEnabledLanguagesParser.validator.validate(languages);
         } catch (error) {
-          if (error instanceof import_clean_architecture_highlighter_core2.UnsupportedLanguageError) {
+          if (error instanceof import_clean_architecture_highlighter_core.UnsupportedLanguageError) {
             throw new InvalidArgumentError(error.message);
           }
           throw error;
@@ -25824,7 +24518,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
     };
     var import_node_fs = require("node:fs");
     var import_node_path = require("node:path");
-    var import_clean_architecture_highlighter_core22 = __toESM2(require_src2());
+    var import_clean_architecture_highlighter_core2 = __toESM2(require_src());
     var CliDocument = class {
       constructor(path, content) {
         this.content = content;
@@ -25857,7 +24551,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
       message;
     };
     var Check = class {
-      constructor(input, dependencyExtractors = new import_clean_architecture_highlighter_core22.DependencyExtractorRegistry(), supportedLanguages = new import_clean_architecture_highlighter_core22.SupportedLanguageRegistry()) {
+      constructor(input, dependencyExtractors = new import_clean_architecture_highlighter_core2.DependencyExtractorRegistry(), supportedLanguages = new import_clean_architecture_highlighter_core2.SupportedLanguageRegistry()) {
         this.input = input;
         this.dependencyExtractors = dependencyExtractors;
         this.supportedLanguages = supportedLanguages;
@@ -25880,7 +24574,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         this.input.options.logger.info(`Checking file: ${this.toOutputPath((0, import_node_path.relative)(this.input.files.outputRoot, filePath))}`);
         const documentPath = this.toDocumentPath((0, import_node_path.relative)(this.input.files.projectRoot, filePath));
         const document = new CliDocument(documentPath, (0, import_node_fs.readFileSync)(filePath, "utf8"));
-        const sourceFile = new import_clean_architecture_highlighter_core22.SourceFile(
+        const sourceFile = new import_clean_architecture_highlighter_core2.SourceFile(
           document,
           extractor.extract(document),
           this.input.configuration.allowedDependencies,
@@ -25897,8 +24591,8 @@ Expecting one of '${allowedValues.join("', '")}'`);
         return path.split(import_node_path.sep).join("/");
       }
     };
-    var import_clean_architecture_highlighter_core4 = __toESM2(require_src2());
-    var import_clean_architecture_highlighter_core3 = __toESM2(require_src2());
+    var import_clean_architecture_highlighter_core4 = __toESM2(require_src());
+    var import_clean_architecture_highlighter_core3 = __toESM2(require_src());
     var CliConfiguration = class {
       constructor(source) {
         this.source = source;
@@ -26031,7 +24725,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
       }
     };
     var import_node_fs4 = require("node:fs");
-    var import_clean_architecture_highlighter_core5 = __toESM2(require_src2());
+    var import_clean_architecture_highlighter_core5 = __toESM2(require_src());
     var CliConfigurationValues = class _CliConfigurationValues {
       constructor(values) {
         this.values = values;
@@ -26264,8 +24958,6 @@ Examples:
 var core = __toESM(require_core());
 
 // src/action-inputs.ts
-var import_clean_architecture_highlighter_core = __toESM(require_src());
-var enabledLanguagesValidator = new import_clean_architecture_highlighter_core.EnabledLanguagesValidator();
 function parseActionInputs(getInput) {
   return {
     path: getInput("path") || ".",
@@ -26291,14 +24983,6 @@ function parseEnabledLanguages(value) {
   const languages = value.split(",").map((language) => language.trim()).filter((language) => language.length > 0);
   if (languages.length === 0) {
     throw new Error("Input enabled-languages must contain at least one language identifier.");
-  }
-  try {
-    enabledLanguagesValidator.validate(languages);
-  } catch (error) {
-    if (error instanceof import_clean_architecture_highlighter_core.UnsupportedLanguageError) {
-      throw new Error(error.message);
-    }
-    throw error;
   }
   return languages;
 }

@@ -1,10 +1,6 @@
-import { EnabledLanguagesValidator, UnsupportedLanguageError } from '@jfrz38/clean-architecture-highlighter-core';
-import type { EnabledLanguages } from '@jfrz38/clean-architecture-highlighter-core';
-import type { OutputFormat, RunCheckInput } from '@jfrz38/clean-architecture-highlighter-cli';
+import type { EnabledLanguages, OutputFormat, RunCheckInput } from '@jfrz38/clean-architecture-highlighter-cli';
 
 export type ActionInputs = Pick<RunCheckInput, 'path' | 'config' | 'sourceFolder' | 'enabledLanguages' | 'format'>;
-
-const enabledLanguagesValidator = new EnabledLanguagesValidator();
 
 export function parseActionInputs(getInput: (name: string) => string): ActionInputs {
     return {
@@ -39,15 +35,6 @@ function parseEnabledLanguages(value: string | undefined): EnabledLanguages | un
 
     if (languages.length === 0) {
         throw new Error('Input enabled-languages must contain at least one language identifier.');
-    }
-
-    try {
-        enabledLanguagesValidator.validate(languages);
-    } catch (error) {
-        if (error instanceof UnsupportedLanguageError) {
-            throw new Error(error.message);
-        }
-        throw error;
     }
 
     return languages;
