@@ -73,7 +73,7 @@ test-integration-full: ## run the full shared integration matrix
 # Local generation and linking
 .PHONY: package package-cli package-github-action verify-github-action-bundle package-vscode-extension vsix vscode-vsix link-cli cli-link dev
 
-package: package-vscode-extension ## package the VS Code extension
+package: package-cli package-github-action package-vscode-extension ## package all publishable adapters
 
 package-cli: ## bundle the CLI package for publishing
 	$(PNPM) --filter "$(CLI_PACKAGE)" run package

@@ -6,5 +6,5 @@ esbuild.buildSync({
   outfile: 'dist/index.js',
   format: 'cjs',
   platform: 'node',
-  target: 'node20'
+  target: 'node24'
 });
