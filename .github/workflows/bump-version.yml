@@ -11,6 +11,7 @@ on:
         options:
           - cli
           - core
+          - github-action
           - vscode-extension
       bump:
         description: Version component to bump
@@ -57,6 +58,11 @@ jobs:
               echo "package_name=@jfrz38/clean-architecture-highlighter-core" >> "$GITHUB_OUTPUT"
               echo "version_file=packages/core/package.json" >> "$GITHUB_OUTPUT"
               echo "tag_prefix=core-v" >> "$GITHUB_OUTPUT"
+              ;;
+            github-action)
+              echo "package_name=@jfrz38/clean-architecture-highlighter-github-action" >> "$GITHUB_OUTPUT"
+              echo "version_file=packages/github-action/package.json" >> "$GITHUB_OUTPUT"
+              echo "tag_prefix=github-action-v" >> "$GITHUB_OUTPUT"
               ;;
             vscode-extension)
               echo "package_name=clean-architecture-highlighter" >> "$GITHUB_OUTPUT"

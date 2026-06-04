@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
     "moduleResolution": "Node16",
     "outDir": "out",
     "rootDir": ".",
@@ -16,7 +15,7 @@
   ],
   "references": [
     {
-      "path": "../core"
+      "path": "../cli"
     }
   ]
 }

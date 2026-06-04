@@ -23,9 +23,23 @@ jobs:
             package_name: "@jfrz38/clean-architecture-highlighter-cli"
             package_dir: packages/cli
             package_file: packages/cli/package.json
+            compare_source: registry
+            compare_ref: ""
             registry: npm
             validate_command: make validate-cli TEST_LANGUAGE=all
             package_command: make package-cli
+            asset_path: ""
+          - release_name: GitHub Action
+            package_key: github-action
+            tag_prefix: github-action-v
+            package_name: "@jfrz38/clean-architecture-highlighter-github-action"
+            package_dir: packages/github-action
+            package_file: packages/github-action/package.json
+            compare_source: git-ref
+            compare_ref: HEAD^
+            registry: auto
+            validate_command: make validate-github-action TEST_LANGUAGE=all
+            package_command: make package-github-action
             asset_path: ""
           - release_name: VS Code Extension
             package_key: vscode-extension
@@ -33,6 +47,8 @@ jobs:
             package_name: jfrz38.clean-architecture-highlighter
             package_dir: packages/vscode-extension
             package_file: packages/vscode-extension/package.json
+            compare_source: registry
+            compare_ref: ""
             registry: vscode-marketplace
             validate_command: xvfb-run -a make validate-vscode-extension
             package_command: make package-vscode-extension
@@ -50,7 +66,8 @@ jobs:
         with:
           file-path: ${{ matrix.package.package_file }}
           package-name: ${{ matrix.package.package_name }}
-          compare-source: registry
+          compare-source: ${{ matrix.package.compare_source }}
+          compare-ref: ${{ matrix.package.compare_ref }}
           registry: ${{ matrix.package.registry }}
 
       - name: Skip already published version
@@ -105,44 +122,57 @@ jobs:
           fi
 
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=${{ matrix.package.tag_prefix }}$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_tag=${{ matrix.package.tag_prefix }}$VERSION" >> "$GITHUB_OUTPUT"
+          echo "major_tag=${{ matrix.package.tag_prefix }}${VERSION%%.*}" >> "$GITHUB_OUTPUT"
 
       - name: Package release asset
         if: steps.version-check.outputs.changed == 'true' && matrix.package.asset_path != ''
         run: ${{ matrix.package.package_command }}
 
+      - name: Create or update exact version tag
+        if: steps.version-check.outputs.changed == 'true'
+        env:
+          VERSION_TAG: ${{ steps.version.outputs.version_tag }}
+        run: |
+          if git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
+            echo "Tag $VERSION_TAG already exists. Skipping exact version tag update."
+          else
+            git tag "$VERSION_TAG"
+            git push origin "refs/tags/$VERSION_TAG"
+          fi
+
+      - name: Force-update GitHub Action major version tag
+        if: steps.version-check.outputs.changed == 'true' && matrix.package.package_key == 'github-action'
+        env:
+          MAJOR_TAG: ${{ steps.version.outputs.major_tag }}
+        run: |
+          git tag -f "$MAJOR_TAG"
+          git push origin "refs/tags/$MAJOR_TAG" --force
+
       - name: Create GitHub release
         if: steps.version-check.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.version.outputs.tag }}
+          VERSION_TAG: ${{ steps.version.outputs.version_tag }}
           VERSION: ${{ steps.version.outputs.version }}
           ASSET_PATH_TEMPLATE: ${{ matrix.package.asset_path }}
         run: |
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Release $TAG already exists; nothing to create."
-            exit 0
-          fi
-
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists but the GitHub release is missing; creating it."
+          if gh release view "$VERSION_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $VERSION_TAG already exists. Skipping release creation."
           else
-            git tag "$TAG"
-            git push origin "$TAG"
-          fi
-
-          if [ -n "$ASSET_PATH_TEMPLATE" ]; then
-            ASSET_PATH="${ASSET_PATH_TEMPLATE//\{version\}/$VERSION}"
-            gh release create "$TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "$TAG" \
-              --generate-notes \
-              --latest=true \
-              "$ASSET_PATH"
-          else
-            gh release create "$TAG" \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "$TAG" \
-              --generate-notes \
-              --latest=true
+            if [ -n "$ASSET_PATH_TEMPLATE" ]; then
+              ASSET_PATH="${ASSET_PATH_TEMPLATE//\{version\}/$VERSION}"
+              gh release create "$VERSION_TAG" \
+                --repo "$GITHUB_REPOSITORY" \
+                --title "$VERSION_TAG" \
+                --generate-notes \
+                --latest=true \
+                "$ASSET_PATH"
+            else
+              gh release create "$VERSION_TAG" \
+                --repo "$GITHUB_REPOSITORY" \
+                --title "$VERSION_TAG" \
+                --generate-notes \
+                --latest=true
+            fi
           fi

@@ -1,0 +1,29 @@
+{
+  "name": "@jfrz38/clean-architecture-highlighter-github-action",
+  "version": "0.1.0",
+  "description": "GitHub Action wrapper for Clean Architecture dependency boundary checks.",
+  "author": "José F. Ruiz <jrz899@inlumine.ual.es>",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./out/src/index.d.ts",
+  "scripts": {
+    "compile": "tsc -b ./",
+    "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && tsc -b ./",
+    "bundle": "node scripts/bundle.cjs",
+    "package": "pnpm run clean:compile && pnpm run bundle",
+    "lint": "eslint src test",
+    "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
+    "clean:tests": "rimraf out && pnpm run test"
+  },
+  "dependencies": {
+    "@actions/core": "1.11.1",
+    "@jfrz38/clean-architecture-highlighter-cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "25.x",
+    "esbuild": "0.28.0",
+    "rimraf": "6.1.3"
+  }
+}
