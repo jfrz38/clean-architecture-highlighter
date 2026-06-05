@@ -1,7 +1,5 @@
-import { SourceFolderPath } from '../../configuration/types.configuration';
-
 export class SourceFolder {
-    constructor(private readonly sourceFolder: SourceFolderPath | undefined) {}
+    constructor(private readonly sourceFolder: string | undefined) {}
 
     public contains(documentPath: string): boolean {
         if (!this.sourceFolder) {

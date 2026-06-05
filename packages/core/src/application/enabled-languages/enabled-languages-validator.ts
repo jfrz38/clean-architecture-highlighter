@@ -1,8 +1,11 @@
-import { SupportedLanguageRegistry } from './languages';
+import { SupportedLanguageRegistry } from '../../infrastructure/languages/supported-language-registry';
+import { SupportedLanguages } from '../ports/supported-languages';
 import { UnsupportedLanguageError } from './enabled-languages-validation-error';
 
 export class EnabledLanguagesValidator {
-    private readonly supportedLanguages = new SupportedLanguageRegistry();
+    constructor(
+        private readonly supportedLanguages: SupportedLanguages = new SupportedLanguageRegistry()
+    ) { }
 
     public validate(languages: string[]): void {
         const unsupported = languages.filter(language => !this.supportedLanguages.isSupportedLanguageId(language));

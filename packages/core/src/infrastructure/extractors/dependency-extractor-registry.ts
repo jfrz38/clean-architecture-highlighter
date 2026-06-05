@@ -1,6 +1,6 @@
 import { CsharpDependencyExtractor } from "./csharp-dependency-extractor";
 import { DartDependencyExtractor } from "./dart-dependency-extractor";
-import { DependencyExtractor } from "./dependency-extractor";
+import { DependencyExtractor } from "../../domain/sources/dependencies/extractors/dependency-extractor";
 import { EcmaScriptDependencyExtractor } from "./ecmascript-dependency-extractor";
 import { ElixirDependencyExtractor } from "./elixir-dependency-extractor";
 import { GoDependencyExtractor } from "./go-dependency-extractor";

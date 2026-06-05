@@ -1,4 +1,6 @@
-export class SupportedLanguageRegistry {
+import { SupportedLanguages } from "../../application/ports/supported-languages";
+
+export class SupportedLanguageRegistry implements SupportedLanguages {
 
     private readonly languagesByExtension = new Map<string, string>([
         ['.js', 'javascript'],

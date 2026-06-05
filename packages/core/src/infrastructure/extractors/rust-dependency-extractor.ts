@@ -1,7 +1,7 @@
-import { CoreDocument } from "../../../../document";
-import { DependencyPosition } from "../dependency-position";
-import { ExtractedDependency } from "../extracted-dependency";
-import { DependencyExtractor } from "./dependency-extractor";
+import { CoreDocument } from "../../application/ports/core-document";
+import { DependencyPosition } from "../../domain/sources/dependencies/dependency-position";
+import { ExtractedDependency } from "../../domain/sources/dependencies/extracted-dependency";
+import { DependencyExtractor } from "../../domain/sources/dependencies/extractors/dependency-extractor";
 
 export class RustDependencyExtractor implements DependencyExtractor {
 

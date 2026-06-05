@@ -1,4 +1,3 @@
-import { CoreDocument } from "../../document";
 import { AllowedDependencies } from "../restrictions/allowed-dependencies";
 import { ArchitectureViolation } from "../restrictions/architecture-violation";
 import { ExtractedDependency } from "./dependencies/extracted-dependency";
@@ -12,15 +11,19 @@ export class SourceFile extends LayeredComponent {
     private dependencies: DependencyStatement[] = [];
 
     constructor(
-        document: CoreDocument,
+        sourcePath: string | { uri: { path: string } },
         extractedDependencies: ExtractedDependency[],
         private readonly allowedDependencies: AllowedDependencies,
         aliases: LayerAlias
     ) {
-        super(document.uri.path, aliases);
+        super(SourceFile.toSourcePath(sourcePath), aliases);
         this.dependencies = extractedDependencies.map(dependency =>
             new DependencyStatement(new LayerPath(dependency.path, this.aliases), this.path, dependency.position, this.allowedDependencies, this.aliases)
         );
+    }
+
+    private static toSourcePath(sourcePath: string | { uri: { path: string } }): string {
+        return typeof sourcePath === 'string' ? sourcePath : sourcePath.uri.path;
     }
 
     public get violations(): ArchitectureViolation[] {
