@@ -1,4 +1,4 @@
-import { CoreDocument, DocumentPosition } from '../../src/document';
+import { CoreDocument, DocumentPosition } from '../../src/application/ports/core-document';
 
 export function createDocument(options: { content: string; language?: string }): CoreDocument {
     return {

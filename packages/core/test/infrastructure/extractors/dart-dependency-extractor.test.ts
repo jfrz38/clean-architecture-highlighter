@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import { createDocument } from '../support/create-document';
-import { DartDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/dart-dependency-extractor';
+import { createDocument } from '../../support/create-document';
+import { DartDependencyExtractor } from '../../../src/infrastructure/extractors/dart-dependency-extractor';
 
 suite('DartDependencyExtractor', () => {
     const extractor = new DartDependencyExtractor();

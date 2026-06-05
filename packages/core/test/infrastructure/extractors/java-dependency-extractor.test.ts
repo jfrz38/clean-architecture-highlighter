@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import { createDocument } from '../support/create-document';
-import { JavaDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/java-dependency-extractor';
+import { createDocument } from '../../support/create-document';
+import { JavaDependencyExtractor } from '../../../src/infrastructure/extractors/java-dependency-extractor';
 
 suite('JavaDependencyExtractor', () => {
     const extractor = new JavaDependencyExtractor();

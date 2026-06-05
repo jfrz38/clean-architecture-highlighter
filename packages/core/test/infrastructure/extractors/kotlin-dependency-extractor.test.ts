@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import { createDocument } from '../support/create-document';
-import { KotlinDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/kotlin-dependency-extractor';
+import { createDocument } from '../../support/create-document';
+import { KotlinDependencyExtractor } from '../../../src/infrastructure/extractors/kotlin-dependency-extractor';
 
 suite('KotlinDependencyExtractor', () => {
     const extractor = new KotlinDependencyExtractor();

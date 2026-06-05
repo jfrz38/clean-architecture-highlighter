@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import { createDocument } from '../support/create-document';
-import { ElixirDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/elixir-dependency-extractor';
+import { createDocument } from '../../support/create-document';
+import { ElixirDependencyExtractor } from '../../../src/infrastructure/extractors/elixir-dependency-extractor';
 
 suite('ElixirDependencyExtractor', () => {
     const extractor = new ElixirDependencyExtractor();

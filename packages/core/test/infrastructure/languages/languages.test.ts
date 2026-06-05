@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { suite, test } from 'mocha';
-import { EnabledLanguagesValidator, SupportedLanguageRegistry, UnsupportedLanguageError } from '../src';
+import { EnabledLanguagesValidator, SupportedLanguageRegistry, UnsupportedLanguageError } from '../../../src';
 
 suite('Supported languages', () => {
     test('resolves language identifiers from file extensions', () => {
@@ -68,6 +68,18 @@ suite('EnabledLanguagesValidator', () => {
             assert.ok(error instanceof UnsupportedLanguageError);
             assert.deepStrictEqual(error.unsupportedLanguages, ['javacsript', 'typesscript']);
         }
+    });
+
+    test('validates through the injected supported languages port', () => {
+        const validator = new EnabledLanguagesValidator({
+            isSupportedLanguageId: languageId => languageId === 'custom'
+        });
+
+        assert.doesNotThrow(() => validator.validate(['custom']));
+        assert.throws(
+            () => validator.validate(['typescript']),
+            UnsupportedLanguageError
+        );
     });
 });
 
