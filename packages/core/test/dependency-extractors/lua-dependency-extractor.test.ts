@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { LuaDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/lua-dependency-extractor';
+import { LuaDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/lua-dependency-extractor';
 
 suite('LuaDependencyExtractor', () => {
     const extractor = new LuaDependencyExtractor();

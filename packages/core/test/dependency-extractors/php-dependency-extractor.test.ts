@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { PhpDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/php-dependency-extractor';
+import { PhpDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/php-dependency-extractor';
 
 suite('PhpDependencyExtractor', () => {
     const extractor = new PhpDependencyExtractor();

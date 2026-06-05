@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { EcmaScriptDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/ecmascript-dependency-extractor';
+import { EcmaScriptDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/ecmascript-dependency-extractor';
 
 suite('EcmaScriptDependencyExtractor', () => {
     const extractor = new EcmaScriptDependencyExtractor();

@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { RustDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/rust-dependency-extractor';
+import { RustDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/rust-dependency-extractor';
 
 suite('RustDependencyExtractor', () => {
     const extractor = new RustDependencyExtractor();

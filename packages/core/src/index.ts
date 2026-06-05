@@ -7,15 +7,15 @@ export type {
     Layers,
     SourceFolderPath
 } from './configuration/types.configuration';
-export * from './clean-architecture/restrictions/architecture-violation';
+export * from './dependency-boundaries/restrictions/architecture-violation';
 export * from './configuration/components/layers/allowed-dependencies/allowed-application-dependencies';
 export * from './configuration/components/layers/allowed-dependencies/allowed-domain-dependencies';
 export * from './configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies';
-export * from './clean-architecture/restrictions/allowed-dependencies';
-export * from './clean-architecture/sources/dependencies/languages';
-export { UnsupportedLanguageError } from './clean-architecture/sources/dependencies/enabled-languages-validation-error';
-export { EnabledLanguagesValidator } from './clean-architecture/sources/dependencies/enabled-languages-validator';
-export * from './clean-architecture/sources/dependencies/extractors/dependency-extractor-registry';
-export * from './clean-architecture/sources/layer/layer-alias';
-export * from './clean-architecture/sources/source-folder';
-export * from './clean-architecture/sources/source-file';
+export * from './dependency-boundaries/restrictions/allowed-dependencies';
+export * from './dependency-boundaries/sources/dependencies/languages';
+export { UnsupportedLanguageError } from './dependency-boundaries/sources/dependencies/enabled-languages-validation-error';
+export { EnabledLanguagesValidator } from './dependency-boundaries/sources/dependencies/enabled-languages-validator';
+export * from './dependency-boundaries/sources/dependencies/extractors/dependency-extractor-registry';
+export * from './dependency-boundaries/sources/layer/layer-alias';
+export * from './dependency-boundaries/sources/source-folder';
+export * from './dependency-boundaries/sources/source-file';

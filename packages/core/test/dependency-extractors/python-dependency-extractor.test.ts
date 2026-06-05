@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { PythonDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/python-dependency-extractor';
+import { PythonDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/python-dependency-extractor';
 
 suite('PythonDependencyExtractor', () => {
     const extractor = new PythonDependencyExtractor();

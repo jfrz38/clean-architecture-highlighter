@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { ScalaDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/scala-dependency-extractor';
+import { ScalaDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/scala-dependency-extractor';
 
 suite('ScalaDependencyExtractor', () => {
     const extractor = new ScalaDependencyExtractor();

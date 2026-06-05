@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { CsharpDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/csharp-dependency-extractor';
+import { CsharpDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/csharp-dependency-extractor';
 
 suite('CsharpDependencyExtractor', () => {
     const extractor = new CsharpDependencyExtractor();

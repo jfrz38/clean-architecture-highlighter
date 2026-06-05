@@ -1,4 +1,4 @@
-import { AllowedDependencies } from '../clean-architecture/restrictions/allowed-dependencies';
+import { AllowedDependencies } from '../dependency-boundaries/restrictions/allowed-dependencies';
 import { ConfigurationOptions } from './types.configuration';
 import { AllowedApplicationDependencies } from './components/layers/allowed-dependencies/allowed-application-dependencies';
 import { AllowedDomainDependencies } from './components/layers/allowed-dependencies/allowed-domain-dependencies';

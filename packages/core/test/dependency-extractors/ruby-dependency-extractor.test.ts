@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { RubyDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/ruby-dependency-extractor';
+import { RubyDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/ruby-dependency-extractor';
 
 suite('RubyDependencyExtractor', () => {
     const extractor = new RubyDependencyExtractor();

@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { GoDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/go-dependency-extractor';
+import { GoDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/go-dependency-extractor';
 
 suite('GoDependencyExtractor', () => {
     const extractor = new GoDependencyExtractor();

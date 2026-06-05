@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import { createDocument } from '../support/create-document';
-import { GroovyDependencyExtractor } from '../../src/clean-architecture/sources/dependencies/extractors/groovy-dependency-extractor';
+import { GroovyDependencyExtractor } from '../../src/dependency-boundaries/sources/dependencies/extractors/groovy-dependency-extractor';
 
 suite('GroovyDependencyExtractor', () => {
     const extractor = new GroovyDependencyExtractor();
