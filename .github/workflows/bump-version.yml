@@ -53,6 +53,12 @@ jobs:
               echo "package_name=@jfrz38/clean-architecture-highlighter-cli" >> "$GITHUB_OUTPUT"
               echo "version_file=packages/cli/package.json" >> "$GITHUB_OUTPUT"
               echo "tag_prefix=cli-v" >> "$GITHUB_OUTPUT"
+              {
+                echo "pre_commit_commands<<EOF"
+                echo "pnpm install --frozen-lockfile"
+                echo "make package-github-action"
+                echo "EOF"
+              } >> "$GITHUB_OUTPUT"
               ;;
             core)
               echo "package_name=@jfrz38/clean-architecture-highlighter-core" >> "$GITHUB_OUTPUT"
@@ -82,14 +88,14 @@ jobs:
           esac
 
       - name: Set up Node.js
-        if: ${{ inputs.package == 'github-action' }}
+        if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
 
       - name: Enable Corepack
-        if: ${{ inputs.package == 'github-action' }}
+        if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
         run: corepack enable
 
       - name: Bump version
