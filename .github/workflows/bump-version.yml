@@ -87,16 +87,16 @@ jobs:
               ;;
           esac
 
+      - name: Install pnpm
+        if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
+        uses: pnpm/action-setup@v6.0.8
+
       - name: Set up Node.js
         if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
-
-      - name: Enable Corepack
-        if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
-        run: corepack enable
 
       - name: Bump version
         uses: jfrz38/version-bump-action@v0
