@@ -24914,7 +24914,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
       };
     }
     function runCli(argv = process.argv) {
-      const cliVersion = "0.1.0";
+      const cliVersion = "0.2.0";
       const program2 = new Command();
       program2.name("clean-arch").description("Check Clean Architecture dependency boundaries from the terminal.").version(cliVersion).showHelpAfterError().showSuggestionAfterError();
       program2.command("check").description("Check a project or source folder.").argument("<path>", "Project path or source folder path to analyze.").option("--source-folder <folder>", "Source folder relative to the project root.").option("--enabled-languages <languages>", "Comma-separated language identifiers to analyze.", CliEnabledLanguagesParser.parse).option("--config <path>", "Path to a JSON configuration file.").option("--format <format>", "Output format: text or json.", CliOutputFormatParser.parse, "text").option("--strict", "Fail with exit code 1 when architecture violations are found. This is the default behavior.").option("--no-fail", "Report architecture violations without returning exit code 1.").option("--verbose", "Print analysis details to stderr.").addHelpText("after", `
