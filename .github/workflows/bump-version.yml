@@ -63,7 +63,12 @@ jobs:
               echo "package_name=@jfrz38/clean-architecture-highlighter-github-action" >> "$GITHUB_OUTPUT"
               echo "version_file=packages/github-action/package.json" >> "$GITHUB_OUTPUT"
               echo "tag_prefix=github-action-v" >> "$GITHUB_OUTPUT"
-              echo "pre_commit_commands=pnpm install --frozen-lockfile && make package-github-action" >> "$GITHUB_OUTPUT"
+              {
+                echo "pre_commit_commands<<EOF"
+                echo "pnpm install --frozen-lockfile"
+                echo "make package-github-action"
+                echo "EOF"
+              } >> "$GITHUB_OUTPUT"
               ;;
             vscode-extension)
               echo "package_name=clean-architecture-highlighter" >> "$GITHUB_OUTPUT"
@@ -75,6 +80,17 @@ jobs:
               exit 1
               ;;
           esac
+
+      - name: Set up Node.js
+        if: ${{ inputs.package == 'github-action' }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Enable Corepack
+        if: ${{ inputs.package == 'github-action' }}
+        run: corepack enable
 
       - name: Bump version
         uses: jfrz38/version-bump-action@v0
