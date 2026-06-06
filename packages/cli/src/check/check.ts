@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { extname, relative, sep } from 'node:path';
 import {
+    AnalyzeSourceFile,
     DependencyExtractorRegistry,
-    SourceFile,
     SupportedLanguageRegistry
 } from '@jfrz38/clean-architecture-highlighter-core';
 import { CliDocument } from '../adapter/cli-document';
@@ -36,14 +36,13 @@ export class Check {
 
         const documentPath = this.toDocumentPath(relative(this.input.files.projectRoot, filePath));
         const document = new CliDocument(documentPath, readFileSync(filePath, 'utf8'));
-        const sourceFile = new SourceFile(
-            document,
-            extractor.extract(document),
+        const analyzer = new AnalyzeSourceFile(
+            extractor,
             this.input.configuration.allowedDependencies,
             this.input.aliases
         );
 
-        return sourceFile.violations.map(violation =>
+        return analyzer.violationsFor(document).map(violation =>
             new CliViolation(this.toOutputPath(relative(this.input.files.outputRoot, filePath)), violation)
         );
     }

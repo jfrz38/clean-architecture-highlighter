@@ -1,6 +1,6 @@
-import { CoreDocument, DocumentPosition } from '@jfrz38/clean-architecture-highlighter-core';
+import { Document, DocumentPosition } from '@jfrz38/clean-architecture-highlighter-core';
 
-export class CliDocument implements CoreDocument {
+export class CliDocument implements Document {
 
     public readonly uri: { path: string };
 

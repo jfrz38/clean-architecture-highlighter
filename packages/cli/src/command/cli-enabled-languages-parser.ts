@@ -1,9 +1,9 @@
 import { InvalidArgumentError } from 'commander';
-import { EnabledLanguages, EnabledLanguagesValidator, UnsupportedLanguageError } from '@jfrz38/clean-architecture-highlighter-core';
+import { EnabledLanguages, EnabledLanguagesValidator, SupportedLanguageRegistry, UnsupportedLanguageError } from '@jfrz38/clean-architecture-highlighter-core';
 
 export class CliEnabledLanguagesParser {
 
-    private static readonly validator = new EnabledLanguagesValidator();
+    private static readonly validator = new EnabledLanguagesValidator(new SupportedLanguageRegistry());
 
     public static parse(value: string): EnabledLanguages {
         const languages = value.split(',')
