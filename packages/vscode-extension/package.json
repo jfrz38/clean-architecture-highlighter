@@ -244,6 +244,15 @@
           ],
           "description": "List of VS Code language identifiers that should be analyzed."
         },
+        "clean-architecture-highlighter.importResolution": {
+          "type": "string",
+          "enum": [
+            "text",
+            "native"
+          ],
+          "default": "text",
+          "description": "Import resolution strategy. 'text' uses portable text-based extraction. 'native' uses TypeScript-aware resolution for JavaScript and TypeScript documents, and falls back to text for other languages."
+        },
         "clean-architecture-highlighter.layers.domain.aliases": {
           "type": "array",
           "items": {
