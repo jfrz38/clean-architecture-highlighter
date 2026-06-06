@@ -3,7 +3,7 @@ export type DocumentPosition = {
     character: number;
 };
 
-export type CoreDocument = {
+export type Document = {
     uri: {
         path: string;
     };

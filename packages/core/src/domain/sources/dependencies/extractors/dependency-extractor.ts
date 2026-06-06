@@ -1,6 +1,6 @@
-import { CoreDocument } from "../../../../application/ports/core-document";
+import { Document } from "../../../document";
 import { ExtractedDependency } from "../extracted-dependency";
 
 export interface DependencyExtractor {
-    extract(document: CoreDocument): ExtractedDependency[];
+    extract(document: Document): ExtractedDependency[];
 }

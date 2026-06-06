@@ -1,4 +1,4 @@
-import { SupportedLanguages } from "../../application/ports/supported-languages";
+import { SupportedLanguages } from "../../domain/languages/supported-languages";
 
 export class SupportedLanguageRegistry implements SupportedLanguages {
 

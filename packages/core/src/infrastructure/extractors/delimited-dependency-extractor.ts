@@ -1,4 +1,4 @@
-import { CoreDocument } from "../../application/ports/core-document";
+import { Document } from "../../domain/document";
 import { DependencyPosition } from "../../domain/sources/dependencies/dependency-position";
 import { ExtractedDependency } from "../../domain/sources/dependencies/extracted-dependency";
 import { DependencyExtractor } from "../../domain/sources/dependencies/extractors/dependency-extractor";
@@ -20,11 +20,11 @@ export abstract class DelimitedDependencyExtractor implements DependencyExtracto
         this.addTrailingSeparator = addTrailingSeparator;
     }
 
-    public extract(document: CoreDocument): ExtractedDependency[] {
+    public extract(document: Document): ExtractedDependency[] {
         return this.patterns.flatMap(pattern => this.extractMatches(document, pattern));
     }
 
-    private extractMatches(document: CoreDocument, pattern: RegexDependencyPattern): ExtractedDependency[] {
+    private extractMatches(document: Document, pattern: RegexDependencyPattern): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
         const text = document.getText();
         let match: RegExpExecArray | null;

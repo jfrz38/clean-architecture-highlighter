@@ -1,4 +1,5 @@
-export * from './application/ports/core-document';
+export * from './domain/document';
+export * from './domain/languages/supported-languages';
 export * from './domain/sources/dependencies/extractors/dependency-extractor';
 export * from './application/analyze-source-file';
 export * from './application/configuration/default.configuration';

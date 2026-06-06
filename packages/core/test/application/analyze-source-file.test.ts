@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import { suite, test } from 'mocha';
 import { AnalyzeSourceFile } from '../../src/application/analyze-source-file';
-import { CoreDocument } from '../../src/application/ports/core-document';
+import { Document } from '../../src/domain/document';
 import { AllowedDependencies } from '../../src/domain/restrictions/allowed-dependencies';
 import { DependencyPosition } from '../../src/domain/sources/dependencies/dependency-position';
 import { ExtractedDependency } from '../../src/domain/sources/dependencies/extracted-dependency';
@@ -11,7 +11,7 @@ import { LayerAlias } from '../../src/domain/sources/layer/layer-alias';
 class FakeDependencyExtractor implements DependencyExtractor {
     public extracted = false;
 
-    public extract(_document: CoreDocument): ExtractedDependency[] {
+    public extract(_document: Document): ExtractedDependency[] {
         this.extracted = true;
         return [
             new ExtractedDependency('/workspace/src/infrastructure/persistence/user-repository', new DependencyPosition(0, 0, 0, 65))

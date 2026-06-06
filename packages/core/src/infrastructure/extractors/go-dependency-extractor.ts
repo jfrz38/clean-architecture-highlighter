@@ -1,4 +1,4 @@
-import { CoreDocument } from "../../application/ports/core-document";
+import { Document } from "../../domain/document";
 import { DependencyPosition } from "../../domain/sources/dependencies/dependency-position";
 import { ExtractedDependency } from "../../domain/sources/dependencies/extracted-dependency";
 import { DependencyExtractor } from "../../domain/sources/dependencies/extractors/dependency-extractor";
@@ -9,14 +9,14 @@ export class GoDependencyExtractor implements DependencyExtractor {
     private static readonly IMPORT_BLOCK_REGEX = /^[ \t]*import[ \t]*\([ \t]*(?:\/\/.*)?\r?\n([\s\S]*?)^[ \t]*\)[ \t]*(?:\/\/.*)?$/gm;
     private static readonly IMPORT_BLOCK_ENTRY_REGEX = /^[ \t]*(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
 
-    public extract(document: CoreDocument): ExtractedDependency[] {
+    public extract(document: Document): ExtractedDependency[] {
         return [
             ...this.extractSingleImports(document),
             ...this.extractBlockImports(document)
         ];
     }
 
-    private extractSingleImports(document: CoreDocument): ExtractedDependency[] {
+    private extractSingleImports(document: Document): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
         const text = document.getText();
         let match: RegExpExecArray | null;
@@ -29,7 +29,7 @@ export class GoDependencyExtractor implements DependencyExtractor {
         return dependencies;
     }
 
-    private extractBlockImports(document: CoreDocument): ExtractedDependency[] {
+    private extractBlockImports(document: Document): ExtractedDependency[] {
         const dependencies: ExtractedDependency[] = [];
         const text = document.getText();
         let blockMatch: RegExpExecArray | null;
@@ -54,7 +54,7 @@ export class GoDependencyExtractor implements DependencyExtractor {
         return dependencies;
     }
 
-    private toExtractedDependency(document: CoreDocument, dependencyPath: string, matchIndex: number, matchLength: number): ExtractedDependency {
+    private toExtractedDependency(document: Document, dependencyPath: string, matchIndex: number, matchLength: number): ExtractedDependency {
         const startPos = document.positionAt(matchIndex);
         const endPos = document.positionAt(matchIndex + matchLength);
         const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
