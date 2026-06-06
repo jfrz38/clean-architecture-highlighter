@@ -39,6 +39,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 {
     "clean-architecture-highlighter.severityLevel": "warning",
     "clean-architecture-highlighter.enabledLanguages": ["javascript", "typescript"],
+    "clean-architecture-highlighter.importResolution": "text",
     
     "clean-architecture-highlighter.layers.domain.aliases": ["domain"],
     "clean-architecture-highlighter.layers.domain.allowedDependencies": ["domain"],
@@ -56,6 +57,7 @@ Below is the default configuration, which enforces a standard Clean Architecture
 | `severityLevel`                      | string   | `warning` | `error`, `warning`, `info`                | VS Code diagnostic severity used when a rule is broken                                                         |
 | `sourceFolder`                       | string   | —         | any folder name                           | Optional root folder where the source code is analyzed. Only files under this folder (and subfolders) are analyzed. When unset, all supported files in the workspace are analyzed. |
 | `enabledLanguages`                   | string[] | `["javascript", "typescript"]` | VS Code language identifiers | Languages that the extension should analyze. Unsupported languages are ignored even when opened under `sourceFolder`. |
+| `importResolution`                   | string   | `text`    | `text`, `native`                          | Import resolution strategy. `text` keeps the portable text-based extractor. `native` uses TypeScript-aware resolution for JavaScript and TypeScript documents only. |
 | `layers.<layer>.aliases`             | string[] | —         | any string[]                              | Folder or import aliases identifying the layer                                                                 |
 | `layers.<layer>.allowedDependencies` | string[] | —         | `domain`, `application`, `infrastructure` | Layers this layer is allowed to depend on                                                                      |
 
@@ -65,12 +67,34 @@ JavaScript and TypeScript are analyzed by default. `enabledLanguages` replaces t
 "clean-architecture-highlighter.enabledLanguages": ["<language-id>", "<another-language-id>"]
 ```
 
+### Import Resolution
+
+By default, JavaScript and TypeScript imports are extracted as text. This keeps the extension aligned with the shared core extractor and preserves existing behavior:
+
+```json
+"clean-architecture-highlighter.importResolution": "text"
+```
+
+For JavaScript and TypeScript documents, you can opt in to TypeScript-aware module resolution:
+
+```json
+"clean-architecture-highlighter.importResolution": "native"
+```
+
+Native resolution uses the nearest `tsconfig.json` when available, including `baseUrl` and `paths`, and resolves static imports/exports, `import type`, `require(...)`, and dynamic `import(...)` with string literals to physical files before applying the existing architecture rules. If `native` is configured for non-JavaScript/TypeScript documents, the extension falls back to the existing language extractor.
+
+Current limitations:
+
+- Native resolution is only available in the VS Code extension, not in the CLI or GitHub Action.
+- It is only selected for `javascript` and `typescript` documents. `javascriptreact` and `typescriptreact` documents are not enabled by this setting.
+- Imports may resolve to `.jsx` or `.tsx` files when TypeScript resolves them naturally, but those file types are not analyzed as source documents in this issue.
+
 ### Supported Languages
 
 | Language   | VS Code language id | Enabled by default | Supported dependency syntax |
 | ---------- | ------------------- | ------------------ | --------------------------- |
-| JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...` |
-| TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...` |
+| JavaScript | `javascript`        | Yes                | Static ES Module `import ... from ...`; with native resolution: exports, `import type`, `require(...)`, dynamic `import(...)`, `baseUrl`, and `paths` |
+| TypeScript | `typescript`        | Yes                | Static ES Module `import ... from ...`; with native resolution: exports, `import type`, `require(...)`, dynamic `import(...)`, `baseUrl`, and `paths` |
 | C#         | `csharp`            | No                 | `using ...`, alias directives, static imports, and global usings |
 | Dart       | `dart`              | No                 | `import ...`, `export ...`, `part ...`, aliases, and `show`/`hide` combinators |
 | Elixir     | `elixir`            | No                 | `alias ...`, grouped aliases, `import ...`, `require ...`, and `use ...` |

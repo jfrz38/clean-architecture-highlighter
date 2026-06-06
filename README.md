@@ -133,7 +133,7 @@ Default configuration:
 Adapter-specific configuration format differs slightly:
 
 - The CLI and GitHub Action read JSON configuration files and command-line-style inputs. See [CLI configuration](packages/cli/README.md#configuration) and [GitHub Action inputs](packages/github-action/README.md#inputs).
-- The VS Code extension reads workspace or user settings under the `clean-architecture-highlighter.*` namespace. See [extension settings](packages/vscode-extension/README.md#extension-settings).
+- The VS Code extension reads workspace or user settings under the `clean-architecture-highlighter.*` namespace. It also supports the extension-only `clean-architecture-highlighter.importResolution` setting for optional native JavaScript/TypeScript module resolution. See [extension settings](packages/vscode-extension/README.md#extension-settings).
 
 ## Supported Languages
 
@@ -141,8 +141,8 @@ JavaScript and TypeScript are enabled by default. Other languages are supported 
 
 | Language | Identifier | Enabled by default | Supported dependency syntax |
 | -------- | ---------- | ------------------ | --------------------------- |
-| JavaScript | `javascript` | Yes | Static ES Module `import ... from ...` |
-| TypeScript | `typescript` | Yes | Static ES Module `import ... from ...` |
+| JavaScript | `javascript` | Yes | Static ES Module `import ... from ...`; VS Code can opt in to native TypeScript-aware resolution |
+| TypeScript | `typescript` | Yes | Static ES Module `import ... from ...`; VS Code can opt in to native TypeScript-aware resolution |
 | C# | `csharp` | No | `using ...`, alias directives, static imports, and global usings |
 | Dart | `dart` | No | `import ...`, `export ...`, `part ...`, aliases, and `show`/`hide` combinators |
 | Elixir | `elixir` | No | `alias ...`, grouped aliases, `import ...`, `require ...`, and `use ...` |
