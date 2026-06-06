@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { ConfigurationOptions, DefaultConfiguration, EnabledLanguages, Layers, SourceFolderPath } from '@jfrz38/clean-architecture-highlighter-core';
 
 export type SeverityLevel = 'warning' | 'error' | 'info';
+export type ImportResolution = 'text' | 'native';
 
 export class Configuration {
 
@@ -19,6 +20,12 @@ export class Configuration {
         return vscode.workspace
             .getConfiguration('clean-architecture-highlighter')
             .get<SeverityLevel>('severityLevel', 'warning');
+    }
+
+    public static get importResolution(): ImportResolution {
+        return vscode.workspace
+            .getConfiguration('clean-architecture-highlighter')
+            .get<ImportResolution>('importResolution', 'text');
     }
 }
 

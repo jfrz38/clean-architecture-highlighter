@@ -2,8 +2,10 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { AnalyzeSourceFile, DependencyExtractorRegistry, LayerAlias, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
 import { State } from './state';
+import { DependencyExtractorSelector } from './dependency-extractor-selection';
+import { TypeScriptResolvedDependencyExtractor } from './type-script-resolved-dependency-extractor';
 
-const dependencyExtractors = new DependencyExtractorRegistry();
+const dependencyExtractorSelector = new DependencyExtractorSelector(new DependencyExtractorRegistry(), new TypeScriptResolvedDependencyExtractor());
 
 export function checkFile(document: vscode.TextDocument, state: State, diagnostics: vscode.DiagnosticCollection) {
     if (!state.config.enabledLanguages.includes(document.languageId)) {
@@ -18,7 +20,10 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
         return;
     }
 
-    const extractor = dependencyExtractors.get(document.languageId);
+    const extractor = dependencyExtractorSelector.select(document, {
+        languageId: document.languageId,
+        importResolution: state.importResolution
+    });
     if (!extractor) {
         diagnostics.delete(document.uri);
         return;
