@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions, EnabledLanguagesValidator, UnsupportedLanguageError } from "@jfrz38/clean-architecture-highlighter-core";
+import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions, EnabledLanguagesValidator, SupportedLanguageRegistry, UnsupportedLanguageError } from "@jfrz38/clean-architecture-highlighter-core";
 import { Configuration, SeverityLevel } from "./configuration";
 
 export class State {
@@ -25,7 +25,7 @@ export class State {
   }
 
   private withValidatedLanguages(config: ConfigurationOptions): ConfigurationOptions {
-    const validator = new EnabledLanguagesValidator();
+    const validator = new EnabledLanguagesValidator(new SupportedLanguageRegistry());
     try {
       validator.validate(config.enabledLanguages);
     } catch (error) {

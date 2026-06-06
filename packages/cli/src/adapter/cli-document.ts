@@ -1,11 +1,11 @@
-import { CoreDocument, DocumentPosition } from '@jfrz38/clean-architecture-highlighter-core';
+import { Document, DocumentPosition, SourceUri } from '@jfrz38/clean-architecture-highlighter-core';
 
-export class CliDocument implements CoreDocument {
+export class CliDocument implements Document {
 
-    public readonly uri: { path: string };
+    public readonly uri: SourceUri;
 
     constructor(path: string, private readonly content: string) {
-        this.uri = { path };
+        this.uri = new SourceUri(path);
     }
 
     public getText(): string {

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { EnabledLanguagesValidator, UnsupportedLanguageError } from '@jfrz38/clean-architecture-highlighter-core';
+import { EnabledLanguagesValidator, SupportedLanguageRegistry, UnsupportedLanguageError } from '@jfrz38/clean-architecture-highlighter-core';
 import { CliLogger } from '../output/cli-logger';
 import { CliConfigurationValues } from './cli-configuration-values';
 
@@ -35,7 +35,7 @@ export class CliConfigurationFile {
 
     private static warnUnsupportedLanguages(languages: string[], logger: CliLogger): void {
         try {
-            new EnabledLanguagesValidator().validate(languages);
+            new EnabledLanguagesValidator(new SupportedLanguageRegistry()).validate(languages);
         } catch (error) {
             if (error instanceof UnsupportedLanguageError) {
                 logger.warn(error.message);
