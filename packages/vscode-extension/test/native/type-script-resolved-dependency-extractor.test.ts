@@ -3,7 +3,10 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { Document, DocumentPosition } from '@jfrz38/clean-architecture-highlighter-core';
-import { TypeScriptResolvedDependencyExtractor } from '../src/type-script-resolved-dependency-extractor';
+import { ModuleSpecifierExtractor } from '../../src/native/module-specifier-extractor';
+import { TypeScriptCompilerOptions } from '../../src/native/type-script-compiler-options';
+import { TypeScriptModuleResolver } from '../../src/native/type-script-module-resolver';
+import { TypeScriptResolvedDependencyExtractor } from '../../src/native/type-script-resolved-dependency-extractor';
 
 suite('TypeScriptResolvedDependencyExtractor', () => {
     test('resolves imports and exports using tsconfig baseUrl and paths', () => {
@@ -30,7 +33,7 @@ suite('TypeScriptResolvedDependencyExtractor', () => {
         const documentPath = path.join(projectPath, 'src/domain/domain.ts');
         const document = createDocument(documentPath, fs.readFileSync(documentPath, 'utf8'));
 
-        const dependencies = new TypeScriptResolvedDependencyExtractor().extract(document);
+        const dependencies = createExtractor().extract(document);
         const dependencyPaths = dependencies.map(dependency => dependency.path.replace(/\\/g, '/'));
 
         assert.strictEqual(dependencies.length, 4);
@@ -59,7 +62,7 @@ suite('TypeScriptResolvedDependencyExtractor', () => {
         const documentPath = path.join(projectPath, 'src/domain/domain.js');
         const document = createDocument(documentPath, fs.readFileSync(documentPath, 'utf8'));
 
-        const dependencies = new TypeScriptResolvedDependencyExtractor().extract(document);
+        const dependencies = createExtractor().extract(document);
         const dependencyPaths = dependencies.map(dependency => dependency.path.replace(/\\/g, '/'));
 
         assert.strictEqual(dependencies.length, 2);
@@ -77,6 +80,14 @@ function createProject(files: Record<string, string>): string {
     }
 
     return projectPath;
+}
+
+function createExtractor(): TypeScriptResolvedDependencyExtractor {
+    return new TypeScriptResolvedDependencyExtractor(
+        new ModuleSpecifierExtractor(),
+        new TypeScriptCompilerOptions(),
+        new TypeScriptModuleResolver()
+    );
 }
 
 function createDocument(filePath: string, content: string): Document {

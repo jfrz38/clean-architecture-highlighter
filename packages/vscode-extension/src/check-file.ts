@@ -3,9 +3,9 @@ import * as vscode from 'vscode';
 import { AnalyzeSourceFile, DependencyExtractorRegistry, LayerAlias, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
 import { State } from './state';
 import { DependencyExtractorSelector } from './dependency-extractor-selection';
-import { TypeScriptResolvedDependencyExtractor } from './type-script-resolved-dependency-extractor';
+import { NativeDependencyExtractorFactory } from './native/native-dependency-extractor-factory';
 
-const dependencyExtractorSelector = new DependencyExtractorSelector(new DependencyExtractorRegistry(), new TypeScriptResolvedDependencyExtractor());
+const dependencyExtractorSelector = new DependencyExtractorSelector(new DependencyExtractorRegistry(), NativeDependencyExtractorFactory.create());
 
 export function checkFile(document: vscode.TextDocument, state: State, diagnostics: vscode.DiagnosticCollection) {
     if (!state.config.enabledLanguages.includes(document.languageId)) {

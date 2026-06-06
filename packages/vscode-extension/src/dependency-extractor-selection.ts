@@ -1,6 +1,6 @@
 import { DependencyExtractor, DependencyExtractorRegistry, Document } from '@jfrz38/clean-architecture-highlighter-core';
 import { ImportResolution } from './configuration';
-import { TypeScriptResolvedDependencyExtractor } from './type-script-resolved-dependency-extractor';
+import { TypeScriptResolvedDependencyExtractor } from './native/type-script-resolved-dependency-extractor';
 
 const ecmaScriptLanguages = new Set(['javascript', 'typescript']);
 

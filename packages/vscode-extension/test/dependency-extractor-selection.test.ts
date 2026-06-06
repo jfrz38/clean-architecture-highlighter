@@ -2,10 +2,10 @@ import { DependencyExtractorRegistry } from '@jfrz38/clean-architecture-highligh
 import * as assert from 'assert';
 import { ImportResolution } from '../src/configuration';
 import { DependencyExtractorSelector, LanguageDocument } from '../src/dependency-extractor-selection';
-import { TypeScriptResolvedDependencyExtractor } from '../src/type-script-resolved-dependency-extractor';
+import { NativeDependencyExtractorFactory } from '../src/native/native-dependency-extractor-factory';
 
 suite('DependencyExtractorSelector', () => {
-    const nativeExtractor = new TypeScriptResolvedDependencyExtractor();
+    const nativeExtractor = NativeDependencyExtractorFactory.create();
     const selector = new DependencyExtractorSelector(new DependencyExtractorRegistry(), nativeExtractor);
 
     test('uses text extractor for JavaScript when importResolution is text', () => {
