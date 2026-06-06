@@ -4,6 +4,7 @@ import { DependencyExtractor } from "../domain/sources/dependencies/extractors/d
 import { LayerAlias } from "../domain/sources/layer/layer-alias";
 import { SourceFile } from "../domain/sources/source-file";
 import { Document } from "../domain/document";
+import { SourceUri } from "../domain/sources/source-uri";
 
 export class AnalyzeSourceFile {
 
@@ -15,7 +16,7 @@ export class AnalyzeSourceFile {
 
     public violationsFor(document: Document): ArchitectureViolation[] {
         return new SourceFile(
-            document.uri.path,
+            new SourceUri(document.uri.path),
             this.extractor.extract(document),
             this.allowedDependencies,
             this.aliases

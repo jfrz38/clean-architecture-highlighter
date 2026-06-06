@@ -22,3 +22,4 @@ export * from './infrastructure/extractors/dependency-extractor-registry';
 export * from './domain/sources/layer/layer-alias';
 export * from './domain/sources/source-folder';
 export * from './domain/sources/source-file';
+export * from './domain/sources/source-uri';

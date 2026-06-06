@@ -7,6 +7,7 @@ import { DependencyPosition } from '../../src/domain/sources/dependencies/depend
 import { ExtractedDependency } from '../../src/domain/sources/dependencies/extracted-dependency';
 import { DependencyExtractor } from '../../src/domain/sources/dependencies/extractors/dependency-extractor';
 import { LayerAlias } from '../../src/domain/sources/layer/layer-alias';
+import { SourceUri } from '../../src/domain/sources/source-uri';
 
 class FakeDependencyExtractor implements DependencyExtractor {
     public extracted = false;
@@ -23,7 +24,7 @@ suite('AnalyzeSourceFile', () => {
     test('uses the injected dependency extractor to analyze source file violations', () => {
         const extractor = new FakeDependencyExtractor();
         const document = {
-            uri: { path: '/workspace/src/domain/user/user.ts' },
+            uri: new SourceUri('/workspace/src/domain/user/user.ts'),
             getText: () => '',
             positionAt: () => ({ line: 0, character: 0 })
         };

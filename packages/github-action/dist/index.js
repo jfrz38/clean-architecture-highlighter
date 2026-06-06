@@ -23417,16 +23417,13 @@ Expecting one of '${allowedValues.join("', '")}'`);
         var dependency_statement_1 = require_dependency_statement();
         var layer_path_1 = require_layer_path();
         var layered_component_1 = require_layered_component();
-        var SourceFile = class _SourceFile extends layered_component_1.LayeredComponent {
+        var SourceFile = class extends layered_component_1.LayeredComponent {
           allowedDependencies;
           dependencies = [];
-          constructor(sourcePath, extractedDependencies, allowedDependencies, aliases) {
-            super(_SourceFile.toSourcePath(sourcePath), aliases);
+          constructor(sourceUri, extractedDependencies, allowedDependencies, aliases) {
+            super(sourceUri.path, aliases);
             this.allowedDependencies = allowedDependencies;
             this.dependencies = extractedDependencies.map((dependency) => new dependency_statement_1.DependencyStatement(new layer_path_1.LayerPath(dependency.path, this.aliases), this.path, dependency.position, this.allowedDependencies, this.aliases));
-          }
-          static toSourcePath(sourcePath) {
-            return typeof sourcePath === "string" ? sourcePath : sourcePath.uri.path;
           }
           get violations() {
             return this.dependencies.filter((dependency) => dependency.isViolation()).map((dependency) => new architecture_violation_1.ArchitectureViolation(dependency.violation, dependency.position));
@@ -23435,12 +23432,30 @@ Expecting one of '${allowedValues.join("', '")}'`);
         exports22.SourceFile = SourceFile;
       }
     });
+    var require_source_uri = __commonJS2({
+      "../core/out/src/domain/sources/source-uri.js"(exports22) {
+        "use strict";
+        Object.defineProperty(exports22, "__esModule", { value: true });
+        exports22.SourceUri = void 0;
+        var SourceUri2 = class {
+          path;
+          constructor(path) {
+            if (typeof path !== "string") {
+              throw new Error("SourceUri path must be a string.");
+            }
+            this.path = path;
+          }
+        };
+        exports22.SourceUri = SourceUri2;
+      }
+    });
     var require_analyze_source_file = __commonJS2({
       "../core/out/src/application/analyze-source-file.js"(exports22) {
         "use strict";
         Object.defineProperty(exports22, "__esModule", { value: true });
         exports22.AnalyzeSourceFile = void 0;
         var source_file_1 = require_source_file();
+        var source_uri_1 = require_source_uri();
         var AnalyzeSourceFile2 = class {
           extractor;
           allowedDependencies;
@@ -23451,7 +23466,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
             this.aliases = aliases;
           }
           violationsFor(document) {
-            return new source_file_1.SourceFile(document.uri.path, this.extractor.extract(document), this.allowedDependencies, this.aliases).violations;
+            return new source_file_1.SourceFile(new source_uri_1.SourceUri(document.uri.path), this.extractor.extract(document), this.allowedDependencies, this.aliases).violations;
           }
         };
         exports22.AnalyzeSourceFile = AnalyzeSourceFile2;
@@ -24508,6 +24523,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         __exportStar(require_layer_alias(), exports22);
         __exportStar(require_source_folder(), exports22);
         __exportStar(require_source_file(), exports22);
+        __exportStar(require_source_uri(), exports22);
       }
     });
     var index_exports = {};
@@ -24560,11 +24576,12 @@ Expecting one of '${allowedValues.join("', '")}'`);
     };
     var import_node_fs = require("node:fs");
     var import_node_path = require("node:path");
+    var import_clean_architecture_highlighter_core3 = __toESM2(require_src());
     var import_clean_architecture_highlighter_core2 = __toESM2(require_src());
     var CliDocument = class {
       constructor(path, content) {
         this.content = content;
-        this.uri = { path };
+        this.uri = new import_clean_architecture_highlighter_core2.SourceUri(path);
       }
       content;
       uri;
@@ -24593,7 +24610,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
       message;
     };
     var Check = class {
-      constructor(input, dependencyExtractors = new import_clean_architecture_highlighter_core2.DependencyExtractorRegistry(), supportedLanguages = new import_clean_architecture_highlighter_core2.SupportedLanguageRegistry()) {
+      constructor(input, dependencyExtractors = new import_clean_architecture_highlighter_core3.DependencyExtractorRegistry(), supportedLanguages = new import_clean_architecture_highlighter_core3.SupportedLanguageRegistry()) {
         this.input = input;
         this.dependencyExtractors = dependencyExtractors;
         this.supportedLanguages = supportedLanguages;
@@ -24616,7 +24633,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         this.input.options.logger.info(`Checking file: ${this.toOutputPath((0, import_node_path.relative)(this.input.files.outputRoot, filePath))}`);
         const documentPath = this.toDocumentPath((0, import_node_path.relative)(this.input.files.projectRoot, filePath));
         const document = new CliDocument(documentPath, (0, import_node_fs.readFileSync)(filePath, "utf8"));
-        const analyzer = new import_clean_architecture_highlighter_core2.AnalyzeSourceFile(
+        const analyzer = new import_clean_architecture_highlighter_core3.AnalyzeSourceFile(
           extractor,
           this.input.configuration.allowedDependencies,
           this.input.aliases
@@ -24632,8 +24649,8 @@ Expecting one of '${allowedValues.join("', '")}'`);
         return path.split(import_node_path.sep).join("/");
       }
     };
+    var import_clean_architecture_highlighter_core5 = __toESM2(require_src());
     var import_clean_architecture_highlighter_core4 = __toESM2(require_src());
-    var import_clean_architecture_highlighter_core3 = __toESM2(require_src());
     var CliConfiguration = class {
       constructor(source) {
         this.source = source;
@@ -24642,14 +24659,14 @@ Expecting one of '${allowedValues.join("', '")}'`);
       source;
       fileConfiguration;
       get config() {
-        return new import_clean_architecture_highlighter_core3.DefaultConfiguration(
+        return new import_clean_architecture_highlighter_core4.DefaultConfiguration(
           this.fileConfiguration.layers ?? {},
           this.source.sourceFolder ?? this.fileConfiguration.sourceFolder,
           this.source.enabledLanguages ?? this.fileConfiguration.enabledLanguages
         ).config;
       }
       get allowedDependencies() {
-        return new import_clean_architecture_highlighter_core3.AllowedDependenciesConfiguration(this.config).allowedDependencies;
+        return new import_clean_architecture_highlighter_core4.AllowedDependenciesConfiguration(this.config).allowedDependencies;
       }
     };
     var import_node_fs2 = require("node:fs");
@@ -24727,7 +24744,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
           this.options.targetPath,
           this.configuration.config.sourceFolder
         ));
-        this.aliases = new import_clean_architecture_highlighter_core4.LayerAlias(
+        this.aliases = new import_clean_architecture_highlighter_core5.LayerAlias(
           this.configuration.config.layers.domain.aliases,
           this.configuration.config.layers.application.aliases,
           this.configuration.config.layers.infrastructure.aliases
@@ -24766,7 +24783,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
       }
     };
     var import_node_fs4 = require("node:fs");
-    var import_clean_architecture_highlighter_core5 = __toESM2(require_src());
+    var import_clean_architecture_highlighter_core6 = __toESM2(require_src());
     var CliConfigurationValues = class _CliConfigurationValues {
       constructor(values) {
         this.values = values;
@@ -24814,9 +24831,9 @@ Expecting one of '${allowedValues.join("', '")}'`);
       }
       static warnUnsupportedLanguages(languages, logger) {
         try {
-          new import_clean_architecture_highlighter_core5.EnabledLanguagesValidator(new import_clean_architecture_highlighter_core5.SupportedLanguageRegistry()).validate(languages);
+          new import_clean_architecture_highlighter_core6.EnabledLanguagesValidator(new import_clean_architecture_highlighter_core6.SupportedLanguageRegistry()).validate(languages);
         } catch (error) {
-          if (error instanceof import_clean_architecture_highlighter_core5.UnsupportedLanguageError) {
+          if (error instanceof import_clean_architecture_highlighter_core6.UnsupportedLanguageError) {
             logger.warn(error.message);
           }
         }
