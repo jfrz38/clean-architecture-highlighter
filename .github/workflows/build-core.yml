@@ -36,3 +36,11 @@ jobs:
 
       - name: Validate core
         run: make validate-core
+
+      - name: Check Clean Architecture boundaries
+        uses: ./
+        with:
+          path: packages/core
+          source-folder: src
+          enabled-languages: typescript
+          format: text

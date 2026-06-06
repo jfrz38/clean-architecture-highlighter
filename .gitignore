@@ -134,6 +134,10 @@ dist
 *.vsix
 .vscode
 
+# Python mypy cache
+.mypy_cache
+**/.mypy_cache
+
 # yarn v3
 .pnp.*
 .yarn/*
