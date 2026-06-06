@@ -9,14 +9,18 @@ export type DependencyExtractorSelection = {
     readonly importResolution: ImportResolution;
 };
 
+export type LanguageDocument = Document & {
+    readonly languageId: string;
+};
+
 export class DependencyExtractorSelector {
     constructor(
         private readonly dependencyExtractors: DependencyExtractorRegistry,
         private readonly typeScriptResolvedExtractor: TypeScriptResolvedDependencyExtractor
     ) { }
 
-    public select(document: Document & { languageId: string }, selection: DependencyExtractorSelection): DependencyExtractor | undefined {
-        if (selection.importResolution === 'native' && ecmaScriptLanguages.has(document.languageId)) {
+    public select(document: LanguageDocument, selection: DependencyExtractorSelection): DependencyExtractor | undefined {
+        if (selection.importResolution === ImportResolution.NATIVE && ecmaScriptLanguages.has(document.languageId)) {
             return this.typeScriptResolvedExtractor;
         }
 
