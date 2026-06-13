@@ -77,6 +77,7 @@ jobs:
         uses: jfrz38/check-version-change@v1
         with:
           file-path: ${{ matrix.package.package_file }}
+          compare-file-path: ${{ matrix.package.package_file }}
           package-name: ${{ matrix.package.package_name }}
           compare-source: ${{ matrix.package.compare_source }}
           compare-ref: ${{ matrix.package.compare_ref }}
