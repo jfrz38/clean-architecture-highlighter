@@ -24,6 +24,7 @@
     "clean:tests": "rimraf out && pnpm run test"
   },
   "devDependencies": {
+    "@jfrz38/eslint-plugin-clean-architecture-highlighter": "0.1.0",
     "@types/node": "25.x"
   }
 }
