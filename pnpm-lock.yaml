@@ -66,6 +66,21 @@ importers:
         specifier: 25.x
         version: 25.9.1
 
+  packages/eslint-plugin:
+    devDependencies:
+      '@jfrz38/clean-architecture-highlighter-core':
+        specifier: workspace:*
+        version: link:../core
+      '@types/node':
+        specifier: 25.x
+        version: 25.9.1
+      eslint:
+        specifier: 10.4.0
+        version: 10.4.0
+      typescript-eslint:
+        specifier: 8.60.0
+        version: 8.60.0(eslint@10.4.0)(typescript@6.0.3)
+
   packages/github-action:
     dependencies:
       '@actions/core':
