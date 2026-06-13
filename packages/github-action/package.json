@@ -13,6 +13,7 @@
     "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && tsc -b ./",
     "bundle": "node scripts/bundle.mjs",
     "package": "pnpm run clean:compile && pnpm run bundle",
+    "smoke:bundle": "node scripts/smoke-test-bundle.mjs",
     "lint": "eslint src test",
     "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
     "clean:tests": "rimraf out && pnpm run test"

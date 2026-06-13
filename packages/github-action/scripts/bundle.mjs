@@ -6,5 +6,8 @@ await esbuild.build({
   outfile: 'dist/index.js',
   format: 'esm',
   platform: 'node',
-  target: 'node24'
+  target: 'node24',
+  banner: {
+    js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);"
+  }
 });
