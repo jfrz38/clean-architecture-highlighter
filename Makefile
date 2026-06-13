@@ -78,7 +78,7 @@ test-integration-full: ## run the full shared integration matrix
 	$(MAKE) test-integration TEST_SCENARIO_SET=full TEST_LANGUAGE=all
 
 # Local generation and linking
-.PHONY: package package-cli package-eslint-plugin package-github-action verify-github-action-bundle package-vscode-extension vsix vscode-vsix link-cli cli-link dev
+.PHONY: package package-cli package-eslint-plugin package-github-action smoke-test-github-action-bundle verify-github-action-bundle package-vscode-extension vsix vscode-vsix link-cli cli-link dev
 
 package: package-cli package-eslint-plugin package-github-action package-vscode-extension ## package all publishable adapters
 
@@ -90,6 +90,9 @@ package-eslint-plugin: ## compile the ESLint plugin package for publishing
 
 package-github-action: package-cli ## bundle the GitHub Action package
 	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)" run package
+
+smoke-test-github-action-bundle: ## run the committed GitHub Action bundle with real inputs
+	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)" run smoke:bundle
 
 verify-github-action-bundle: ## verify the committed GitHub Action bundle is up to date
 	git diff --exit-code -- packages/github-action/dist/index.js
@@ -118,7 +121,7 @@ validate-cli: ci-install build-cli test-cli ## install, build, and test CLI
 
 validate-eslint-plugin: ci-install build-eslint-plugin test-eslint-plugin ## install, build, and test ESLint plugin
 
-validate-github-action: ci-install build-github-action test-github-action package-github-action verify-github-action-bundle ## install, build, test, bundle, and verify the GitHub Action
+validate-github-action: ci-install build-github-action test-github-action package-github-action smoke-test-github-action-bundle verify-github-action-bundle ## install, build, test, bundle, smoke-test, and verify the GitHub Action
 
 validate-vscode-extension: ci-install build-vscode-extension test-vscode-extension ## install, build, and test the VS Code extension
 

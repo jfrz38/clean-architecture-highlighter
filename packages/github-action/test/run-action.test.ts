@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { suite, test } from 'mocha';
 import type { RunCheckInput, RunCheckResult } from '@jfrz38/clean-architecture-highlighter-cli';
-import { ActionCore, runGithubAction } from '../src/run-action';
+import { ActionCore, runGithubAction } from '../src/run-action.js';
 
 suite('GitHub Action runner', () => {
     test('succeeds when no violations are found', () => {

@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { suite, test } from 'mocha';
-import { parseActionInputs } from '../src/action-inputs';
+import { parseActionInputs } from '../src/action-inputs.js';
 
 suite('Action inputs', () => {
     test('maps GitHub Action inputs to check input', () => {

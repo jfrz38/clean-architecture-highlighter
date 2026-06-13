@@ -5,20 +5,21 @@
   "author": "José F. Ruiz <jrz899@inlumine.ual.es>",
   "license": "Apache-2.0",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./out/src/index.d.ts",
   "scripts": {
     "compile": "tsc -b ./",
     "clean:compile": "rimraf out dist tsconfig.tsbuildinfo && tsc -b ./",
-    "bundle": "node scripts/bundle.cjs",
+    "bundle": "node scripts/bundle.mjs",
     "package": "pnpm run clean:compile && pnpm run bundle",
+    "smoke:bundle": "node scripts/smoke-test-bundle.mjs",
     "lint": "eslint src test",
     "test": "pnpm run compile && mocha \"out/test/**/*.test.js\" --ui tdd --timeout 10000",
     "clean:tests": "rimraf out && pnpm run test"
   },
   "dependencies": {
-    "@actions/core": "1.11.1",
+    "@actions/core": "3.0.1",
     "@jfrz38/clean-architecture-highlighter-cli": "workspace:*"
   },
   "devDependencies": {
