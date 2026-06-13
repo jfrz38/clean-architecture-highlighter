@@ -2087,9 +2087,9 @@ var require_dispatcher_base = __commonJS({
       }
       close(callback) {
         if (callback === void 0) {
-          return new Promise((resolve3, reject) => {
+          return new Promise((resolve2, reject) => {
             this.close((err, data) => {
-              return err ? reject(err) : resolve3(data);
+              return err ? reject(err) : resolve2(data);
             });
           });
         }
@@ -2127,12 +2127,12 @@ var require_dispatcher_base = __commonJS({
           err = null;
         }
         if (callback === void 0) {
-          return new Promise((resolve3, reject) => {
+          return new Promise((resolve2, reject) => {
             this.destroy(err, (err2, data) => {
               return err2 ? (
                 /* istanbul ignore next: should never error */
                 reject(err2)
-              ) : resolve3(data);
+              ) : resolve2(data);
             });
           });
         }
@@ -4399,8 +4399,8 @@ var require_util2 = __commonJS({
     function createDeferredPromise() {
       let res;
       let rej;
-      const promise = new Promise((resolve3, reject) => {
-        res = resolve3;
+      const promise = new Promise((resolve2, reject) => {
+        res = resolve2;
         rej = reject;
       });
       return { promise, resolve: res, reject: rej };
@@ -6579,12 +6579,12 @@ upgrade: ${upgrade}\r
           cb();
         }
       }
-      const waitForDrain = () => new Promise((resolve3, reject) => {
+      const waitForDrain = () => new Promise((resolve2, reject) => {
         assert(callback === null);
         if (socket[kError]) {
           reject(socket[kError]);
         } else {
-          callback = resolve3;
+          callback = resolve2;
         }
       });
       socket.on("close", onDrain).on("drain", onDrain);
@@ -7221,12 +7221,12 @@ var require_client_h2 = __commonJS({
           cb();
         }
       }
-      const waitForDrain = () => new Promise((resolve3, reject) => {
+      const waitForDrain = () => new Promise((resolve2, reject) => {
         assert(callback === null);
         if (socket[kError]) {
           reject(socket[kError]);
         } else {
-          callback = resolve3;
+          callback = resolve2;
         }
       });
       h2stream.on("close", onDrain).on("drain", onDrain);
@@ -7704,16 +7704,16 @@ var require_client = __commonJS({
         return this[kNeedDrain] < 2;
       }
       async [kClose]() {
-        return new Promise((resolve3) => {
+        return new Promise((resolve2) => {
           if (this[kSize]) {
-            this[kClosedResolve] = resolve3;
+            this[kClosedResolve] = resolve2;
           } else {
-            resolve3(null);
+            resolve2(null);
           }
         });
       }
       async [kDestroy](err) {
-        return new Promise((resolve3) => {
+        return new Promise((resolve2) => {
           const requests = this[kQueue].splice(this[kPendingIdx]);
           for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
@@ -7724,7 +7724,7 @@ var require_client = __commonJS({
               this[kClosedResolve]();
               this[kClosedResolve] = null;
             }
-            resolve3(null);
+            resolve2(null);
           };
           if (this[kHTTPContext]) {
             this[kHTTPContext].destroy(err, callback);
@@ -7775,7 +7775,7 @@ var require_client = __commonJS({
         });
       }
       try {
-        const socket = await new Promise((resolve3, reject) => {
+        const socket = await new Promise((resolve2, reject) => {
           client[kConnector]({
             host,
             hostname,
@@ -7787,7 +7787,7 @@ var require_client = __commonJS({
             if (err) {
               reject(err);
             } else {
-              resolve3(socket2);
+              resolve2(socket2);
             }
           });
         });
@@ -8123,8 +8123,8 @@ var require_pool_base = __commonJS({
         if (this[kQueue].isEmpty()) {
           await Promise.all(this[kClients].map((c) => c.close()));
         } else {
-          await new Promise((resolve3) => {
-            this[kClosedResolve] = resolve3;
+          await new Promise((resolve2) => {
+            this[kClosedResolve] = resolve2;
           });
         }
       }
@@ -9339,7 +9339,7 @@ var require_readable = __commonJS({
         if (this._readableState.closeEmitted) {
           return null;
         }
-        return await new Promise((resolve3, reject) => {
+        return await new Promise((resolve2, reject) => {
           if (this[kContentLength] > limit) {
             this.destroy(new AbortError());
           }
@@ -9352,7 +9352,7 @@ var require_readable = __commonJS({
             if (signal?.aborted) {
               reject(signal.reason ?? new AbortError());
             } else {
-              resolve3(null);
+              resolve2(null);
             }
           }).on("error", noop).on("data", function(chunk) {
             limit -= chunk.length;
@@ -9371,7 +9371,7 @@ var require_readable = __commonJS({
     }
     async function consume(stream, type) {
       assert(!stream[kConsume]);
-      return new Promise((resolve3, reject) => {
+      return new Promise((resolve2, reject) => {
         if (isUnusable(stream)) {
           const rState = stream._readableState;
           if (rState.destroyed && rState.closeEmitted === false) {
@@ -9388,7 +9388,7 @@ var require_readable = __commonJS({
             stream[kConsume] = {
               type,
               stream,
-              resolve: resolve3,
+              resolve: resolve2,
               reject,
               length: 0,
               body: []
@@ -9458,18 +9458,18 @@ var require_readable = __commonJS({
       return buffer;
     }
     function consumeEnd(consume2) {
-      const { type, body, resolve: resolve3, stream, length } = consume2;
+      const { type, body, resolve: resolve2, stream, length } = consume2;
       try {
         if (type === "text") {
-          resolve3(chunksDecode(body, length));
+          resolve2(chunksDecode(body, length));
         } else if (type === "json") {
-          resolve3(JSON.parse(chunksDecode(body, length)));
+          resolve2(JSON.parse(chunksDecode(body, length)));
         } else if (type === "arrayBuffer") {
-          resolve3(chunksConcat(body, length).buffer);
+          resolve2(chunksConcat(body, length).buffer);
         } else if (type === "blob") {
-          resolve3(new Blob(body, { type: stream[kContentType] }));
+          resolve2(new Blob(body, { type: stream[kContentType] }));
         } else if (type === "bytes") {
-          resolve3(chunksConcat(body, length));
+          resolve2(chunksConcat(body, length));
         }
         consumeFinish(consume2);
       } catch (err) {
@@ -9726,9 +9726,9 @@ var require_api_request = __commonJS({
     };
     function request(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve3, reject) => {
+        return new Promise((resolve2, reject) => {
           request.call(this, opts, (err, data) => {
-            return err ? reject(err) : resolve3(data);
+            return err ? reject(err) : resolve2(data);
           });
         });
       }
@@ -9951,9 +9951,9 @@ var require_api_stream = __commonJS({
     };
     function stream(opts, factory, callback) {
       if (callback === void 0) {
-        return new Promise((resolve3, reject) => {
+        return new Promise((resolve2, reject) => {
           stream.call(this, opts, factory, (err, data) => {
-            return err ? reject(err) : resolve3(data);
+            return err ? reject(err) : resolve2(data);
           });
         });
       }
@@ -10238,9 +10238,9 @@ var require_api_upgrade = __commonJS({
     };
     function upgrade(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve3, reject) => {
+        return new Promise((resolve2, reject) => {
           upgrade.call(this, opts, (err, data) => {
-            return err ? reject(err) : resolve3(data);
+            return err ? reject(err) : resolve2(data);
           });
         });
       }
@@ -10332,9 +10332,9 @@ var require_api_connect = __commonJS({
     };
     function connect(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve3, reject) => {
+        return new Promise((resolve2, reject) => {
           connect.call(this, opts, (err, data) => {
-            return err ? reject(err) : resolve3(data);
+            return err ? reject(err) : resolve2(data);
           });
         });
       }
@@ -14196,7 +14196,7 @@ var require_fetch = __commonJS({
       function dispatch({ body }) {
         const url = requestCurrentURL(request);
         const agent = fetchParams.controller.dispatcher;
-        return new Promise((resolve3, reject) => agent.dispatch(
+        return new Promise((resolve2, reject) => agent.dispatch(
           {
             path: url.pathname + url.search,
             origin: url.origin,
@@ -14272,7 +14272,7 @@ var require_fetch = __commonJS({
                 }
               }
               const onError = this.onError.bind(this);
-              resolve3({
+              resolve2({
                 status,
                 statusText,
                 headersList,
@@ -14318,7 +14318,7 @@ var require_fetch = __commonJS({
               for (let i = 0; i < rawHeaders.length; i += 2) {
                 headersList.append(bufferToLowerCasedHeaderName(rawHeaders[i]), rawHeaders[i + 1].toString("latin1"), true);
               }
-              resolve3({
+              resolve2({
                 status,
                 statusText: STATUS_CODES[status],
                 headersList,
@@ -17994,8 +17994,8 @@ var require_util8 = __commonJS({
       return true;
     }
     function delay(ms) {
-      return new Promise((resolve3) => {
-        setTimeout(resolve3, ms).unref();
+      return new Promise((resolve2) => {
+        setTimeout(resolve2, ms).unref();
       });
     }
     module.exports = {
@@ -18675,6 +18675,5210 @@ var require_undici = __commonJS({
   }
 });
 
+// ../cli/dist/index.js
+var require_dist = __commonJS({
+  "../cli/dist/index.js"(exports, module) {
+    "use strict";
+    var __create2 = Object.create;
+    var __defProp2 = Object.defineProperty;
+    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames2 = Object.getOwnPropertyNames;
+    var __getProtoOf2 = Object.getPrototypeOf;
+    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __commonJS2 = (cb, mod) => function __require2() {
+      return mod || (0, cb[__getOwnPropNames2(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+    };
+    var __export2 = (target, all) => {
+      for (var name in all)
+        __defProp2(target, name, { get: all[name], enumerable: true });
+    };
+    var __copyProps2 = (to, from, except, desc) => {
+      if (from && typeof from === "object" || typeof from === "function") {
+        for (let key of __getOwnPropNames2(from))
+          if (!__hasOwnProp2.call(to, key) && key !== except)
+            __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
+      }
+      return to;
+    };
+    var __toESM2 = (mod, isNodeMode, target) => (target = mod != null ? __create2(__getProtoOf2(mod)) : {}, __copyProps2(
+      // If the importer is in node compatibility mode or this is not an ESM
+      // file that has been converted to a CommonJS file using a Babel-
+      // compatible transform (i.e. "__esModule" has not been set), then set
+      // "default" to the CommonJS "module.exports" for node compatibility.
+      isNodeMode || !mod || !mod.__esModule ? __defProp2(target, "default", { value: mod, enumerable: true }) : target,
+      mod
+    ));
+    var __toCommonJS = (mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod);
+    var require_error = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/lib/error.js"(exports2) {
+        var CommanderError2 = class extends Error {
+          /**
+           * Constructs the CommanderError class
+           * @param {number} exitCode suggested exit code which could be used with process.exit
+           * @param {string} code an id string representing the error
+           * @param {string} message human-readable description of the error
+           */
+          constructor(exitCode, code, message) {
+            super(message);
+            Error.captureStackTrace(this, this.constructor);
+            this.name = this.constructor.name;
+            this.code = code;
+            this.exitCode = exitCode;
+            this.nestedError = void 0;
+          }
+        };
+        var InvalidArgumentError2 = class extends CommanderError2 {
+          /**
+           * Constructs the InvalidArgumentError class
+           * @param {string} [message] explanation of why argument is invalid
+           */
+          constructor(message) {
+            super(1, "commander.invalidArgument", message);
+            Error.captureStackTrace(this, this.constructor);
+            this.name = this.constructor.name;
+          }
+        };
+        exports2.CommanderError = CommanderError2;
+        exports2.InvalidArgumentError = InvalidArgumentError2;
+      }
+    });
+    var require_argument = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/lib/argument.js"(exports2) {
+        var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
+        var Argument2 = class {
+          /**
+           * Initialize a new command argument with the given name and description.
+           * The default is that the argument is required, and you can explicitly
+           * indicate this with <> around the name. Put [] around the name for an optional argument.
+           *
+           * @param {string} name
+           * @param {string} [description]
+           */
+          constructor(name, description) {
+            this.description = description || "";
+            this.variadic = false;
+            this.parseArg = void 0;
+            this.defaultValue = void 0;
+            this.defaultValueDescription = void 0;
+            this.argChoices = void 0;
+            switch (name[0]) {
+              case "<":
+                this.required = true;
+                this._name = name.slice(1, -1);
+                break;
+              case "[":
+                this.required = false;
+                this._name = name.slice(1, -1);
+                break;
+              default:
+                this.required = true;
+                this._name = name;
+                break;
+            }
+            if (this._name.endsWith("...")) {
+              this.variadic = true;
+              this._name = this._name.slice(0, -3);
+            }
+          }
+          /**
+           * Return argument name.
+           *
+           * @return {string}
+           */
+          name() {
+            return this._name;
+          }
+          /**
+           * @package
+           */
+          _collectValue(value, previous) {
+            if (previous === this.defaultValue || !Array.isArray(previous)) {
+              return [value];
+            }
+            previous.push(value);
+            return previous;
+          }
+          /**
+           * Set the default value, and optionally supply the description to be displayed in the help.
+           *
+           * @param {*} value
+           * @param {string} [description]
+           * @return {Argument}
+           */
+          default(value, description) {
+            this.defaultValue = value;
+            this.defaultValueDescription = description;
+            return this;
+          }
+          /**
+           * Set the custom handler for processing CLI command arguments into argument values.
+           *
+           * @param {Function} [fn]
+           * @return {Argument}
+           */
+          argParser(fn) {
+            this.parseArg = fn;
+            return this;
+          }
+          /**
+           * Only allow argument value to be one of choices.
+           *
+           * @param {string[]} values
+           * @return {Argument}
+           */
+          choices(values) {
+            this.argChoices = values.slice();
+            this.parseArg = (arg, previous) => {
+              if (!this.argChoices.includes(arg)) {
+                throw new InvalidArgumentError2(
+                  `Allowed choices are ${this.argChoices.join(", ")}.`
+                );
+              }
+              if (this.variadic) {
+                return this._collectValue(arg, previous);
+              }
+              return arg;
+            };
+            return this;
+          }
+          /**
+           * Make argument required.
+           *
+           * @returns {Argument}
+           */
+          argRequired() {
+            this.required = true;
+            return this;
+          }
+          /**
+           * Make argument optional.
+           *
+           * @returns {Argument}
+           */
+          argOptional() {
+            this.required = false;
+            return this;
+          }
+        };
+        function humanReadableArgName(arg) {
+          const nameOutput = arg.name() + (arg.variadic === true ? "..." : "");
+          return arg.required ? "<" + nameOutput + ">" : "[" + nameOutput + "]";
+        }
+        exports2.Argument = Argument2;
+        exports2.humanReadableArgName = humanReadableArgName;
+      }
+    });
+    var require_help = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/lib/help.js"(exports2) {
+        var { humanReadableArgName } = require_argument();
+        var Help2 = class {
+          constructor() {
+            this.helpWidth = void 0;
+            this.minWidthToWrap = 40;
+            this.sortSubcommands = false;
+            this.sortOptions = false;
+            this.showGlobalOptions = false;
+          }
+          /**
+           * prepareContext is called by Commander after applying overrides from `Command.configureHelp()`
+           * and just before calling `formatHelp()`.
+           *
+           * Commander just uses the helpWidth and the rest is provided for optional use by more complex subclasses.
+           *
+           * @param {{ error?: boolean, helpWidth?: number, outputHasColors?: boolean }} contextOptions
+           */
+          prepareContext(contextOptions) {
+            this.helpWidth = this.helpWidth ?? contextOptions.helpWidth ?? 80;
+          }
+          /**
+           * Get an array of the visible subcommands. Includes a placeholder for the implicit help command, if there is one.
+           *
+           * @param {Command} cmd
+           * @returns {Command[]}
+           */
+          visibleCommands(cmd) {
+            const visibleCommands = cmd.commands.filter((cmd2) => !cmd2._hidden);
+            const helpCommand = cmd._getHelpCommand();
+            if (helpCommand && !helpCommand._hidden) {
+              visibleCommands.push(helpCommand);
+            }
+            if (this.sortSubcommands) {
+              visibleCommands.sort((a, b) => {
+                return a.name().localeCompare(b.name());
+              });
+            }
+            return visibleCommands;
+          }
+          /**
+           * Compare options for sort.
+           *
+           * @param {Option} a
+           * @param {Option} b
+           * @returns {number}
+           */
+          compareOptions(a, b) {
+            const getSortKey = (option) => {
+              return option.short ? option.short.replace(/^-/, "") : option.long.replace(/^--/, "");
+            };
+            return getSortKey(a).localeCompare(getSortKey(b));
+          }
+          /**
+           * Get an array of the visible options. Includes a placeholder for the implicit help option, if there is one.
+           *
+           * @param {Command} cmd
+           * @returns {Option[]}
+           */
+          visibleOptions(cmd) {
+            const visibleOptions = cmd.options.filter((option) => !option.hidden);
+            const helpOption = cmd._getHelpOption();
+            if (helpOption && !helpOption.hidden) {
+              const removeShort = helpOption.short && cmd._findOption(helpOption.short);
+              const removeLong = helpOption.long && cmd._findOption(helpOption.long);
+              if (!removeShort && !removeLong) {
+                visibleOptions.push(helpOption);
+              } else if (helpOption.long && !removeLong) {
+                visibleOptions.push(
+                  cmd.createOption(helpOption.long, helpOption.description)
+                );
+              } else if (helpOption.short && !removeShort) {
+                visibleOptions.push(
+                  cmd.createOption(helpOption.short, helpOption.description)
+                );
+              }
+            }
+            if (this.sortOptions) {
+              visibleOptions.sort(this.compareOptions);
+            }
+            return visibleOptions;
+          }
+          /**
+           * Get an array of the visible global options. (Not including help.)
+           *
+           * @param {Command} cmd
+           * @returns {Option[]}
+           */
+          visibleGlobalOptions(cmd) {
+            if (!this.showGlobalOptions) return [];
+            const globalOptions = [];
+            for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
+              const visibleOptions = ancestorCmd.options.filter(
+                (option) => !option.hidden
+              );
+              globalOptions.push(...visibleOptions);
+            }
+            if (this.sortOptions) {
+              globalOptions.sort(this.compareOptions);
+            }
+            return globalOptions;
+          }
+          /**
+           * Get an array of the arguments if any have a description.
+           *
+           * @param {Command} cmd
+           * @returns {Argument[]}
+           */
+          visibleArguments(cmd) {
+            if (cmd._argsDescription) {
+              cmd.registeredArguments.forEach((argument) => {
+                argument.description = argument.description || cmd._argsDescription[argument.name()] || "";
+              });
+            }
+            if (cmd.registeredArguments.find((argument) => argument.description)) {
+              return cmd.registeredArguments;
+            }
+            return [];
+          }
+          /**
+           * Get the command term to show in the list of subcommands.
+           *
+           * @param {Command} cmd
+           * @returns {string}
+           */
+          subcommandTerm(cmd) {
+            const args = cmd.registeredArguments.map((arg) => humanReadableArgName(arg)).join(" ");
+            return cmd._name + (cmd._aliases[0] ? "|" + cmd._aliases[0] : "") + (cmd.options.length ? " [options]" : "") + // simplistic check for non-help option
+            (args ? " " + args : "");
+          }
+          /**
+           * Get the option term to show in the list of options.
+           *
+           * @param {Option} option
+           * @returns {string}
+           */
+          optionTerm(option) {
+            return option.flags;
+          }
+          /**
+           * Get the argument term to show in the list of arguments.
+           *
+           * @param {Argument} argument
+           * @returns {string}
+           */
+          argumentTerm(argument) {
+            return argument.name();
+          }
+          /**
+           * Get the longest command term length.
+           *
+           * @param {Command} cmd
+           * @param {Help} helper
+           * @returns {number}
+           */
+          longestSubcommandTermLength(cmd, helper) {
+            return helper.visibleCommands(cmd).reduce((max, command) => {
+              return Math.max(
+                max,
+                this.displayWidth(
+                  helper.styleSubcommandTerm(helper.subcommandTerm(command))
+                )
+              );
+            }, 0);
+          }
+          /**
+           * Get the longest option term length.
+           *
+           * @param {Command} cmd
+           * @param {Help} helper
+           * @returns {number}
+           */
+          longestOptionTermLength(cmd, helper) {
+            return helper.visibleOptions(cmd).reduce((max, option) => {
+              return Math.max(
+                max,
+                this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option)))
+              );
+            }, 0);
+          }
+          /**
+           * Get the longest global option term length.
+           *
+           * @param {Command} cmd
+           * @param {Help} helper
+           * @returns {number}
+           */
+          longestGlobalOptionTermLength(cmd, helper) {
+            return helper.visibleGlobalOptions(cmd).reduce((max, option) => {
+              return Math.max(
+                max,
+                this.displayWidth(helper.styleOptionTerm(helper.optionTerm(option)))
+              );
+            }, 0);
+          }
+          /**
+           * Get the longest argument term length.
+           *
+           * @param {Command} cmd
+           * @param {Help} helper
+           * @returns {number}
+           */
+          longestArgumentTermLength(cmd, helper) {
+            return helper.visibleArguments(cmd).reduce((max, argument) => {
+              return Math.max(
+                max,
+                this.displayWidth(
+                  helper.styleArgumentTerm(helper.argumentTerm(argument))
+                )
+              );
+            }, 0);
+          }
+          /**
+           * Get the command usage to be displayed at the top of the built-in help.
+           *
+           * @param {Command} cmd
+           * @returns {string}
+           */
+          commandUsage(cmd) {
+            let cmdName = cmd._name;
+            if (cmd._aliases[0]) {
+              cmdName = cmdName + "|" + cmd._aliases[0];
+            }
+            let ancestorCmdNames = "";
+            for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
+              ancestorCmdNames = ancestorCmd.name() + " " + ancestorCmdNames;
+            }
+            return ancestorCmdNames + cmdName + " " + cmd.usage();
+          }
+          /**
+           * Get the description for the command.
+           *
+           * @param {Command} cmd
+           * @returns {string}
+           */
+          commandDescription(cmd) {
+            return cmd.description();
+          }
+          /**
+           * Get the subcommand summary to show in the list of subcommands.
+           * (Fallback to description for backwards compatibility.)
+           *
+           * @param {Command} cmd
+           * @returns {string}
+           */
+          subcommandDescription(cmd) {
+            return cmd.summary() || cmd.description();
+          }
+          /**
+           * Get the option description to show in the list of options.
+           *
+           * @param {Option} option
+           * @return {string}
+           */
+          optionDescription(option) {
+            const extraInfo = [];
+            if (option.argChoices) {
+              extraInfo.push(
+                // use stringify to match the display of the default value
+                `choices: ${option.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`
+              );
+            }
+            if (option.defaultValue !== void 0) {
+              const showDefault = option.required || option.optional || option.isBoolean() && typeof option.defaultValue === "boolean";
+              if (showDefault) {
+                extraInfo.push(
+                  `default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue)}`
+                );
+              }
+            }
+            if (option.presetArg !== void 0 && option.optional) {
+              extraInfo.push(`preset: ${JSON.stringify(option.presetArg)}`);
+            }
+            if (option.envVar !== void 0) {
+              extraInfo.push(`env: ${option.envVar}`);
+            }
+            if (extraInfo.length > 0) {
+              const extraDescription = `(${extraInfo.join(", ")})`;
+              if (option.description) {
+                return `${option.description} ${extraDescription}`;
+              }
+              return extraDescription;
+            }
+            return option.description;
+          }
+          /**
+           * Get the argument description to show in the list of arguments.
+           *
+           * @param {Argument} argument
+           * @return {string}
+           */
+          argumentDescription(argument) {
+            const extraInfo = [];
+            if (argument.argChoices) {
+              extraInfo.push(
+                // use stringify to match the display of the default value
+                `choices: ${argument.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`
+              );
+            }
+            if (argument.defaultValue !== void 0) {
+              extraInfo.push(
+                `default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`
+              );
+            }
+            if (extraInfo.length > 0) {
+              const extraDescription = `(${extraInfo.join(", ")})`;
+              if (argument.description) {
+                return `${argument.description} ${extraDescription}`;
+              }
+              return extraDescription;
+            }
+            return argument.description;
+          }
+          /**
+           * Format a list of items, given a heading and an array of formatted items.
+           *
+           * @param {string} heading
+           * @param {string[]} items
+           * @param {Help} helper
+           * @returns string[]
+           */
+          formatItemList(heading, items, helper) {
+            if (items.length === 0) return [];
+            return [helper.styleTitle(heading), ...items, ""];
+          }
+          /**
+           * Group items by their help group heading.
+           *
+           * @param {Command[] | Option[]} unsortedItems
+           * @param {Command[] | Option[]} visibleItems
+           * @param {Function} getGroup
+           * @returns {Map<string, Command[] | Option[]>}
+           */
+          groupItems(unsortedItems, visibleItems, getGroup) {
+            const result = /* @__PURE__ */ new Map();
+            unsortedItems.forEach((item) => {
+              const group2 = getGroup(item);
+              if (!result.has(group2)) result.set(group2, []);
+            });
+            visibleItems.forEach((item) => {
+              const group2 = getGroup(item);
+              if (!result.has(group2)) {
+                result.set(group2, []);
+              }
+              result.get(group2).push(item);
+            });
+            return result;
+          }
+          /**
+           * Generate the built-in help text.
+           *
+           * @param {Command} cmd
+           * @param {Help} helper
+           * @returns {string}
+           */
+          formatHelp(cmd, helper) {
+            const termWidth = helper.padWidth(cmd, helper);
+            const helpWidth = helper.helpWidth ?? 80;
+            function callFormatItem(term, description) {
+              return helper.formatItem(term, termWidth, description, helper);
+            }
+            let output = [
+              `${helper.styleTitle("Usage:")} ${helper.styleUsage(helper.commandUsage(cmd))}`,
+              ""
+            ];
+            const commandDescription = helper.commandDescription(cmd);
+            if (commandDescription.length > 0) {
+              output = output.concat([
+                helper.boxWrap(
+                  helper.styleCommandDescription(commandDescription),
+                  helpWidth
+                ),
+                ""
+              ]);
+            }
+            const argumentList = helper.visibleArguments(cmd).map((argument) => {
+              return callFormatItem(
+                helper.styleArgumentTerm(helper.argumentTerm(argument)),
+                helper.styleArgumentDescription(helper.argumentDescription(argument))
+              );
+            });
+            output = output.concat(
+              this.formatItemList("Arguments:", argumentList, helper)
+            );
+            const optionGroups = this.groupItems(
+              cmd.options,
+              helper.visibleOptions(cmd),
+              (option) => option.helpGroupHeading ?? "Options:"
+            );
+            optionGroups.forEach((options, group2) => {
+              const optionList = options.map((option) => {
+                return callFormatItem(
+                  helper.styleOptionTerm(helper.optionTerm(option)),
+                  helper.styleOptionDescription(helper.optionDescription(option))
+                );
+              });
+              output = output.concat(this.formatItemList(group2, optionList, helper));
+            });
+            if (helper.showGlobalOptions) {
+              const globalOptionList = helper.visibleGlobalOptions(cmd).map((option) => {
+                return callFormatItem(
+                  helper.styleOptionTerm(helper.optionTerm(option)),
+                  helper.styleOptionDescription(helper.optionDescription(option))
+                );
+              });
+              output = output.concat(
+                this.formatItemList("Global Options:", globalOptionList, helper)
+              );
+            }
+            const commandGroups = this.groupItems(
+              cmd.commands,
+              helper.visibleCommands(cmd),
+              (sub) => sub.helpGroup() || "Commands:"
+            );
+            commandGroups.forEach((commands, group2) => {
+              const commandList = commands.map((sub) => {
+                return callFormatItem(
+                  helper.styleSubcommandTerm(helper.subcommandTerm(sub)),
+                  helper.styleSubcommandDescription(helper.subcommandDescription(sub))
+                );
+              });
+              output = output.concat(this.formatItemList(group2, commandList, helper));
+            });
+            return output.join("\n");
+          }
+          /**
+           * Return display width of string, ignoring ANSI escape sequences. Used in padding and wrapping calculations.
+           *
+           * @param {string} str
+           * @returns {number}
+           */
+          displayWidth(str) {
+            return stripColor(str).length;
+          }
+          /**
+           * Style the title for displaying in the help. Called with 'Usage:', 'Options:', etc.
+           *
+           * @param {string} str
+           * @returns {string}
+           */
+          styleTitle(str) {
+            return str;
+          }
+          styleUsage(str) {
+            return str.split(" ").map((word) => {
+              if (word === "[options]") return this.styleOptionText(word);
+              if (word === "[command]") return this.styleSubcommandText(word);
+              if (word[0] === "[" || word[0] === "<")
+                return this.styleArgumentText(word);
+              return this.styleCommandText(word);
+            }).join(" ");
+          }
+          styleCommandDescription(str) {
+            return this.styleDescriptionText(str);
+          }
+          styleOptionDescription(str) {
+            return this.styleDescriptionText(str);
+          }
+          styleSubcommandDescription(str) {
+            return this.styleDescriptionText(str);
+          }
+          styleArgumentDescription(str) {
+            return this.styleDescriptionText(str);
+          }
+          styleDescriptionText(str) {
+            return str;
+          }
+          styleOptionTerm(str) {
+            return this.styleOptionText(str);
+          }
+          styleSubcommandTerm(str) {
+            return str.split(" ").map((word) => {
+              if (word === "[options]") return this.styleOptionText(word);
+              if (word[0] === "[" || word[0] === "<")
+                return this.styleArgumentText(word);
+              return this.styleSubcommandText(word);
+            }).join(" ");
+          }
+          styleArgumentTerm(str) {
+            return this.styleArgumentText(str);
+          }
+          styleOptionText(str) {
+            return str;
+          }
+          styleArgumentText(str) {
+            return str;
+          }
+          styleSubcommandText(str) {
+            return str;
+          }
+          styleCommandText(str) {
+            return str;
+          }
+          /**
+           * Calculate the pad width from the maximum term length.
+           *
+           * @param {Command} cmd
+           * @param {Help} helper
+           * @returns {number}
+           */
+          padWidth(cmd, helper) {
+            return Math.max(
+              helper.longestOptionTermLength(cmd, helper),
+              helper.longestGlobalOptionTermLength(cmd, helper),
+              helper.longestSubcommandTermLength(cmd, helper),
+              helper.longestArgumentTermLength(cmd, helper)
+            );
+          }
+          /**
+           * Detect manually wrapped and indented strings by checking for line break followed by whitespace.
+           *
+           * @param {string} str
+           * @returns {boolean}
+           */
+          preformatted(str) {
+            return /\n[^\S\r\n]/.test(str);
+          }
+          /**
+           * Format the "item", which consists of a term and description. Pad the term and wrap the description, indenting the following lines.
+           *
+           * So "TTT", 5, "DDD DDDD DD DDD" might be formatted for this.helpWidth=17 like so:
+           *   TTT  DDD DDDD
+           *        DD DDD
+           *
+           * @param {string} term
+           * @param {number} termWidth
+           * @param {string} description
+           * @param {Help} helper
+           * @returns {string}
+           */
+          formatItem(term, termWidth, description, helper) {
+            const itemIndent = 2;
+            const itemIndentStr = " ".repeat(itemIndent);
+            if (!description) return itemIndentStr + term;
+            const paddedTerm = term.padEnd(
+              termWidth + term.length - helper.displayWidth(term)
+            );
+            const spacerWidth = 2;
+            const helpWidth = this.helpWidth ?? 80;
+            const remainingWidth = helpWidth - termWidth - spacerWidth - itemIndent;
+            let formattedDescription;
+            if (remainingWidth < this.minWidthToWrap || helper.preformatted(description)) {
+              formattedDescription = description;
+            } else {
+              const wrappedDescription = helper.boxWrap(description, remainingWidth);
+              formattedDescription = wrappedDescription.replace(
+                /\n/g,
+                "\n" + " ".repeat(termWidth + spacerWidth)
+              );
+            }
+            return itemIndentStr + paddedTerm + " ".repeat(spacerWidth) + formattedDescription.replace(/\n/g, `
+${itemIndentStr}`);
+          }
+          /**
+           * Wrap a string at whitespace, preserving existing line breaks.
+           * Wrapping is skipped if the width is less than `minWidthToWrap`.
+           *
+           * @param {string} str
+           * @param {number} width
+           * @returns {string}
+           */
+          boxWrap(str, width) {
+            if (width < this.minWidthToWrap) return str;
+            const rawLines = str.split(/\r\n|\n/);
+            const chunkPattern = /[\s]*[^\s]+/g;
+            const wrappedLines = [];
+            rawLines.forEach((line) => {
+              const chunks = line.match(chunkPattern);
+              if (chunks === null) {
+                wrappedLines.push("");
+                return;
+              }
+              let sumChunks = [chunks.shift()];
+              let sumWidth = this.displayWidth(sumChunks[0]);
+              chunks.forEach((chunk) => {
+                const visibleWidth = this.displayWidth(chunk);
+                if (sumWidth + visibleWidth <= width) {
+                  sumChunks.push(chunk);
+                  sumWidth += visibleWidth;
+                  return;
+                }
+                wrappedLines.push(sumChunks.join(""));
+                const nextChunk = chunk.trimStart();
+                sumChunks = [nextChunk];
+                sumWidth = this.displayWidth(nextChunk);
+              });
+              wrappedLines.push(sumChunks.join(""));
+            });
+            return wrappedLines.join("\n");
+          }
+        };
+        function stripColor(str) {
+          const sgrPattern = /\x1b\[\d*(;\d*)*m/g;
+          return str.replace(sgrPattern, "");
+        }
+        exports2.Help = Help2;
+        exports2.stripColor = stripColor;
+      }
+    });
+    var require_option = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/lib/option.js"(exports2) {
+        var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
+        var Option2 = class {
+          /**
+           * Initialize a new `Option` with the given `flags` and `description`.
+           *
+           * @param {string} flags
+           * @param {string} [description]
+           */
+          constructor(flags, description) {
+            this.flags = flags;
+            this.description = description || "";
+            this.required = flags.includes("<");
+            this.optional = flags.includes("[");
+            this.variadic = /\w\.\.\.[>\]]$/.test(flags);
+            this.mandatory = false;
+            const optionFlags = splitOptionFlags(flags);
+            this.short = optionFlags.shortFlag;
+            this.long = optionFlags.longFlag;
+            this.negate = false;
+            if (this.long) {
+              this.negate = this.long.startsWith("--no-");
+            }
+            this.defaultValue = void 0;
+            this.defaultValueDescription = void 0;
+            this.presetArg = void 0;
+            this.envVar = void 0;
+            this.parseArg = void 0;
+            this.hidden = false;
+            this.argChoices = void 0;
+            this.conflictsWith = [];
+            this.implied = void 0;
+            this.helpGroupHeading = void 0;
+          }
+          /**
+           * Set the default value, and optionally supply the description to be displayed in the help.
+           *
+           * @param {*} value
+           * @param {string} [description]
+           * @return {Option}
+           */
+          default(value, description) {
+            this.defaultValue = value;
+            this.defaultValueDescription = description;
+            return this;
+          }
+          /**
+           * Preset to use when option used without option-argument, especially optional but also boolean and negated.
+           * The custom processing (parseArg) is called.
+           *
+           * @example
+           * new Option('--color').default('GREYSCALE').preset('RGB');
+           * new Option('--donate [amount]').preset('20').argParser(parseFloat);
+           *
+           * @param {*} arg
+           * @return {Option}
+           */
+          preset(arg) {
+            this.presetArg = arg;
+            return this;
+          }
+          /**
+           * Add option name(s) that conflict with this option.
+           * An error will be displayed if conflicting options are found during parsing.
+           *
+           * @example
+           * new Option('--rgb').conflicts('cmyk');
+           * new Option('--js').conflicts(['ts', 'jsx']);
+           *
+           * @param {(string | string[])} names
+           * @return {Option}
+           */
+          conflicts(names) {
+            this.conflictsWith = this.conflictsWith.concat(names);
+            return this;
+          }
+          /**
+           * Specify implied option values for when this option is set and the implied options are not.
+           *
+           * The custom processing (parseArg) is not called on the implied values.
+           *
+           * @example
+           * program
+           *   .addOption(new Option('--log', 'write logging information to file'))
+           *   .addOption(new Option('--trace', 'log extra details').implies({ log: 'trace.txt' }));
+           *
+           * @param {object} impliedOptionValues
+           * @return {Option}
+           */
+          implies(impliedOptionValues) {
+            let newImplied = impliedOptionValues;
+            if (typeof impliedOptionValues === "string") {
+              newImplied = { [impliedOptionValues]: true };
+            }
+            this.implied = Object.assign(this.implied || {}, newImplied);
+            return this;
+          }
+          /**
+           * Set environment variable to check for option value.
+           *
+           * An environment variable is only used if when processed the current option value is
+           * undefined, or the source of the current value is 'default' or 'config' or 'env'.
+           *
+           * @param {string} name
+           * @return {Option}
+           */
+          env(name) {
+            this.envVar = name;
+            return this;
+          }
+          /**
+           * Set the custom handler for processing CLI option arguments into option values.
+           *
+           * @param {Function} [fn]
+           * @return {Option}
+           */
+          argParser(fn) {
+            this.parseArg = fn;
+            return this;
+          }
+          /**
+           * Whether the option is mandatory and must have a value after parsing.
+           *
+           * @param {boolean} [mandatory=true]
+           * @return {Option}
+           */
+          makeOptionMandatory(mandatory = true) {
+            this.mandatory = !!mandatory;
+            return this;
+          }
+          /**
+           * Hide option in help.
+           *
+           * @param {boolean} [hide=true]
+           * @return {Option}
+           */
+          hideHelp(hide = true) {
+            this.hidden = !!hide;
+            return this;
+          }
+          /**
+           * @package
+           */
+          _collectValue(value, previous) {
+            if (previous === this.defaultValue || !Array.isArray(previous)) {
+              return [value];
+            }
+            previous.push(value);
+            return previous;
+          }
+          /**
+           * Only allow option value to be one of choices.
+           *
+           * @param {string[]} values
+           * @return {Option}
+           */
+          choices(values) {
+            this.argChoices = values.slice();
+            this.parseArg = (arg, previous) => {
+              if (!this.argChoices.includes(arg)) {
+                throw new InvalidArgumentError2(
+                  `Allowed choices are ${this.argChoices.join(", ")}.`
+                );
+              }
+              if (this.variadic) {
+                return this._collectValue(arg, previous);
+              }
+              return arg;
+            };
+            return this;
+          }
+          /**
+           * Return option name.
+           *
+           * @return {string}
+           */
+          name() {
+            if (this.long) {
+              return this.long.replace(/^--/, "");
+            }
+            return this.short.replace(/^-/, "");
+          }
+          /**
+           * Return option name, in a camelcase format that can be used
+           * as an object attribute key.
+           *
+           * @return {string}
+           */
+          attributeName() {
+            if (this.negate) {
+              return camelcase(this.name().replace(/^no-/, ""));
+            }
+            return camelcase(this.name());
+          }
+          /**
+           * Set the help group heading.
+           *
+           * @param {string} heading
+           * @return {Option}
+           */
+          helpGroup(heading) {
+            this.helpGroupHeading = heading;
+            return this;
+          }
+          /**
+           * Check if `arg` matches the short or long flag.
+           *
+           * @param {string} arg
+           * @return {boolean}
+           * @package
+           */
+          is(arg) {
+            return this.short === arg || this.long === arg;
+          }
+          /**
+           * Return whether a boolean option.
+           *
+           * Options are one of boolean, negated, required argument, or optional argument.
+           *
+           * @return {boolean}
+           * @package
+           */
+          isBoolean() {
+            return !this.required && !this.optional && !this.negate;
+          }
+        };
+        var DualOptions = class {
+          /**
+           * @param {Option[]} options
+           */
+          constructor(options) {
+            this.positiveOptions = /* @__PURE__ */ new Map();
+            this.negativeOptions = /* @__PURE__ */ new Map();
+            this.dualOptions = /* @__PURE__ */ new Set();
+            options.forEach((option) => {
+              if (option.negate) {
+                this.negativeOptions.set(option.attributeName(), option);
+              } else {
+                this.positiveOptions.set(option.attributeName(), option);
+              }
+            });
+            this.negativeOptions.forEach((value, key) => {
+              if (this.positiveOptions.has(key)) {
+                this.dualOptions.add(key);
+              }
+            });
+          }
+          /**
+           * Did the value come from the option, and not from possible matching dual option?
+           *
+           * @param {*} value
+           * @param {Option} option
+           * @returns {boolean}
+           */
+          valueFromOption(value, option) {
+            const optionKey = option.attributeName();
+            if (!this.dualOptions.has(optionKey)) return true;
+            const preset = this.negativeOptions.get(optionKey).presetArg;
+            const negativeValue = preset !== void 0 ? preset : false;
+            return option.negate === (negativeValue === value);
+          }
+        };
+        function camelcase(str) {
+          return str.split("-").reduce((str2, word) => {
+            return str2 + word[0].toUpperCase() + word.slice(1);
+          });
+        }
+        function splitOptionFlags(flags) {
+          let shortFlag;
+          let longFlag;
+          const shortFlagExp = /^-[^-]$/;
+          const longFlagExp = /^--[^-]/;
+          const flagParts = flags.split(/[ |,]+/).concat("guard");
+          if (shortFlagExp.test(flagParts[0])) shortFlag = flagParts.shift();
+          if (longFlagExp.test(flagParts[0])) longFlag = flagParts.shift();
+          if (!shortFlag && shortFlagExp.test(flagParts[0]))
+            shortFlag = flagParts.shift();
+          if (!shortFlag && longFlagExp.test(flagParts[0])) {
+            shortFlag = longFlag;
+            longFlag = flagParts.shift();
+          }
+          if (flagParts[0].startsWith("-")) {
+            const unsupportedFlag = flagParts[0];
+            const baseError = `option creation failed due to '${unsupportedFlag}' in option flags '${flags}'`;
+            if (/^-[^-][^-]/.test(unsupportedFlag))
+              throw new Error(
+                `${baseError}
+- a short flag is a single dash and a single character
+  - either use a single dash and a single character (for a short flag)
+  - or use a double dash for a long option (and can have two, like '--ws, --workspace')`
+              );
+            if (shortFlagExp.test(unsupportedFlag))
+              throw new Error(`${baseError}
+- too many short flags`);
+            if (longFlagExp.test(unsupportedFlag))
+              throw new Error(`${baseError}
+- too many long flags`);
+            throw new Error(`${baseError}
+- unrecognised flag format`);
+          }
+          if (shortFlag === void 0 && longFlag === void 0)
+            throw new Error(
+              `option creation failed due to no flags found in '${flags}'.`
+            );
+          return { shortFlag, longFlag };
+        }
+        exports2.Option = Option2;
+        exports2.DualOptions = DualOptions;
+      }
+    });
+    var require_suggestSimilar = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/lib/suggestSimilar.js"(exports2) {
+        var maxDistance = 3;
+        function editDistance(a, b) {
+          if (Math.abs(a.length - b.length) > maxDistance)
+            return Math.max(a.length, b.length);
+          const d = [];
+          for (let i = 0; i <= a.length; i++) {
+            d[i] = [i];
+          }
+          for (let j = 0; j <= b.length; j++) {
+            d[0][j] = j;
+          }
+          for (let j = 1; j <= b.length; j++) {
+            for (let i = 1; i <= a.length; i++) {
+              let cost = 1;
+              if (a[i - 1] === b[j - 1]) {
+                cost = 0;
+              } else {
+                cost = 1;
+              }
+              d[i][j] = Math.min(
+                d[i - 1][j] + 1,
+                // deletion
+                d[i][j - 1] + 1,
+                // insertion
+                d[i - 1][j - 1] + cost
+                // substitution
+              );
+              if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+                d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+              }
+            }
+          }
+          return d[a.length][b.length];
+        }
+        function suggestSimilar(word, candidates) {
+          if (!candidates || candidates.length === 0) return "";
+          candidates = Array.from(new Set(candidates));
+          const searchingOptions = word.startsWith("--");
+          if (searchingOptions) {
+            word = word.slice(2);
+            candidates = candidates.map((candidate) => candidate.slice(2));
+          }
+          let similar = [];
+          let bestDistance = maxDistance;
+          const minSimilarity = 0.4;
+          candidates.forEach((candidate) => {
+            if (candidate.length <= 1) return;
+            const distance = editDistance(word, candidate);
+            const length = Math.max(word.length, candidate.length);
+            const similarity = (length - distance) / length;
+            if (similarity > minSimilarity) {
+              if (distance < bestDistance) {
+                bestDistance = distance;
+                similar = [candidate];
+              } else if (distance === bestDistance) {
+                similar.push(candidate);
+              }
+            }
+          });
+          similar.sort((a, b) => a.localeCompare(b));
+          if (searchingOptions) {
+            similar = similar.map((candidate) => `--${candidate}`);
+          }
+          if (similar.length > 1) {
+            return `
+(Did you mean one of ${similar.join(", ")}?)`;
+          }
+          if (similar.length === 1) {
+            return `
+(Did you mean ${similar[0]}?)`;
+          }
+          return "";
+        }
+        exports2.suggestSimilar = suggestSimilar;
+      }
+    });
+    var require_command = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/lib/command.js"(exports2) {
+        var EventEmitter2 = __require("node:events").EventEmitter;
+        var childProcess = __require("node:child_process");
+        var path6 = __require("node:path");
+        var fs3 = __require("node:fs");
+        var process2 = __require("node:process");
+        var { Argument: Argument2, humanReadableArgName } = require_argument();
+        var { CommanderError: CommanderError2 } = require_error();
+        var { Help: Help2, stripColor } = require_help();
+        var { Option: Option2, DualOptions } = require_option();
+        var { suggestSimilar } = require_suggestSimilar();
+        var Command22 = class _Command extends EventEmitter2 {
+          /**
+           * Initialize a new `Command`.
+           *
+           * @param {string} [name]
+           */
+          constructor(name) {
+            super();
+            this.commands = [];
+            this.options = [];
+            this.parent = null;
+            this._allowUnknownOption = false;
+            this._allowExcessArguments = false;
+            this.registeredArguments = [];
+            this._args = this.registeredArguments;
+            this.args = [];
+            this.rawArgs = [];
+            this.processedArgs = [];
+            this._scriptPath = null;
+            this._name = name || "";
+            this._optionValues = {};
+            this._optionValueSources = {};
+            this._storeOptionsAsProperties = false;
+            this._actionHandler = null;
+            this._executableHandler = false;
+            this._executableFile = null;
+            this._executableDir = null;
+            this._defaultCommandName = null;
+            this._exitCallback = null;
+            this._aliases = [];
+            this._combineFlagAndOptionalValue = true;
+            this._description = "";
+            this._summary = "";
+            this._argsDescription = void 0;
+            this._enablePositionalOptions = false;
+            this._passThroughOptions = false;
+            this._lifeCycleHooks = {};
+            this._showHelpAfterError = false;
+            this._showSuggestionAfterError = true;
+            this._savedState = null;
+            this._outputConfiguration = {
+              writeOut: (str) => process2.stdout.write(str),
+              writeErr: (str) => process2.stderr.write(str),
+              outputError: (str, write) => write(str),
+              getOutHelpWidth: () => process2.stdout.isTTY ? process2.stdout.columns : void 0,
+              getErrHelpWidth: () => process2.stderr.isTTY ? process2.stderr.columns : void 0,
+              getOutHasColors: () => useColor() ?? (process2.stdout.isTTY && process2.stdout.hasColors?.()),
+              getErrHasColors: () => useColor() ?? (process2.stderr.isTTY && process2.stderr.hasColors?.()),
+              stripColor: (str) => stripColor(str)
+            };
+            this._hidden = false;
+            this._helpOption = void 0;
+            this._addImplicitHelpCommand = void 0;
+            this._helpCommand = void 0;
+            this._helpConfiguration = {};
+            this._helpGroupHeading = void 0;
+            this._defaultCommandGroup = void 0;
+            this._defaultOptionGroup = void 0;
+          }
+          /**
+           * Copy settings that are useful to have in common across root command and subcommands.
+           *
+           * (Used internally when adding a command using `.command()` so subcommands inherit parent settings.)
+           *
+           * @param {Command} sourceCommand
+           * @return {Command} `this` command for chaining
+           */
+          copyInheritedSettings(sourceCommand) {
+            this._outputConfiguration = sourceCommand._outputConfiguration;
+            this._helpOption = sourceCommand._helpOption;
+            this._helpCommand = sourceCommand._helpCommand;
+            this._helpConfiguration = sourceCommand._helpConfiguration;
+            this._exitCallback = sourceCommand._exitCallback;
+            this._storeOptionsAsProperties = sourceCommand._storeOptionsAsProperties;
+            this._combineFlagAndOptionalValue = sourceCommand._combineFlagAndOptionalValue;
+            this._allowExcessArguments = sourceCommand._allowExcessArguments;
+            this._enablePositionalOptions = sourceCommand._enablePositionalOptions;
+            this._showHelpAfterError = sourceCommand._showHelpAfterError;
+            this._showSuggestionAfterError = sourceCommand._showSuggestionAfterError;
+            return this;
+          }
+          /**
+           * @returns {Command[]}
+           * @private
+           */
+          _getCommandAndAncestors() {
+            const result = [];
+            for (let command = this; command; command = command.parent) {
+              result.push(command);
+            }
+            return result;
+          }
+          /**
+           * Define a command.
+           *
+           * There are two styles of command: pay attention to where to put the description.
+           *
+           * @example
+           * // Command implemented using action handler (description is supplied separately to `.command`)
+           * program
+           *   .command('clone <source> [destination]')
+           *   .description('clone a repository into a newly created directory')
+           *   .action((source, destination) => {
+           *     console.log('clone command called');
+           *   });
+           *
+           * // Command implemented using separate executable file (description is second parameter to `.command`)
+           * program
+           *   .command('start <service>', 'start named service')
+           *   .command('stop [service]', 'stop named service, or all if no name supplied');
+           *
+           * @param {string} nameAndArgs - command name and arguments, args are `<required>` or `[optional]` and last may also be `variadic...`
+           * @param {(object | string)} [actionOptsOrExecDesc] - configuration options (for action), or description (for executable)
+           * @param {object} [execOpts] - configuration options (for executable)
+           * @return {Command} returns new command for action handler, or `this` for executable command
+           */
+          command(nameAndArgs, actionOptsOrExecDesc, execOpts) {
+            let desc = actionOptsOrExecDesc;
+            let opts = execOpts;
+            if (typeof desc === "object" && desc !== null) {
+              opts = desc;
+              desc = null;
+            }
+            opts = opts || {};
+            const [, name, args] = nameAndArgs.match(/([^ ]+) *(.*)/);
+            const cmd = this.createCommand(name);
+            if (desc) {
+              cmd.description(desc);
+              cmd._executableHandler = true;
+            }
+            if (opts.isDefault) this._defaultCommandName = cmd._name;
+            cmd._hidden = !!(opts.noHelp || opts.hidden);
+            cmd._executableFile = opts.executableFile || null;
+            if (args) cmd.arguments(args);
+            this._registerCommand(cmd);
+            cmd.parent = this;
+            cmd.copyInheritedSettings(this);
+            if (desc) return this;
+            return cmd;
+          }
+          /**
+           * Factory routine to create a new unattached command.
+           *
+           * See .command() for creating an attached subcommand, which uses this routine to
+           * create the command. You can override createCommand to customise subcommands.
+           *
+           * @param {string} [name]
+           * @return {Command} new command
+           */
+          createCommand(name) {
+            return new _Command(name);
+          }
+          /**
+           * You can customise the help with a subclass of Help by overriding createHelp,
+           * or by overriding Help properties using configureHelp().
+           *
+           * @return {Help}
+           */
+          createHelp() {
+            return Object.assign(new Help2(), this.configureHelp());
+          }
+          /**
+           * You can customise the help by overriding Help properties using configureHelp(),
+           * or with a subclass of Help by overriding createHelp().
+           *
+           * @param {object} [configuration] - configuration options
+           * @return {(Command | object)} `this` command for chaining, or stored configuration
+           */
+          configureHelp(configuration) {
+            if (configuration === void 0) return this._helpConfiguration;
+            this._helpConfiguration = configuration;
+            return this;
+          }
+          /**
+           * The default output goes to stdout and stderr. You can customise this for special
+           * applications. You can also customise the display of errors by overriding outputError.
+           *
+           * The configuration properties are all functions:
+           *
+           *     // change how output being written, defaults to stdout and stderr
+           *     writeOut(str)
+           *     writeErr(str)
+           *     // change how output being written for errors, defaults to writeErr
+           *     outputError(str, write) // used for displaying errors and not used for displaying help
+           *     // specify width for wrapping help
+           *     getOutHelpWidth()
+           *     getErrHelpWidth()
+           *     // color support, currently only used with Help
+           *     getOutHasColors()
+           *     getErrHasColors()
+           *     stripColor() // used to remove ANSI escape codes if output does not have colors
+           *
+           * @param {object} [configuration] - configuration options
+           * @return {(Command | object)} `this` command for chaining, or stored configuration
+           */
+          configureOutput(configuration) {
+            if (configuration === void 0) return this._outputConfiguration;
+            this._outputConfiguration = {
+              ...this._outputConfiguration,
+              ...configuration
+            };
+            return this;
+          }
+          /**
+           * Display the help or a custom message after an error occurs.
+           *
+           * @param {(boolean|string)} [displayHelp]
+           * @return {Command} `this` command for chaining
+           */
+          showHelpAfterError(displayHelp = true) {
+            if (typeof displayHelp !== "string") displayHelp = !!displayHelp;
+            this._showHelpAfterError = displayHelp;
+            return this;
+          }
+          /**
+           * Display suggestion of similar commands for unknown commands, or options for unknown options.
+           *
+           * @param {boolean} [displaySuggestion]
+           * @return {Command} `this` command for chaining
+           */
+          showSuggestionAfterError(displaySuggestion = true) {
+            this._showSuggestionAfterError = !!displaySuggestion;
+            return this;
+          }
+          /**
+           * Add a prepared subcommand.
+           *
+           * See .command() for creating an attached subcommand which inherits settings from its parent.
+           *
+           * @param {Command} cmd - new subcommand
+           * @param {object} [opts] - configuration options
+           * @return {Command} `this` command for chaining
+           */
+          addCommand(cmd, opts) {
+            if (!cmd._name) {
+              throw new Error(`Command passed to .addCommand() must have a name
+- specify the name in Command constructor or using .name()`);
+            }
+            opts = opts || {};
+            if (opts.isDefault) this._defaultCommandName = cmd._name;
+            if (opts.noHelp || opts.hidden) cmd._hidden = true;
+            this._registerCommand(cmd);
+            cmd.parent = this;
+            cmd._checkForBrokenPassThrough();
+            return this;
+          }
+          /**
+           * Factory routine to create a new unattached argument.
+           *
+           * See .argument() for creating an attached argument, which uses this routine to
+           * create the argument. You can override createArgument to return a custom argument.
+           *
+           * @param {string} name
+           * @param {string} [description]
+           * @return {Argument} new argument
+           */
+          createArgument(name, description) {
+            return new Argument2(name, description);
+          }
+          /**
+           * Define argument syntax for command.
+           *
+           * The default is that the argument is required, and you can explicitly
+           * indicate this with <> around the name. Put [] around the name for an optional argument.
+           *
+           * @example
+           * program.argument('<input-file>');
+           * program.argument('[output-file]');
+           *
+           * @param {string} name
+           * @param {string} [description]
+           * @param {(Function|*)} [parseArg] - custom argument processing function or default value
+           * @param {*} [defaultValue]
+           * @return {Command} `this` command for chaining
+           */
+          argument(name, description, parseArg, defaultValue) {
+            const argument = this.createArgument(name, description);
+            if (typeof parseArg === "function") {
+              argument.default(defaultValue).argParser(parseArg);
+            } else {
+              argument.default(parseArg);
+            }
+            this.addArgument(argument);
+            return this;
+          }
+          /**
+           * Define argument syntax for command, adding multiple at once (without descriptions).
+           *
+           * See also .argument().
+           *
+           * @example
+           * program.arguments('<cmd> [env]');
+           *
+           * @param {string} names
+           * @return {Command} `this` command for chaining
+           */
+          arguments(names) {
+            names.trim().split(/ +/).forEach((detail) => {
+              this.argument(detail);
+            });
+            return this;
+          }
+          /**
+           * Define argument syntax for command, adding a prepared argument.
+           *
+           * @param {Argument} argument
+           * @return {Command} `this` command for chaining
+           */
+          addArgument(argument) {
+            const previousArgument = this.registeredArguments.slice(-1)[0];
+            if (previousArgument?.variadic) {
+              throw new Error(
+                `only the last argument can be variadic '${previousArgument.name()}'`
+              );
+            }
+            if (argument.required && argument.defaultValue !== void 0 && argument.parseArg === void 0) {
+              throw new Error(
+                `a default value for a required argument is never used: '${argument.name()}'`
+              );
+            }
+            this.registeredArguments.push(argument);
+            return this;
+          }
+          /**
+           * Customise or override default help command. By default a help command is automatically added if your command has subcommands.
+           *
+           * @example
+           *    program.helpCommand('help [cmd]');
+           *    program.helpCommand('help [cmd]', 'show help');
+           *    program.helpCommand(false); // suppress default help command
+           *    program.helpCommand(true); // add help command even if no subcommands
+           *
+           * @param {string|boolean} enableOrNameAndArgs - enable with custom name and/or arguments, or boolean to override whether added
+           * @param {string} [description] - custom description
+           * @return {Command} `this` command for chaining
+           */
+          helpCommand(enableOrNameAndArgs, description) {
+            if (typeof enableOrNameAndArgs === "boolean") {
+              this._addImplicitHelpCommand = enableOrNameAndArgs;
+              if (enableOrNameAndArgs && this._defaultCommandGroup) {
+                this._initCommandGroup(this._getHelpCommand());
+              }
+              return this;
+            }
+            const nameAndArgs = enableOrNameAndArgs ?? "help [command]";
+            const [, helpName, helpArgs] = nameAndArgs.match(/([^ ]+) *(.*)/);
+            const helpDescription = description ?? "display help for command";
+            const helpCommand = this.createCommand(helpName);
+            helpCommand.helpOption(false);
+            if (helpArgs) helpCommand.arguments(helpArgs);
+            if (helpDescription) helpCommand.description(helpDescription);
+            this._addImplicitHelpCommand = true;
+            this._helpCommand = helpCommand;
+            if (enableOrNameAndArgs || description) this._initCommandGroup(helpCommand);
+            return this;
+          }
+          /**
+           * Add prepared custom help command.
+           *
+           * @param {(Command|string|boolean)} helpCommand - custom help command, or deprecated enableOrNameAndArgs as for `.helpCommand()`
+           * @param {string} [deprecatedDescription] - deprecated custom description used with custom name only
+           * @return {Command} `this` command for chaining
+           */
+          addHelpCommand(helpCommand, deprecatedDescription) {
+            if (typeof helpCommand !== "object") {
+              this.helpCommand(helpCommand, deprecatedDescription);
+              return this;
+            }
+            this._addImplicitHelpCommand = true;
+            this._helpCommand = helpCommand;
+            this._initCommandGroup(helpCommand);
+            return this;
+          }
+          /**
+           * Lazy create help command.
+           *
+           * @return {(Command|null)}
+           * @package
+           */
+          _getHelpCommand() {
+            const hasImplicitHelpCommand = this._addImplicitHelpCommand ?? (this.commands.length && !this._actionHandler && !this._findCommand("help"));
+            if (hasImplicitHelpCommand) {
+              if (this._helpCommand === void 0) {
+                this.helpCommand(void 0, void 0);
+              }
+              return this._helpCommand;
+            }
+            return null;
+          }
+          /**
+           * Add hook for life cycle event.
+           *
+           * @param {string} event
+           * @param {Function} listener
+           * @return {Command} `this` command for chaining
+           */
+          hook(event, listener) {
+            const allowedValues = ["preSubcommand", "preAction", "postAction"];
+            if (!allowedValues.includes(event)) {
+              throw new Error(`Unexpected value for event passed to hook : '${event}'.
+Expecting one of '${allowedValues.join("', '")}'`);
+            }
+            if (this._lifeCycleHooks[event]) {
+              this._lifeCycleHooks[event].push(listener);
+            } else {
+              this._lifeCycleHooks[event] = [listener];
+            }
+            return this;
+          }
+          /**
+           * Register callback to use as replacement for calling process.exit.
+           *
+           * @param {Function} [fn] optional callback which will be passed a CommanderError, defaults to throwing
+           * @return {Command} `this` command for chaining
+           */
+          exitOverride(fn) {
+            if (fn) {
+              this._exitCallback = fn;
+            } else {
+              this._exitCallback = (err) => {
+                if (err.code !== "commander.executeSubCommandAsync") {
+                  throw err;
+                } else {
+                }
+              };
+            }
+            return this;
+          }
+          /**
+           * Call process.exit, and _exitCallback if defined.
+           *
+           * @param {number} exitCode exit code for using with process.exit
+           * @param {string} code an id string representing the error
+           * @param {string} message human-readable description of the error
+           * @return never
+           * @private
+           */
+          _exit(exitCode, code, message) {
+            if (this._exitCallback) {
+              this._exitCallback(new CommanderError2(exitCode, code, message));
+            }
+            process2.exit(exitCode);
+          }
+          /**
+           * Register callback `fn` for the command.
+           *
+           * @example
+           * program
+           *   .command('serve')
+           *   .description('start service')
+           *   .action(function() {
+           *      // do work here
+           *   });
+           *
+           * @param {Function} fn
+           * @return {Command} `this` command for chaining
+           */
+          action(fn) {
+            const listener = (args) => {
+              const expectedArgsCount = this.registeredArguments.length;
+              const actionArgs = args.slice(0, expectedArgsCount);
+              if (this._storeOptionsAsProperties) {
+                actionArgs[expectedArgsCount] = this;
+              } else {
+                actionArgs[expectedArgsCount] = this.opts();
+              }
+              actionArgs.push(this);
+              return fn.apply(this, actionArgs);
+            };
+            this._actionHandler = listener;
+            return this;
+          }
+          /**
+           * Factory routine to create a new unattached option.
+           *
+           * See .option() for creating an attached option, which uses this routine to
+           * create the option. You can override createOption to return a custom option.
+           *
+           * @param {string} flags
+           * @param {string} [description]
+           * @return {Option} new option
+           */
+          createOption(flags, description) {
+            return new Option2(flags, description);
+          }
+          /**
+           * Wrap parseArgs to catch 'commander.invalidArgument'.
+           *
+           * @param {(Option | Argument)} target
+           * @param {string} value
+           * @param {*} previous
+           * @param {string} invalidArgumentMessage
+           * @private
+           */
+          _callParseArg(target, value, previous, invalidArgumentMessage) {
+            try {
+              return target.parseArg(value, previous);
+            } catch (err) {
+              if (err.code === "commander.invalidArgument") {
+                const message = `${invalidArgumentMessage} ${err.message}`;
+                this.error(message, { exitCode: err.exitCode, code: err.code });
+              }
+              throw err;
+            }
+          }
+          /**
+           * Check for option flag conflicts.
+           * Register option if no conflicts found, or throw on conflict.
+           *
+           * @param {Option} option
+           * @private
+           */
+          _registerOption(option) {
+            const matchingOption = option.short && this._findOption(option.short) || option.long && this._findOption(option.long);
+            if (matchingOption) {
+              const matchingFlag = option.long && this._findOption(option.long) ? option.long : option.short;
+              throw new Error(`Cannot add option '${option.flags}'${this._name && ` to command '${this._name}'`} due to conflicting flag '${matchingFlag}'
+-  already used by option '${matchingOption.flags}'`);
+            }
+            this._initOptionGroup(option);
+            this.options.push(option);
+          }
+          /**
+           * Check for command name and alias conflicts with existing commands.
+           * Register command if no conflicts found, or throw on conflict.
+           *
+           * @param {Command} command
+           * @private
+           */
+          _registerCommand(command) {
+            const knownBy = (cmd) => {
+              return [cmd.name()].concat(cmd.aliases());
+            };
+            const alreadyUsed = knownBy(command).find(
+              (name) => this._findCommand(name)
+            );
+            if (alreadyUsed) {
+              const existingCmd = knownBy(this._findCommand(alreadyUsed)).join("|");
+              const newCmd = knownBy(command).join("|");
+              throw new Error(
+                `cannot add command '${newCmd}' as already have command '${existingCmd}'`
+              );
+            }
+            this._initCommandGroup(command);
+            this.commands.push(command);
+          }
+          /**
+           * Add an option.
+           *
+           * @param {Option} option
+           * @return {Command} `this` command for chaining
+           */
+          addOption(option) {
+            this._registerOption(option);
+            const oname = option.name();
+            const name = option.attributeName();
+            if (option.negate) {
+              const positiveLongFlag = option.long.replace(/^--no-/, "--");
+              if (!this._findOption(positiveLongFlag)) {
+                this.setOptionValueWithSource(
+                  name,
+                  option.defaultValue === void 0 ? true : option.defaultValue,
+                  "default"
+                );
+              }
+            } else if (option.defaultValue !== void 0) {
+              this.setOptionValueWithSource(name, option.defaultValue, "default");
+            }
+            const handleOptionValue = (val, invalidValueMessage, valueSource) => {
+              if (val == null && option.presetArg !== void 0) {
+                val = option.presetArg;
+              }
+              const oldValue = this.getOptionValue(name);
+              if (val !== null && option.parseArg) {
+                val = this._callParseArg(option, val, oldValue, invalidValueMessage);
+              } else if (val !== null && option.variadic) {
+                val = option._collectValue(val, oldValue);
+              }
+              if (val == null) {
+                if (option.negate) {
+                  val = false;
+                } else if (option.isBoolean() || option.optional) {
+                  val = true;
+                } else {
+                  val = "";
+                }
+              }
+              this.setOptionValueWithSource(name, val, valueSource);
+            };
+            this.on("option:" + oname, (val) => {
+              const invalidValueMessage = `error: option '${option.flags}' argument '${val}' is invalid.`;
+              handleOptionValue(val, invalidValueMessage, "cli");
+            });
+            if (option.envVar) {
+              this.on("optionEnv:" + oname, (val) => {
+                const invalidValueMessage = `error: option '${option.flags}' value '${val}' from env '${option.envVar}' is invalid.`;
+                handleOptionValue(val, invalidValueMessage, "env");
+              });
+            }
+            return this;
+          }
+          /**
+           * Internal implementation shared by .option() and .requiredOption()
+           *
+           * @return {Command} `this` command for chaining
+           * @private
+           */
+          _optionEx(config, flags, description, fn, defaultValue) {
+            if (typeof flags === "object" && flags instanceof Option2) {
+              throw new Error(
+                "To add an Option object use addOption() instead of option() or requiredOption()"
+              );
+            }
+            const option = this.createOption(flags, description);
+            option.makeOptionMandatory(!!config.mandatory);
+            if (typeof fn === "function") {
+              option.default(defaultValue).argParser(fn);
+            } else if (fn instanceof RegExp) {
+              const regex = fn;
+              fn = (val, def) => {
+                const m = regex.exec(val);
+                return m ? m[0] : def;
+              };
+              option.default(defaultValue).argParser(fn);
+            } else {
+              option.default(fn);
+            }
+            return this.addOption(option);
+          }
+          /**
+           * Define option with `flags`, `description`, and optional argument parsing function or `defaultValue` or both.
+           *
+           * The `flags` string contains the short and/or long flags, separated by comma, a pipe or space. A required
+           * option-argument is indicated by `<>` and an optional option-argument by `[]`.
+           *
+           * See the README for more details, and see also addOption() and requiredOption().
+           *
+           * @example
+           * program
+           *     .option('-p, --pepper', 'add pepper')
+           *     .option('--pt, --pizza-type <TYPE>', 'type of pizza') // required option-argument
+           *     .option('-c, --cheese [CHEESE]', 'add extra cheese', 'mozzarella') // optional option-argument with default
+           *     .option('-t, --tip <VALUE>', 'add tip to purchase cost', parseFloat) // custom parse function
+           *
+           * @param {string} flags
+           * @param {string} [description]
+           * @param {(Function|*)} [parseArg] - custom option processing function or default value
+           * @param {*} [defaultValue]
+           * @return {Command} `this` command for chaining
+           */
+          option(flags, description, parseArg, defaultValue) {
+            return this._optionEx({}, flags, description, parseArg, defaultValue);
+          }
+          /**
+           * Add a required option which must have a value after parsing. This usually means
+           * the option must be specified on the command line. (Otherwise the same as .option().)
+           *
+           * The `flags` string contains the short and/or long flags, separated by comma, a pipe or space.
+           *
+           * @param {string} flags
+           * @param {string} [description]
+           * @param {(Function|*)} [parseArg] - custom option processing function or default value
+           * @param {*} [defaultValue]
+           * @return {Command} `this` command for chaining
+           */
+          requiredOption(flags, description, parseArg, defaultValue) {
+            return this._optionEx(
+              { mandatory: true },
+              flags,
+              description,
+              parseArg,
+              defaultValue
+            );
+          }
+          /**
+           * Alter parsing of short flags with optional values.
+           *
+           * @example
+           * // for `.option('-f,--flag [value]'):
+           * program.combineFlagAndOptionalValue(true);  // `-f80` is treated like `--flag=80`, this is the default behaviour
+           * program.combineFlagAndOptionalValue(false) // `-fb` is treated like `-f -b`
+           *
+           * @param {boolean} [combine] - if `true` or omitted, an optional value can be specified directly after the flag.
+           * @return {Command} `this` command for chaining
+           */
+          combineFlagAndOptionalValue(combine = true) {
+            this._combineFlagAndOptionalValue = !!combine;
+            return this;
+          }
+          /**
+           * Allow unknown options on the command line.
+           *
+           * @param {boolean} [allowUnknown] - if `true` or omitted, no error will be thrown for unknown options.
+           * @return {Command} `this` command for chaining
+           */
+          allowUnknownOption(allowUnknown = true) {
+            this._allowUnknownOption = !!allowUnknown;
+            return this;
+          }
+          /**
+           * Allow excess command-arguments on the command line. Pass false to make excess arguments an error.
+           *
+           * @param {boolean} [allowExcess] - if `true` or omitted, no error will be thrown for excess arguments.
+           * @return {Command} `this` command for chaining
+           */
+          allowExcessArguments(allowExcess = true) {
+            this._allowExcessArguments = !!allowExcess;
+            return this;
+          }
+          /**
+           * Enable positional options. Positional means global options are specified before subcommands which lets
+           * subcommands reuse the same option names, and also enables subcommands to turn on passThroughOptions.
+           * The default behaviour is non-positional and global options may appear anywhere on the command line.
+           *
+           * @param {boolean} [positional]
+           * @return {Command} `this` command for chaining
+           */
+          enablePositionalOptions(positional = true) {
+            this._enablePositionalOptions = !!positional;
+            return this;
+          }
+          /**
+           * Pass through options that come after command-arguments rather than treat them as command-options,
+           * so actual command-options come before command-arguments. Turning this on for a subcommand requires
+           * positional options to have been enabled on the program (parent commands).
+           * The default behaviour is non-positional and options may appear before or after command-arguments.
+           *
+           * @param {boolean} [passThrough] for unknown options.
+           * @return {Command} `this` command for chaining
+           */
+          passThroughOptions(passThrough = true) {
+            this._passThroughOptions = !!passThrough;
+            this._checkForBrokenPassThrough();
+            return this;
+          }
+          /**
+           * @private
+           */
+          _checkForBrokenPassThrough() {
+            if (this.parent && this._passThroughOptions && !this.parent._enablePositionalOptions) {
+              throw new Error(
+                `passThroughOptions cannot be used for '${this._name}' without turning on enablePositionalOptions for parent command(s)`
+              );
+            }
+          }
+          /**
+           * Whether to store option values as properties on command object,
+           * or store separately (specify false). In both cases the option values can be accessed using .opts().
+           *
+           * @param {boolean} [storeAsProperties=true]
+           * @return {Command} `this` command for chaining
+           */
+          storeOptionsAsProperties(storeAsProperties = true) {
+            if (this.options.length) {
+              throw new Error("call .storeOptionsAsProperties() before adding options");
+            }
+            if (Object.keys(this._optionValues).length) {
+              throw new Error(
+                "call .storeOptionsAsProperties() before setting option values"
+              );
+            }
+            this._storeOptionsAsProperties = !!storeAsProperties;
+            return this;
+          }
+          /**
+           * Retrieve option value.
+           *
+           * @param {string} key
+           * @return {object} value
+           */
+          getOptionValue(key) {
+            if (this._storeOptionsAsProperties) {
+              return this[key];
+            }
+            return this._optionValues[key];
+          }
+          /**
+           * Store option value.
+           *
+           * @param {string} key
+           * @param {object} value
+           * @return {Command} `this` command for chaining
+           */
+          setOptionValue(key, value) {
+            return this.setOptionValueWithSource(key, value, void 0);
+          }
+          /**
+           * Store option value and where the value came from.
+           *
+           * @param {string} key
+           * @param {object} value
+           * @param {string} source - expected values are default/config/env/cli/implied
+           * @return {Command} `this` command for chaining
+           */
+          setOptionValueWithSource(key, value, source) {
+            if (this._storeOptionsAsProperties) {
+              this[key] = value;
+            } else {
+              this._optionValues[key] = value;
+            }
+            this._optionValueSources[key] = source;
+            return this;
+          }
+          /**
+           * Get source of option value.
+           * Expected values are default | config | env | cli | implied
+           *
+           * @param {string} key
+           * @return {string}
+           */
+          getOptionValueSource(key) {
+            return this._optionValueSources[key];
+          }
+          /**
+           * Get source of option value. See also .optsWithGlobals().
+           * Expected values are default | config | env | cli | implied
+           *
+           * @param {string} key
+           * @return {string}
+           */
+          getOptionValueSourceWithGlobals(key) {
+            let source;
+            this._getCommandAndAncestors().forEach((cmd) => {
+              if (cmd.getOptionValueSource(key) !== void 0) {
+                source = cmd.getOptionValueSource(key);
+              }
+            });
+            return source;
+          }
+          /**
+           * Get user arguments from implied or explicit arguments.
+           * Side-effects: set _scriptPath if args included script. Used for default program name, and subcommand searches.
+           *
+           * @private
+           */
+          _prepareUserArgs(argv, parseOptions) {
+            if (argv !== void 0 && !Array.isArray(argv)) {
+              throw new Error("first parameter to parse must be array or undefined");
+            }
+            parseOptions = parseOptions || {};
+            if (argv === void 0 && parseOptions.from === void 0) {
+              if (process2.versions?.electron) {
+                parseOptions.from = "electron";
+              }
+              const execArgv = process2.execArgv ?? [];
+              if (execArgv.includes("-e") || execArgv.includes("--eval") || execArgv.includes("-p") || execArgv.includes("--print")) {
+                parseOptions.from = "eval";
+              }
+            }
+            if (argv === void 0) {
+              argv = process2.argv;
+            }
+            this.rawArgs = argv.slice();
+            let userArgs;
+            switch (parseOptions.from) {
+              case void 0:
+              case "node":
+                this._scriptPath = argv[1];
+                userArgs = argv.slice(2);
+                break;
+              case "electron":
+                if (process2.defaultApp) {
+                  this._scriptPath = argv[1];
+                  userArgs = argv.slice(2);
+                } else {
+                  userArgs = argv.slice(1);
+                }
+                break;
+              case "user":
+                userArgs = argv.slice(0);
+                break;
+              case "eval":
+                userArgs = argv.slice(1);
+                break;
+              default:
+                throw new Error(
+                  `unexpected parse option { from: '${parseOptions.from}' }`
+                );
+            }
+            if (!this._name && this._scriptPath)
+              this.nameFromFilename(this._scriptPath);
+            this._name = this._name || "program";
+            return userArgs;
+          }
+          /**
+           * Parse `argv`, setting options and invoking commands when defined.
+           *
+           * Use parseAsync instead of parse if any of your action handlers are async.
+           *
+           * Call with no parameters to parse `process.argv`. Detects Electron and special node options like `node --eval`. Easy mode!
+           *
+           * Or call with an array of strings to parse, and optionally where the user arguments start by specifying where the arguments are `from`:
+           * - `'node'`: default, `argv[0]` is the application and `argv[1]` is the script being run, with user arguments after that
+           * - `'electron'`: `argv[0]` is the application and `argv[1]` varies depending on whether the electron application is packaged
+           * - `'user'`: just user arguments
+           *
+           * @example
+           * program.parse(); // parse process.argv and auto-detect electron and special node flags
+           * program.parse(process.argv); // assume argv[0] is app and argv[1] is script
+           * program.parse(my-args, { from: 'user' }); // just user supplied arguments, nothing special about argv[0]
+           *
+           * @param {string[]} [argv] - optional, defaults to process.argv
+           * @param {object} [parseOptions] - optionally specify style of options with from: node/user/electron
+           * @param {string} [parseOptions.from] - where the args are from: 'node', 'user', 'electron'
+           * @return {Command} `this` command for chaining
+           */
+          parse(argv, parseOptions) {
+            this._prepareForParse();
+            const userArgs = this._prepareUserArgs(argv, parseOptions);
+            this._parseCommand([], userArgs);
+            return this;
+          }
+          /**
+           * Parse `argv`, setting options and invoking commands when defined.
+           *
+           * Call with no parameters to parse `process.argv`. Detects Electron and special node options like `node --eval`. Easy mode!
+           *
+           * Or call with an array of strings to parse, and optionally where the user arguments start by specifying where the arguments are `from`:
+           * - `'node'`: default, `argv[0]` is the application and `argv[1]` is the script being run, with user arguments after that
+           * - `'electron'`: `argv[0]` is the application and `argv[1]` varies depending on whether the electron application is packaged
+           * - `'user'`: just user arguments
+           *
+           * @example
+           * await program.parseAsync(); // parse process.argv and auto-detect electron and special node flags
+           * await program.parseAsync(process.argv); // assume argv[0] is app and argv[1] is script
+           * await program.parseAsync(my-args, { from: 'user' }); // just user supplied arguments, nothing special about argv[0]
+           *
+           * @param {string[]} [argv]
+           * @param {object} [parseOptions]
+           * @param {string} parseOptions.from - where the args are from: 'node', 'user', 'electron'
+           * @return {Promise}
+           */
+          async parseAsync(argv, parseOptions) {
+            this._prepareForParse();
+            const userArgs = this._prepareUserArgs(argv, parseOptions);
+            await this._parseCommand([], userArgs);
+            return this;
+          }
+          _prepareForParse() {
+            if (this._savedState === null) {
+              this.saveStateBeforeParse();
+            } else {
+              this.restoreStateBeforeParse();
+            }
+          }
+          /**
+           * Called the first time parse is called to save state and allow a restore before subsequent calls to parse.
+           * Not usually called directly, but available for subclasses to save their custom state.
+           *
+           * This is called in a lazy way. Only commands used in parsing chain will have state saved.
+           */
+          saveStateBeforeParse() {
+            this._savedState = {
+              // name is stable if supplied by author, but may be unspecified for root command and deduced during parsing
+              _name: this._name,
+              // option values before parse have default values (including false for negated options)
+              // shallow clones
+              _optionValues: { ...this._optionValues },
+              _optionValueSources: { ...this._optionValueSources }
+            };
+          }
+          /**
+           * Restore state before parse for calls after the first.
+           * Not usually called directly, but available for subclasses to save their custom state.
+           *
+           * This is called in a lazy way. Only commands used in parsing chain will have state restored.
+           */
+          restoreStateBeforeParse() {
+            if (this._storeOptionsAsProperties)
+              throw new Error(`Can not call parse again when storeOptionsAsProperties is true.
+- either make a new Command for each call to parse, or stop storing options as properties`);
+            this._name = this._savedState._name;
+            this._scriptPath = null;
+            this.rawArgs = [];
+            this._optionValues = { ...this._savedState._optionValues };
+            this._optionValueSources = { ...this._savedState._optionValueSources };
+            this.args = [];
+            this.processedArgs = [];
+          }
+          /**
+           * Throw if expected executable is missing. Add lots of help for author.
+           *
+           * @param {string} executableFile
+           * @param {string} executableDir
+           * @param {string} subcommandName
+           */
+          _checkForMissingExecutable(executableFile, executableDir, subcommandName) {
+            if (fs3.existsSync(executableFile)) return;
+            const executableDirMessage = executableDir ? `searched for local subcommand relative to directory '${executableDir}'` : "no directory for search for local subcommand, use .executableDir() to supply a custom directory";
+            const executableMissing = `'${executableFile}' does not exist
+ - if '${subcommandName}' is not meant to be an executable command, remove description parameter from '.command()' and use '.description()' instead
+ - if the default executable name is not suitable, use the executableFile option to supply a custom name or path
+ - ${executableDirMessage}`;
+            throw new Error(executableMissing);
+          }
+          /**
+           * Execute a sub-command executable.
+           *
+           * @private
+           */
+          _executeSubCommand(subcommand, args) {
+            args = args.slice();
+            let launchWithNode = false;
+            const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
+            function findFile(baseDir, baseName) {
+              const localBin = path6.resolve(baseDir, baseName);
+              if (fs3.existsSync(localBin)) return localBin;
+              if (sourceExt.includes(path6.extname(baseName))) return void 0;
+              const foundExt = sourceExt.find(
+                (ext) => fs3.existsSync(`${localBin}${ext}`)
+              );
+              if (foundExt) return `${localBin}${foundExt}`;
+              return void 0;
+            }
+            this._checkForMissingMandatoryOptions();
+            this._checkForConflictingOptions();
+            let executableFile = subcommand._executableFile || `${this._name}-${subcommand._name}`;
+            let executableDir = this._executableDir || "";
+            if (this._scriptPath) {
+              let resolvedScriptPath;
+              try {
+                resolvedScriptPath = fs3.realpathSync(this._scriptPath);
+              } catch {
+                resolvedScriptPath = this._scriptPath;
+              }
+              executableDir = path6.resolve(
+                path6.dirname(resolvedScriptPath),
+                executableDir
+              );
+            }
+            if (executableDir) {
+              let localFile = findFile(executableDir, executableFile);
+              if (!localFile && !subcommand._executableFile && this._scriptPath) {
+                const legacyName = path6.basename(
+                  this._scriptPath,
+                  path6.extname(this._scriptPath)
+                );
+                if (legacyName !== this._name) {
+                  localFile = findFile(
+                    executableDir,
+                    `${legacyName}-${subcommand._name}`
+                  );
+                }
+              }
+              executableFile = localFile || executableFile;
+            }
+            launchWithNode = sourceExt.includes(path6.extname(executableFile));
+            let proc;
+            if (process2.platform !== "win32") {
+              if (launchWithNode) {
+                args.unshift(executableFile);
+                args = incrementNodeInspectorPort(process2.execArgv).concat(args);
+                proc = childProcess.spawn(process2.argv[0], args, { stdio: "inherit" });
+              } else {
+                proc = childProcess.spawn(executableFile, args, { stdio: "inherit" });
+              }
+            } else {
+              this._checkForMissingExecutable(
+                executableFile,
+                executableDir,
+                subcommand._name
+              );
+              args.unshift(executableFile);
+              args = incrementNodeInspectorPort(process2.execArgv).concat(args);
+              proc = childProcess.spawn(process2.execPath, args, { stdio: "inherit" });
+            }
+            if (!proc.killed) {
+              const signals = ["SIGUSR1", "SIGUSR2", "SIGTERM", "SIGINT", "SIGHUP"];
+              signals.forEach((signal) => {
+                process2.on(signal, () => {
+                  if (proc.killed === false && proc.exitCode === null) {
+                    proc.kill(signal);
+                  }
+                });
+              });
+            }
+            const exitCallback = this._exitCallback;
+            proc.on("close", (code) => {
+              code = code ?? 1;
+              if (!exitCallback) {
+                process2.exit(code);
+              } else {
+                exitCallback(
+                  new CommanderError2(
+                    code,
+                    "commander.executeSubCommandAsync",
+                    "(close)"
+                  )
+                );
+              }
+            });
+            proc.on("error", (err) => {
+              if (err.code === "ENOENT") {
+                this._checkForMissingExecutable(
+                  executableFile,
+                  executableDir,
+                  subcommand._name
+                );
+              } else if (err.code === "EACCES") {
+                throw new Error(`'${executableFile}' not executable`);
+              }
+              if (!exitCallback) {
+                process2.exit(1);
+              } else {
+                const wrappedError = new CommanderError2(
+                  1,
+                  "commander.executeSubCommandAsync",
+                  "(error)"
+                );
+                wrappedError.nestedError = err;
+                exitCallback(wrappedError);
+              }
+            });
+            this.runningCommand = proc;
+          }
+          /**
+           * @private
+           */
+          _dispatchSubcommand(commandName, operands, unknown) {
+            const subCommand = this._findCommand(commandName);
+            if (!subCommand) this.help({ error: true });
+            subCommand._prepareForParse();
+            let promiseChain;
+            promiseChain = this._chainOrCallSubCommandHook(
+              promiseChain,
+              subCommand,
+              "preSubcommand"
+            );
+            promiseChain = this._chainOrCall(promiseChain, () => {
+              if (subCommand._executableHandler) {
+                this._executeSubCommand(subCommand, operands.concat(unknown));
+              } else {
+                return subCommand._parseCommand(operands, unknown);
+              }
+            });
+            return promiseChain;
+          }
+          /**
+           * Invoke help directly if possible, or dispatch if necessary.
+           * e.g. help foo
+           *
+           * @private
+           */
+          _dispatchHelpCommand(subcommandName) {
+            if (!subcommandName) {
+              this.help();
+            }
+            const subCommand = this._findCommand(subcommandName);
+            if (subCommand && !subCommand._executableHandler) {
+              subCommand.help();
+            }
+            return this._dispatchSubcommand(
+              subcommandName,
+              [],
+              [this._getHelpOption()?.long ?? this._getHelpOption()?.short ?? "--help"]
+            );
+          }
+          /**
+           * Check this.args against expected this.registeredArguments.
+           *
+           * @private
+           */
+          _checkNumberOfArguments() {
+            this.registeredArguments.forEach((arg, i) => {
+              if (arg.required && this.args[i] == null) {
+                this.missingArgument(arg.name());
+              }
+            });
+            if (this.registeredArguments.length > 0 && this.registeredArguments[this.registeredArguments.length - 1].variadic) {
+              return;
+            }
+            if (this.args.length > this.registeredArguments.length) {
+              this._excessArguments(this.args);
+            }
+          }
+          /**
+           * Process this.args using this.registeredArguments and save as this.processedArgs!
+           *
+           * @private
+           */
+          _processArguments() {
+            const myParseArg = (argument, value, previous) => {
+              let parsedValue = value;
+              if (value !== null && argument.parseArg) {
+                const invalidValueMessage = `error: command-argument value '${value}' is invalid for argument '${argument.name()}'.`;
+                parsedValue = this._callParseArg(
+                  argument,
+                  value,
+                  previous,
+                  invalidValueMessage
+                );
+              }
+              return parsedValue;
+            };
+            this._checkNumberOfArguments();
+            const processedArgs = [];
+            this.registeredArguments.forEach((declaredArg, index) => {
+              let value = declaredArg.defaultValue;
+              if (declaredArg.variadic) {
+                if (index < this.args.length) {
+                  value = this.args.slice(index);
+                  if (declaredArg.parseArg) {
+                    value = value.reduce((processed, v) => {
+                      return myParseArg(declaredArg, v, processed);
+                    }, declaredArg.defaultValue);
+                  }
+                } else if (value === void 0) {
+                  value = [];
+                }
+              } else if (index < this.args.length) {
+                value = this.args[index];
+                if (declaredArg.parseArg) {
+                  value = myParseArg(declaredArg, value, declaredArg.defaultValue);
+                }
+              }
+              processedArgs[index] = value;
+            });
+            this.processedArgs = processedArgs;
+          }
+          /**
+           * Once we have a promise we chain, but call synchronously until then.
+           *
+           * @param {(Promise|undefined)} promise
+           * @param {Function} fn
+           * @return {(Promise|undefined)}
+           * @private
+           */
+          _chainOrCall(promise, fn) {
+            if (promise?.then && typeof promise.then === "function") {
+              return promise.then(() => fn());
+            }
+            return fn();
+          }
+          /**
+           *
+           * @param {(Promise|undefined)} promise
+           * @param {string} event
+           * @return {(Promise|undefined)}
+           * @private
+           */
+          _chainOrCallHooks(promise, event) {
+            let result = promise;
+            const hooks = [];
+            this._getCommandAndAncestors().reverse().filter((cmd) => cmd._lifeCycleHooks[event] !== void 0).forEach((hookedCommand) => {
+              hookedCommand._lifeCycleHooks[event].forEach((callback) => {
+                hooks.push({ hookedCommand, callback });
+              });
+            });
+            if (event === "postAction") {
+              hooks.reverse();
+            }
+            hooks.forEach((hookDetail) => {
+              result = this._chainOrCall(result, () => {
+                return hookDetail.callback(hookDetail.hookedCommand, this);
+              });
+            });
+            return result;
+          }
+          /**
+           *
+           * @param {(Promise|undefined)} promise
+           * @param {Command} subCommand
+           * @param {string} event
+           * @return {(Promise|undefined)}
+           * @private
+           */
+          _chainOrCallSubCommandHook(promise, subCommand, event) {
+            let result = promise;
+            if (this._lifeCycleHooks[event] !== void 0) {
+              this._lifeCycleHooks[event].forEach((hook) => {
+                result = this._chainOrCall(result, () => {
+                  return hook(this, subCommand);
+                });
+              });
+            }
+            return result;
+          }
+          /**
+           * Process arguments in context of this command.
+           * Returns action result, in case it is a promise.
+           *
+           * @private
+           */
+          _parseCommand(operands, unknown) {
+            const parsed = this.parseOptions(unknown);
+            this._parseOptionsEnv();
+            this._parseOptionsImplied();
+            operands = operands.concat(parsed.operands);
+            unknown = parsed.unknown;
+            this.args = operands.concat(unknown);
+            if (operands && this._findCommand(operands[0])) {
+              return this._dispatchSubcommand(operands[0], operands.slice(1), unknown);
+            }
+            if (this._getHelpCommand() && operands[0] === this._getHelpCommand().name()) {
+              return this._dispatchHelpCommand(operands[1]);
+            }
+            if (this._defaultCommandName) {
+              this._outputHelpIfRequested(unknown);
+              return this._dispatchSubcommand(
+                this._defaultCommandName,
+                operands,
+                unknown
+              );
+            }
+            if (this.commands.length && this.args.length === 0 && !this._actionHandler && !this._defaultCommandName) {
+              this.help({ error: true });
+            }
+            this._outputHelpIfRequested(parsed.unknown);
+            this._checkForMissingMandatoryOptions();
+            this._checkForConflictingOptions();
+            const checkForUnknownOptions = () => {
+              if (parsed.unknown.length > 0) {
+                this.unknownOption(parsed.unknown[0]);
+              }
+            };
+            const commandEvent = `command:${this.name()}`;
+            if (this._actionHandler) {
+              checkForUnknownOptions();
+              this._processArguments();
+              let promiseChain;
+              promiseChain = this._chainOrCallHooks(promiseChain, "preAction");
+              promiseChain = this._chainOrCall(
+                promiseChain,
+                () => this._actionHandler(this.processedArgs)
+              );
+              if (this.parent) {
+                promiseChain = this._chainOrCall(promiseChain, () => {
+                  this.parent.emit(commandEvent, operands, unknown);
+                });
+              }
+              promiseChain = this._chainOrCallHooks(promiseChain, "postAction");
+              return promiseChain;
+            }
+            if (this.parent?.listenerCount(commandEvent)) {
+              checkForUnknownOptions();
+              this._processArguments();
+              this.parent.emit(commandEvent, operands, unknown);
+            } else if (operands.length) {
+              if (this._findCommand("*")) {
+                return this._dispatchSubcommand("*", operands, unknown);
+              }
+              if (this.listenerCount("command:*")) {
+                this.emit("command:*", operands, unknown);
+              } else if (this.commands.length) {
+                this.unknownCommand();
+              } else {
+                checkForUnknownOptions();
+                this._processArguments();
+              }
+            } else if (this.commands.length) {
+              checkForUnknownOptions();
+              this.help({ error: true });
+            } else {
+              checkForUnknownOptions();
+              this._processArguments();
+            }
+          }
+          /**
+           * Find matching command.
+           *
+           * @private
+           * @return {Command | undefined}
+           */
+          _findCommand(name) {
+            if (!name) return void 0;
+            return this.commands.find(
+              (cmd) => cmd._name === name || cmd._aliases.includes(name)
+            );
+          }
+          /**
+           * Return an option matching `arg` if any.
+           *
+           * @param {string} arg
+           * @return {Option}
+           * @package
+           */
+          _findOption(arg) {
+            return this.options.find((option) => option.is(arg));
+          }
+          /**
+           * Display an error message if a mandatory option does not have a value.
+           * Called after checking for help flags in leaf subcommand.
+           *
+           * @private
+           */
+          _checkForMissingMandatoryOptions() {
+            this._getCommandAndAncestors().forEach((cmd) => {
+              cmd.options.forEach((anOption) => {
+                if (anOption.mandatory && cmd.getOptionValue(anOption.attributeName()) === void 0) {
+                  cmd.missingMandatoryOptionValue(anOption);
+                }
+              });
+            });
+          }
+          /**
+           * Display an error message if conflicting options are used together in this.
+           *
+           * @private
+           */
+          _checkForConflictingLocalOptions() {
+            const definedNonDefaultOptions = this.options.filter((option) => {
+              const optionKey = option.attributeName();
+              if (this.getOptionValue(optionKey) === void 0) {
+                return false;
+              }
+              return this.getOptionValueSource(optionKey) !== "default";
+            });
+            const optionsWithConflicting = definedNonDefaultOptions.filter(
+              (option) => option.conflictsWith.length > 0
+            );
+            optionsWithConflicting.forEach((option) => {
+              const conflictingAndDefined = definedNonDefaultOptions.find(
+                (defined) => option.conflictsWith.includes(defined.attributeName())
+              );
+              if (conflictingAndDefined) {
+                this._conflictingOption(option, conflictingAndDefined);
+              }
+            });
+          }
+          /**
+           * Display an error message if conflicting options are used together.
+           * Called after checking for help flags in leaf subcommand.
+           *
+           * @private
+           */
+          _checkForConflictingOptions() {
+            this._getCommandAndAncestors().forEach((cmd) => {
+              cmd._checkForConflictingLocalOptions();
+            });
+          }
+          /**
+           * Parse options from `argv` removing known options,
+           * and return argv split into operands and unknown arguments.
+           *
+           * Side effects: modifies command by storing options. Does not reset state if called again.
+           *
+           * Examples:
+           *
+           *     argv => operands, unknown
+           *     --known kkk op => [op], []
+           *     op --known kkk => [op], []
+           *     sub --unknown uuu op => [sub], [--unknown uuu op]
+           *     sub -- --unknown uuu op => [sub --unknown uuu op], []
+           *
+           * @param {string[]} args
+           * @return {{operands: string[], unknown: string[]}}
+           */
+          parseOptions(args) {
+            const operands = [];
+            const unknown = [];
+            let dest = operands;
+            function maybeOption(arg) {
+              return arg.length > 1 && arg[0] === "-";
+            }
+            const negativeNumberArg = (arg) => {
+              if (!/^-(\d+|\d*\.\d+)(e[+-]?\d+)?$/.test(arg)) return false;
+              return !this._getCommandAndAncestors().some(
+                (cmd) => cmd.options.map((opt) => opt.short).some((short) => /^-\d$/.test(short))
+              );
+            };
+            let activeVariadicOption = null;
+            let activeGroup = null;
+            let i = 0;
+            while (i < args.length || activeGroup) {
+              const arg = activeGroup ?? args[i++];
+              activeGroup = null;
+              if (arg === "--") {
+                if (dest === unknown) dest.push(arg);
+                dest.push(...args.slice(i));
+                break;
+              }
+              if (activeVariadicOption && (!maybeOption(arg) || negativeNumberArg(arg))) {
+                this.emit(`option:${activeVariadicOption.name()}`, arg);
+                continue;
+              }
+              activeVariadicOption = null;
+              if (maybeOption(arg)) {
+                const option = this._findOption(arg);
+                if (option) {
+                  if (option.required) {
+                    const value = args[i++];
+                    if (value === void 0) this.optionMissingArgument(option);
+                    this.emit(`option:${option.name()}`, value);
+                  } else if (option.optional) {
+                    let value = null;
+                    if (i < args.length && (!maybeOption(args[i]) || negativeNumberArg(args[i]))) {
+                      value = args[i++];
+                    }
+                    this.emit(`option:${option.name()}`, value);
+                  } else {
+                    this.emit(`option:${option.name()}`);
+                  }
+                  activeVariadicOption = option.variadic ? option : null;
+                  continue;
+                }
+              }
+              if (arg.length > 2 && arg[0] === "-" && arg[1] !== "-") {
+                const option = this._findOption(`-${arg[1]}`);
+                if (option) {
+                  if (option.required || option.optional && this._combineFlagAndOptionalValue) {
+                    this.emit(`option:${option.name()}`, arg.slice(2));
+                  } else {
+                    this.emit(`option:${option.name()}`);
+                    activeGroup = `-${arg.slice(2)}`;
+                  }
+                  continue;
+                }
+              }
+              if (/^--[^=]+=/.test(arg)) {
+                const index = arg.indexOf("=");
+                const option = this._findOption(arg.slice(0, index));
+                if (option && (option.required || option.optional)) {
+                  this.emit(`option:${option.name()}`, arg.slice(index + 1));
+                  continue;
+                }
+              }
+              if (dest === operands && maybeOption(arg) && !(this.commands.length === 0 && negativeNumberArg(arg))) {
+                dest = unknown;
+              }
+              if ((this._enablePositionalOptions || this._passThroughOptions) && operands.length === 0 && unknown.length === 0) {
+                if (this._findCommand(arg)) {
+                  operands.push(arg);
+                  unknown.push(...args.slice(i));
+                  break;
+                } else if (this._getHelpCommand() && arg === this._getHelpCommand().name()) {
+                  operands.push(arg, ...args.slice(i));
+                  break;
+                } else if (this._defaultCommandName) {
+                  unknown.push(arg, ...args.slice(i));
+                  break;
+                }
+              }
+              if (this._passThroughOptions) {
+                dest.push(arg, ...args.slice(i));
+                break;
+              }
+              dest.push(arg);
+            }
+            return { operands, unknown };
+          }
+          /**
+           * Return an object containing local option values as key-value pairs.
+           *
+           * @return {object}
+           */
+          opts() {
+            if (this._storeOptionsAsProperties) {
+              const result = {};
+              const len = this.options.length;
+              for (let i = 0; i < len; i++) {
+                const key = this.options[i].attributeName();
+                result[key] = key === this._versionOptionName ? this._version : this[key];
+              }
+              return result;
+            }
+            return this._optionValues;
+          }
+          /**
+           * Return an object containing merged local and global option values as key-value pairs.
+           *
+           * @return {object}
+           */
+          optsWithGlobals() {
+            return this._getCommandAndAncestors().reduce(
+              (combinedOptions, cmd) => Object.assign(combinedOptions, cmd.opts()),
+              {}
+            );
+          }
+          /**
+           * Display error message and exit (or call exitOverride).
+           *
+           * @param {string} message
+           * @param {object} [errorOptions]
+           * @param {string} [errorOptions.code] - an id string representing the error
+           * @param {number} [errorOptions.exitCode] - used with process.exit
+           */
+          error(message, errorOptions) {
+            this._outputConfiguration.outputError(
+              `${message}
+`,
+              this._outputConfiguration.writeErr
+            );
+            if (typeof this._showHelpAfterError === "string") {
+              this._outputConfiguration.writeErr(`${this._showHelpAfterError}
+`);
+            } else if (this._showHelpAfterError) {
+              this._outputConfiguration.writeErr("\n");
+              this.outputHelp({ error: true });
+            }
+            const config = errorOptions || {};
+            const exitCode = config.exitCode || 1;
+            const code = config.code || "commander.error";
+            this._exit(exitCode, code, message);
+          }
+          /**
+           * Apply any option related environment variables, if option does
+           * not have a value from cli or client code.
+           *
+           * @private
+           */
+          _parseOptionsEnv() {
+            this.options.forEach((option) => {
+              if (option.envVar && option.envVar in process2.env) {
+                const optionKey = option.attributeName();
+                if (this.getOptionValue(optionKey) === void 0 || ["default", "config", "env"].includes(
+                  this.getOptionValueSource(optionKey)
+                )) {
+                  if (option.required || option.optional) {
+                    this.emit(`optionEnv:${option.name()}`, process2.env[option.envVar]);
+                  } else {
+                    this.emit(`optionEnv:${option.name()}`);
+                  }
+                }
+              }
+            });
+          }
+          /**
+           * Apply any implied option values, if option is undefined or default value.
+           *
+           * @private
+           */
+          _parseOptionsImplied() {
+            const dualHelper = new DualOptions(this.options);
+            const hasCustomOptionValue = (optionKey) => {
+              return this.getOptionValue(optionKey) !== void 0 && !["default", "implied"].includes(this.getOptionValueSource(optionKey));
+            };
+            this.options.filter(
+              (option) => option.implied !== void 0 && hasCustomOptionValue(option.attributeName()) && dualHelper.valueFromOption(
+                this.getOptionValue(option.attributeName()),
+                option
+              )
+            ).forEach((option) => {
+              Object.keys(option.implied).filter((impliedKey) => !hasCustomOptionValue(impliedKey)).forEach((impliedKey) => {
+                this.setOptionValueWithSource(
+                  impliedKey,
+                  option.implied[impliedKey],
+                  "implied"
+                );
+              });
+            });
+          }
+          /**
+           * Argument `name` is missing.
+           *
+           * @param {string} name
+           * @private
+           */
+          missingArgument(name) {
+            const message = `error: missing required argument '${name}'`;
+            this.error(message, { code: "commander.missingArgument" });
+          }
+          /**
+           * `Option` is missing an argument.
+           *
+           * @param {Option} option
+           * @private
+           */
+          optionMissingArgument(option) {
+            const message = `error: option '${option.flags}' argument missing`;
+            this.error(message, { code: "commander.optionMissingArgument" });
+          }
+          /**
+           * `Option` does not have a value, and is a mandatory option.
+           *
+           * @param {Option} option
+           * @private
+           */
+          missingMandatoryOptionValue(option) {
+            const message = `error: required option '${option.flags}' not specified`;
+            this.error(message, { code: "commander.missingMandatoryOptionValue" });
+          }
+          /**
+           * `Option` conflicts with another option.
+           *
+           * @param {Option} option
+           * @param {Option} conflictingOption
+           * @private
+           */
+          _conflictingOption(option, conflictingOption) {
+            const findBestOptionFromValue = (option2) => {
+              const optionKey = option2.attributeName();
+              const optionValue = this.getOptionValue(optionKey);
+              const negativeOption = this.options.find(
+                (target) => target.negate && optionKey === target.attributeName()
+              );
+              const positiveOption = this.options.find(
+                (target) => !target.negate && optionKey === target.attributeName()
+              );
+              if (negativeOption && (negativeOption.presetArg === void 0 && optionValue === false || negativeOption.presetArg !== void 0 && optionValue === negativeOption.presetArg)) {
+                return negativeOption;
+              }
+              return positiveOption || option2;
+            };
+            const getErrorMessage = (option2) => {
+              const bestOption = findBestOptionFromValue(option2);
+              const optionKey = bestOption.attributeName();
+              const source = this.getOptionValueSource(optionKey);
+              if (source === "env") {
+                return `environment variable '${bestOption.envVar}'`;
+              }
+              return `option '${bestOption.flags}'`;
+            };
+            const message = `error: ${getErrorMessage(option)} cannot be used with ${getErrorMessage(conflictingOption)}`;
+            this.error(message, { code: "commander.conflictingOption" });
+          }
+          /**
+           * Unknown option `flag`.
+           *
+           * @param {string} flag
+           * @private
+           */
+          unknownOption(flag) {
+            if (this._allowUnknownOption) return;
+            let suggestion = "";
+            if (flag.startsWith("--") && this._showSuggestionAfterError) {
+              let candidateFlags = [];
+              let command = this;
+              do {
+                const moreFlags = command.createHelp().visibleOptions(command).filter((option) => option.long).map((option) => option.long);
+                candidateFlags = candidateFlags.concat(moreFlags);
+                command = command.parent;
+              } while (command && !command._enablePositionalOptions);
+              suggestion = suggestSimilar(flag, candidateFlags);
+            }
+            const message = `error: unknown option '${flag}'${suggestion}`;
+            this.error(message, { code: "commander.unknownOption" });
+          }
+          /**
+           * Excess arguments, more than expected.
+           *
+           * @param {string[]} receivedArgs
+           * @private
+           */
+          _excessArguments(receivedArgs) {
+            if (this._allowExcessArguments) return;
+            const expected = this.registeredArguments.length;
+            const s = expected === 1 ? "" : "s";
+            const forSubcommand = this.parent ? ` for '${this.name()}'` : "";
+            const message = `error: too many arguments${forSubcommand}. Expected ${expected} argument${s} but got ${receivedArgs.length}.`;
+            this.error(message, { code: "commander.excessArguments" });
+          }
+          /**
+           * Unknown command.
+           *
+           * @private
+           */
+          unknownCommand() {
+            const unknownName = this.args[0];
+            let suggestion = "";
+            if (this._showSuggestionAfterError) {
+              const candidateNames = [];
+              this.createHelp().visibleCommands(this).forEach((command) => {
+                candidateNames.push(command.name());
+                if (command.alias()) candidateNames.push(command.alias());
+              });
+              suggestion = suggestSimilar(unknownName, candidateNames);
+            }
+            const message = `error: unknown command '${unknownName}'${suggestion}`;
+            this.error(message, { code: "commander.unknownCommand" });
+          }
+          /**
+           * Get or set the program version.
+           *
+           * This method auto-registers the "-V, --version" option which will print the version number.
+           *
+           * You can optionally supply the flags and description to override the defaults.
+           *
+           * @param {string} [str]
+           * @param {string} [flags]
+           * @param {string} [description]
+           * @return {(this | string | undefined)} `this` command for chaining, or version string if no arguments
+           */
+          version(str, flags, description) {
+            if (str === void 0) return this._version;
+            this._version = str;
+            flags = flags || "-V, --version";
+            description = description || "output the version number";
+            const versionOption = this.createOption(flags, description);
+            this._versionOptionName = versionOption.attributeName();
+            this._registerOption(versionOption);
+            this.on("option:" + versionOption.name(), () => {
+              this._outputConfiguration.writeOut(`${str}
+`);
+              this._exit(0, "commander.version", str);
+            });
+            return this;
+          }
+          /**
+           * Set the description.
+           *
+           * @param {string} [str]
+           * @param {object} [argsDescription]
+           * @return {(string|Command)}
+           */
+          description(str, argsDescription) {
+            if (str === void 0 && argsDescription === void 0)
+              return this._description;
+            this._description = str;
+            if (argsDescription) {
+              this._argsDescription = argsDescription;
+            }
+            return this;
+          }
+          /**
+           * Set the summary. Used when listed as subcommand of parent.
+           *
+           * @param {string} [str]
+           * @return {(string|Command)}
+           */
+          summary(str) {
+            if (str === void 0) return this._summary;
+            this._summary = str;
+            return this;
+          }
+          /**
+           * Set an alias for the command.
+           *
+           * You may call more than once to add multiple aliases. Only the first alias is shown in the auto-generated help.
+           *
+           * @param {string} [alias]
+           * @return {(string|Command)}
+           */
+          alias(alias) {
+            if (alias === void 0) return this._aliases[0];
+            let command = this;
+            if (this.commands.length !== 0 && this.commands[this.commands.length - 1]._executableHandler) {
+              command = this.commands[this.commands.length - 1];
+            }
+            if (alias === command._name)
+              throw new Error("Command alias can't be the same as its name");
+            const matchingCommand = this.parent?._findCommand(alias);
+            if (matchingCommand) {
+              const existingCmd = [matchingCommand.name()].concat(matchingCommand.aliases()).join("|");
+              throw new Error(
+                `cannot add alias '${alias}' to command '${this.name()}' as already have command '${existingCmd}'`
+              );
+            }
+            command._aliases.push(alias);
+            return this;
+          }
+          /**
+           * Set aliases for the command.
+           *
+           * Only the first alias is shown in the auto-generated help.
+           *
+           * @param {string[]} [aliases]
+           * @return {(string[]|Command)}
+           */
+          aliases(aliases) {
+            if (aliases === void 0) return this._aliases;
+            aliases.forEach((alias) => this.alias(alias));
+            return this;
+          }
+          /**
+           * Set / get the command usage `str`.
+           *
+           * @param {string} [str]
+           * @return {(string|Command)}
+           */
+          usage(str) {
+            if (str === void 0) {
+              if (this._usage) return this._usage;
+              const args = this.registeredArguments.map((arg) => {
+                return humanReadableArgName(arg);
+              });
+              return [].concat(
+                this.options.length || this._helpOption !== null ? "[options]" : [],
+                this.commands.length ? "[command]" : [],
+                this.registeredArguments.length ? args : []
+              ).join(" ");
+            }
+            this._usage = str;
+            return this;
+          }
+          /**
+           * Get or set the name of the command.
+           *
+           * @param {string} [str]
+           * @return {(string|Command)}
+           */
+          name(str) {
+            if (str === void 0) return this._name;
+            this._name = str;
+            return this;
+          }
+          /**
+           * Set/get the help group heading for this subcommand in parent command's help.
+           *
+           * @param {string} [heading]
+           * @return {Command | string}
+           */
+          helpGroup(heading) {
+            if (heading === void 0) return this._helpGroupHeading ?? "";
+            this._helpGroupHeading = heading;
+            return this;
+          }
+          /**
+           * Set/get the default help group heading for subcommands added to this command.
+           * (This does not override a group set directly on the subcommand using .helpGroup().)
+           *
+           * @example
+           * program.commandsGroup('Development Commands:);
+           * program.command('watch')...
+           * program.command('lint')...
+           * ...
+           *
+           * @param {string} [heading]
+           * @returns {Command | string}
+           */
+          commandsGroup(heading) {
+            if (heading === void 0) return this._defaultCommandGroup ?? "";
+            this._defaultCommandGroup = heading;
+            return this;
+          }
+          /**
+           * Set/get the default help group heading for options added to this command.
+           * (This does not override a group set directly on the option using .helpGroup().)
+           *
+           * @example
+           * program
+           *   .optionsGroup('Development Options:')
+           *   .option('-d, --debug', 'output extra debugging')
+           *   .option('-p, --profile', 'output profiling information')
+           *
+           * @param {string} [heading]
+           * @returns {Command | string}
+           */
+          optionsGroup(heading) {
+            if (heading === void 0) return this._defaultOptionGroup ?? "";
+            this._defaultOptionGroup = heading;
+            return this;
+          }
+          /**
+           * @param {Option} option
+           * @private
+           */
+          _initOptionGroup(option) {
+            if (this._defaultOptionGroup && !option.helpGroupHeading)
+              option.helpGroup(this._defaultOptionGroup);
+          }
+          /**
+           * @param {Command} cmd
+           * @private
+           */
+          _initCommandGroup(cmd) {
+            if (this._defaultCommandGroup && !cmd.helpGroup())
+              cmd.helpGroup(this._defaultCommandGroup);
+          }
+          /**
+           * Set the name of the command from script filename, such as process.argv[1],
+           * or require.main.filename, or __filename.
+           *
+           * (Used internally and public although not documented in README.)
+           *
+           * @example
+           * program.nameFromFilename(require.main.filename);
+           *
+           * @param {string} filename
+           * @return {Command}
+           */
+          nameFromFilename(filename) {
+            this._name = path6.basename(filename, path6.extname(filename));
+            return this;
+          }
+          /**
+           * Get or set the directory for searching for executable subcommands of this command.
+           *
+           * @example
+           * program.executableDir(__dirname);
+           * // or
+           * program.executableDir('subcommands');
+           *
+           * @param {string} [path]
+           * @return {(string|null|Command)}
+           */
+          executableDir(path22) {
+            if (path22 === void 0) return this._executableDir;
+            this._executableDir = path22;
+            return this;
+          }
+          /**
+           * Return program help documentation.
+           *
+           * @param {{ error: boolean }} [contextOptions] - pass {error:true} to wrap for stderr instead of stdout
+           * @return {string}
+           */
+          helpInformation(contextOptions) {
+            const helper = this.createHelp();
+            const context = this._getOutputContext(contextOptions);
+            helper.prepareContext({
+              error: context.error,
+              helpWidth: context.helpWidth,
+              outputHasColors: context.hasColors
+            });
+            const text = helper.formatHelp(this, helper);
+            if (context.hasColors) return text;
+            return this._outputConfiguration.stripColor(text);
+          }
+          /**
+           * @typedef HelpContext
+           * @type {object}
+           * @property {boolean} error
+           * @property {number} helpWidth
+           * @property {boolean} hasColors
+           * @property {function} write - includes stripColor if needed
+           *
+           * @returns {HelpContext}
+           * @private
+           */
+          _getOutputContext(contextOptions) {
+            contextOptions = contextOptions || {};
+            const error2 = !!contextOptions.error;
+            let baseWrite;
+            let hasColors;
+            let helpWidth;
+            if (error2) {
+              baseWrite = (str) => this._outputConfiguration.writeErr(str);
+              hasColors = this._outputConfiguration.getErrHasColors();
+              helpWidth = this._outputConfiguration.getErrHelpWidth();
+            } else {
+              baseWrite = (str) => this._outputConfiguration.writeOut(str);
+              hasColors = this._outputConfiguration.getOutHasColors();
+              helpWidth = this._outputConfiguration.getOutHelpWidth();
+            }
+            const write = (str) => {
+              if (!hasColors) str = this._outputConfiguration.stripColor(str);
+              return baseWrite(str);
+            };
+            return { error: error2, write, hasColors, helpWidth };
+          }
+          /**
+           * Output help information for this command.
+           *
+           * Outputs built-in help, and custom text added using `.addHelpText()`.
+           *
+           * @param {{ error: boolean } | Function} [contextOptions] - pass {error:true} to write to stderr instead of stdout
+           */
+          outputHelp(contextOptions) {
+            let deprecatedCallback;
+            if (typeof contextOptions === "function") {
+              deprecatedCallback = contextOptions;
+              contextOptions = void 0;
+            }
+            const outputContext = this._getOutputContext(contextOptions);
+            const eventContext = {
+              error: outputContext.error,
+              write: outputContext.write,
+              command: this
+            };
+            this._getCommandAndAncestors().reverse().forEach((command) => command.emit("beforeAllHelp", eventContext));
+            this.emit("beforeHelp", eventContext);
+            let helpInformation = this.helpInformation({ error: outputContext.error });
+            if (deprecatedCallback) {
+              helpInformation = deprecatedCallback(helpInformation);
+              if (typeof helpInformation !== "string" && !Buffer.isBuffer(helpInformation)) {
+                throw new Error("outputHelp callback must return a string or a Buffer");
+              }
+            }
+            outputContext.write(helpInformation);
+            if (this._getHelpOption()?.long) {
+              this.emit(this._getHelpOption().long);
+            }
+            this.emit("afterHelp", eventContext);
+            this._getCommandAndAncestors().forEach(
+              (command) => command.emit("afterAllHelp", eventContext)
+            );
+          }
+          /**
+           * You can pass in flags and a description to customise the built-in help option.
+           * Pass in false to disable the built-in help option.
+           *
+           * @example
+           * program.helpOption('-?, --help' 'show help'); // customise
+           * program.helpOption(false); // disable
+           *
+           * @param {(string | boolean)} flags
+           * @param {string} [description]
+           * @return {Command} `this` command for chaining
+           */
+          helpOption(flags, description) {
+            if (typeof flags === "boolean") {
+              if (flags) {
+                if (this._helpOption === null) this._helpOption = void 0;
+                if (this._defaultOptionGroup) {
+                  this._initOptionGroup(this._getHelpOption());
+                }
+              } else {
+                this._helpOption = null;
+              }
+              return this;
+            }
+            this._helpOption = this.createOption(
+              flags ?? "-h, --help",
+              description ?? "display help for command"
+            );
+            if (flags || description) this._initOptionGroup(this._helpOption);
+            return this;
+          }
+          /**
+           * Lazy create help option.
+           * Returns null if has been disabled with .helpOption(false).
+           *
+           * @returns {(Option | null)} the help option
+           * @package
+           */
+          _getHelpOption() {
+            if (this._helpOption === void 0) {
+              this.helpOption(void 0, void 0);
+            }
+            return this._helpOption;
+          }
+          /**
+           * Supply your own option to use for the built-in help option.
+           * This is an alternative to using helpOption() to customise the flags and description etc.
+           *
+           * @param {Option} option
+           * @return {Command} `this` command for chaining
+           */
+          addHelpOption(option) {
+            this._helpOption = option;
+            this._initOptionGroup(option);
+            return this;
+          }
+          /**
+           * Output help information and exit.
+           *
+           * Outputs built-in help, and custom text added using `.addHelpText()`.
+           *
+           * @param {{ error: boolean }} [contextOptions] - pass {error:true} to write to stderr instead of stdout
+           */
+          help(contextOptions) {
+            this.outputHelp(contextOptions);
+            let exitCode = Number(process2.exitCode ?? 0);
+            if (exitCode === 0 && contextOptions && typeof contextOptions !== "function" && contextOptions.error) {
+              exitCode = 1;
+            }
+            this._exit(exitCode, "commander.help", "(outputHelp)");
+          }
+          /**
+           * // Do a little typing to coordinate emit and listener for the help text events.
+           * @typedef HelpTextEventContext
+           * @type {object}
+           * @property {boolean} error
+           * @property {Command} command
+           * @property {function} write
+           */
+          /**
+           * Add additional text to be displayed with the built-in help.
+           *
+           * Position is 'before' or 'after' to affect just this command,
+           * and 'beforeAll' or 'afterAll' to affect this command and all its subcommands.
+           *
+           * @param {string} position - before or after built-in help
+           * @param {(string | Function)} text - string to add, or a function returning a string
+           * @return {Command} `this` command for chaining
+           */
+          addHelpText(position, text) {
+            const allowedValues = ["beforeAll", "before", "after", "afterAll"];
+            if (!allowedValues.includes(position)) {
+              throw new Error(`Unexpected value for position to addHelpText.
+Expecting one of '${allowedValues.join("', '")}'`);
+            }
+            const helpEvent = `${position}Help`;
+            this.on(helpEvent, (context) => {
+              let helpStr;
+              if (typeof text === "function") {
+                helpStr = text({ error: context.error, command: context.command });
+              } else {
+                helpStr = text;
+              }
+              if (helpStr) {
+                context.write(`${helpStr}
+`);
+              }
+            });
+            return this;
+          }
+          /**
+           * Output help information if help flags specified
+           *
+           * @param {Array} args - array of options to search for help flags
+           * @private
+           */
+          _outputHelpIfRequested(args) {
+            const helpOption = this._getHelpOption();
+            const helpRequested = helpOption && args.find((arg) => helpOption.is(arg));
+            if (helpRequested) {
+              this.outputHelp();
+              this._exit(0, "commander.helpDisplayed", "(outputHelp)");
+            }
+          }
+        };
+        function incrementNodeInspectorPort(args) {
+          return args.map((arg) => {
+            if (!arg.startsWith("--inspect")) {
+              return arg;
+            }
+            let debugOption;
+            let debugHost = "127.0.0.1";
+            let debugPort = "9229";
+            let match;
+            if ((match = arg.match(/^(--inspect(-brk)?)$/)) !== null) {
+              debugOption = match[1];
+            } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+)$/)) !== null) {
+              debugOption = match[1];
+              if (/^\d+$/.test(match[3])) {
+                debugPort = match[3];
+              } else {
+                debugHost = match[3];
+              }
+            } else if ((match = arg.match(/^(--inspect(-brk|-port)?)=([^:]+):(\d+)$/)) !== null) {
+              debugOption = match[1];
+              debugHost = match[3];
+              debugPort = match[4];
+            }
+            if (debugOption && debugPort !== "0") {
+              return `${debugOption}=${debugHost}:${parseInt(debugPort) + 1}`;
+            }
+            return arg;
+          });
+        }
+        function useColor() {
+          if (process2.env.NO_COLOR || process2.env.FORCE_COLOR === "0" || process2.env.FORCE_COLOR === "false")
+            return false;
+          if (process2.env.FORCE_COLOR || process2.env.CLICOLOR_FORCE !== void 0)
+            return true;
+          return void 0;
+        }
+        exports2.Command = Command22;
+        exports2.useColor = useColor;
+      }
+    });
+    var require_commander = __commonJS2({
+      "../../node_modules/.pnpm/commander@14.0.3/node_modules/commander/index.js"(exports2) {
+        var { Argument: Argument2 } = require_argument();
+        var { Command: Command22 } = require_command();
+        var { CommanderError: CommanderError2, InvalidArgumentError: InvalidArgumentError2 } = require_error();
+        var { Help: Help2 } = require_help();
+        var { Option: Option2 } = require_option();
+        exports2.program = new Command22();
+        exports2.createCommand = (name) => new Command22(name);
+        exports2.createOption = (flags, description) => new Option2(flags, description);
+        exports2.createArgument = (name, description) => new Argument2(name, description);
+        exports2.Command = Command22;
+        exports2.Option = Option2;
+        exports2.Argument = Argument2;
+        exports2.Help = Help2;
+        exports2.CommanderError = CommanderError2;
+        exports2.InvalidArgumentError = InvalidArgumentError2;
+        exports2.InvalidOptionArgumentError = InvalidArgumentError2;
+      }
+    });
+    var require_document = __commonJS2({
+      "../core/out/src/domain/document.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+      }
+    });
+    var require_supported_languages = __commonJS2({
+      "../core/out/src/domain/languages/supported-languages.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+      }
+    });
+    var require_dependency_extractor = __commonJS2({
+      "../core/out/src/domain/sources/dependencies/extractors/dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+      }
+    });
+    var require_architecture_violation = __commonJS2({
+      "../core/out/src/domain/restrictions/architecture-violation.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.ArchitectureViolation = void 0;
+        var ArchitectureViolation = class {
+          violation;
+          position;
+          constructor(violation, position) {
+            this.violation = violation;
+            this.position = position;
+          }
+          isViolation() {
+            return this.violation.isViolation();
+          }
+          get message() {
+            return this.violation.message;
+          }
+          get startLine() {
+            return this.position.lineStart;
+          }
+          get startCharacter() {
+            return this.position.start;
+          }
+          get endLine() {
+            return this.position.lineEnd;
+          }
+          get endCharacter() {
+            return this.position.end;
+          }
+        };
+        exports2.ArchitectureViolation = ArchitectureViolation;
+      }
+    });
+    var require_layer_violation = __commonJS2({
+      "../core/out/src/domain/restrictions/layer-violation.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LayerViolation = void 0;
+        var LayerViolation = class {
+          fromLayer;
+          toLayer;
+          allowedDependencies;
+          constructor(fromLayer, toLayer, allowedDependencies) {
+            this.fromLayer = fromLayer;
+            this.toLayer = toLayer;
+            this.allowedDependencies = allowedDependencies;
+          }
+          isViolation() {
+            return !this.allowedDependencies.isAllowed(this.fromLayer, this.toLayer);
+          }
+          get message() {
+            return `${this.fromLayer} layer should not depend on ${this.toLayer} layer.`;
+          }
+        };
+        exports2.LayerViolation = LayerViolation;
+      }
+    });
+    var require_dependency_statement = __commonJS2({
+      "../core/out/src/domain/sources/dependencies/dependency-statement.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DependencyStatement = void 0;
+        var layer_violation_1 = require_layer_violation();
+        var DependencyStatement = class {
+          text;
+          path;
+          position;
+          allowedDependencies;
+          _violation;
+          constructor(text, path6, position, allowedDependencies, aliases) {
+            this.text = text;
+            this.path = path6;
+            this.position = position;
+            this.allowedDependencies = allowedDependencies;
+            const layer = aliases.getLayer(path6);
+            const toLayer = text.layer;
+            if (!layer || !toLayer) {
+              this._violation = null;
+              return;
+            }
+            this._violation = new layer_violation_1.LayerViolation(layer, toLayer, allowedDependencies), position;
+          }
+          isViolation() {
+            return this._violation?.isViolation() ?? false;
+          }
+          get violation() {
+            return this._violation;
+          }
+        };
+        exports2.DependencyStatement = DependencyStatement;
+      }
+    });
+    var require_layered_component = __commonJS2({
+      "../core/out/src/domain/sources/layer/layered-component.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LayeredComponent = void 0;
+        var LayeredComponent = class {
+          path;
+          aliases;
+          layer;
+          constructor(path6, aliases) {
+            this.path = path6;
+            this.aliases = aliases;
+            this.layer = aliases.getLayer(path6);
+          }
+          isDomain() {
+            return this.aliases.isDomain(this.path);
+          }
+          isApplication() {
+            return this.aliases.isApplication(this.path);
+          }
+          isInfrastructure() {
+            return this.aliases.isInfrastructure(this.path);
+          }
+        };
+        exports2.LayeredComponent = LayeredComponent;
+      }
+    });
+    var require_layer_path = __commonJS2({
+      "../core/out/src/domain/sources/layer/layer-path.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LayerPath = void 0;
+        var layered_component_1 = require_layered_component();
+        var LayerPath = class extends layered_component_1.LayeredComponent {
+          path;
+          constructor(path6, aliases) {
+            super(path6, aliases);
+            this.path = path6;
+          }
+        };
+        exports2.LayerPath = LayerPath;
+      }
+    });
+    var require_source_file = __commonJS2({
+      "../core/out/src/domain/sources/source-file.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.SourceFile = void 0;
+        var architecture_violation_1 = require_architecture_violation();
+        var dependency_statement_1 = require_dependency_statement();
+        var layer_path_1 = require_layer_path();
+        var layered_component_1 = require_layered_component();
+        var SourceFile = class extends layered_component_1.LayeredComponent {
+          allowedDependencies;
+          dependencies = [];
+          constructor(sourceUri, extractedDependencies, allowedDependencies, aliases) {
+            super(sourceUri.path, aliases);
+            this.allowedDependencies = allowedDependencies;
+            this.dependencies = extractedDependencies.map((dependency) => new dependency_statement_1.DependencyStatement(new layer_path_1.LayerPath(dependency.path, this.aliases), this.path, dependency.position, this.allowedDependencies, this.aliases));
+          }
+          get violations() {
+            return this.dependencies.filter((dependency) => dependency.isViolation()).map((dependency) => new architecture_violation_1.ArchitectureViolation(dependency.violation, dependency.position));
+          }
+        };
+        exports2.SourceFile = SourceFile;
+      }
+    });
+    var require_source_uri = __commonJS2({
+      "../core/out/src/domain/sources/source-uri.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.SourceUri = void 0;
+        var SourceUri2 = class {
+          path;
+          constructor(path6) {
+            if (typeof path6 !== "string") {
+              throw new Error("SourceUri path must be a string.");
+            }
+            this.path = path6;
+          }
+        };
+        exports2.SourceUri = SourceUri2;
+      }
+    });
+    var require_analyze_source_file = __commonJS2({
+      "../core/out/src/application/analyze-source-file.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AnalyzeSourceFile = void 0;
+        var source_file_1 = require_source_file();
+        var source_uri_1 = require_source_uri();
+        var AnalyzeSourceFile2 = class {
+          extractor;
+          allowedDependencies;
+          aliases;
+          constructor(extractor, allowedDependencies, aliases) {
+            this.extractor = extractor;
+            this.allowedDependencies = allowedDependencies;
+            this.aliases = aliases;
+          }
+          violationsFor(document) {
+            return new source_file_1.SourceFile(new source_uri_1.SourceUri(document.uri.path), this.extractor.extract(document), this.allowedDependencies, this.aliases).violations;
+          }
+        };
+        exports2.AnalyzeSourceFile = AnalyzeSourceFile2;
+      }
+    });
+    var require_allowed_layer_dependencies = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/allowed-dependencies/allowed-layer-dependencies.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AllowedLayerDependencies = void 0;
+        var AllowedLayerDependencies = class {
+          defaults;
+          overrides;
+          value;
+          constructor(defaults, overrides = []) {
+            this.defaults = defaults;
+            this.overrides = overrides;
+            this.value = Array.from(new Set([...defaults, ...overrides].map((layer) => layer.trim()).filter((layer) => layer.length > 0)));
+          }
+        };
+        exports2.AllowedLayerDependencies = AllowedLayerDependencies;
+      }
+    });
+    var require_layer_component = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/layer-component.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LayerComponent = void 0;
+        var LayerComponent = class {
+          aliases;
+          allowedDependencies;
+          _config;
+          static DEFAULT_LAYERS = {
+            domain: {
+              aliases: ["domain"],
+              allowedDependencies: ["domain"]
+            },
+            application: {
+              aliases: ["application"],
+              allowedDependencies: ["domain", "application"]
+            },
+            infrastructure: {
+              aliases: ["infrastructure"],
+              allowedDependencies: ["domain", "application", "infrastructure"]
+            }
+          };
+          constructor(aliases, allowedDependencies) {
+            this.aliases = aliases;
+            this.allowedDependencies = allowedDependencies;
+            this._config = {
+              aliases: this.aliases,
+              allowedDependencies: this.allowedDependencies.value
+            };
+          }
+          get config() {
+            return this._config;
+          }
+        };
+        exports2.LayerComponent = LayerComponent;
+      }
+    });
+    var require_application_layer_configuration = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/application-layer.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.ApplicationLayerConfiguration = void 0;
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var layer_component_1 = require_layer_component();
+        var ApplicationLayerConfiguration = class _ApplicationLayerConfiguration extends layer_component_1.LayerComponent {
+          static DEFAULT_APPLICATION_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.application;
+          constructor(layer) {
+            super(layer?.aliases ?? _ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.aliases, new allowed_layer_dependencies_1.AllowedLayerDependencies(_ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies, layer?.allowedDependencies));
+          }
+        };
+        exports2.ApplicationLayerConfiguration = ApplicationLayerConfiguration;
+      }
+    });
+    var require_domain_layer_configuration = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/domain-layer.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DomainLayerConfiguration = void 0;
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var layer_component_1 = require_layer_component();
+        var DomainLayerConfiguration = class _DomainLayerConfiguration extends layer_component_1.LayerComponent {
+          static DEFAULT_DOMAIN_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.domain;
+          constructor(layer) {
+            super(layer?.aliases ?? _DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.aliases, new allowed_layer_dependencies_1.AllowedLayerDependencies(_DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies, layer?.allowedDependencies));
+          }
+        };
+        exports2.DomainLayerConfiguration = DomainLayerConfiguration;
+      }
+    });
+    var require_infrastructure_layer_configuration = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/infrastructure-layer.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.InfrastructureLayerConfiguration = void 0;
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var layer_component_1 = require_layer_component();
+        var InfrastructureLayerConfiguration = class _InfrastructureLayerConfiguration extends layer_component_1.LayerComponent {
+          static DEFAULT_INFRASTRUCTURE_LAYER = layer_component_1.LayerComponent.DEFAULT_LAYERS.infrastructure;
+          constructor(layer) {
+            super(layer?.aliases ?? _InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.aliases, new allowed_layer_dependencies_1.AllowedLayerDependencies(_InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies, layer?.allowedDependencies));
+          }
+        };
+        exports2.InfrastructureLayerConfiguration = InfrastructureLayerConfiguration;
+      }
+    });
+    var require_layers_configuration = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/layers.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LayersConfiguration = void 0;
+        var application_layer_configuration_1 = require_application_layer_configuration();
+        var domain_layer_configuration_1 = require_domain_layer_configuration();
+        var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration();
+        var LayersConfiguration = class {
+          domain;
+          application;
+          infrastructure;
+          constructor(layers) {
+            this.domain = new domain_layer_configuration_1.DomainLayerConfiguration(layers.domain).config;
+            this.application = new application_layer_configuration_1.ApplicationLayerConfiguration(layers.application).config;
+            this.infrastructure = new infrastructure_layer_configuration_1.InfrastructureLayerConfiguration(layers.infrastructure).config;
+          }
+          get config() {
+            return {
+              domain: this.domain,
+              application: this.application,
+              infrastructure: this.infrastructure
+            };
+          }
+        };
+        exports2.LayersConfiguration = LayersConfiguration;
+      }
+    });
+    var require_source_folder_configuration = __commonJS2({
+      "../core/out/src/application/configuration/components/source-folder/source-folder.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.SourceFolderConfiguration = void 0;
+        var SourceFolderConfiguration = class {
+          sourceFolder;
+          constructor(sourceFolder) {
+            this.sourceFolder = sourceFolder;
+          }
+          get config() {
+            return this.sourceFolder;
+          }
+        };
+        exports2.SourceFolderConfiguration = SourceFolderConfiguration;
+      }
+    });
+    var require_configuration_component = __commonJS2({
+      "../core/out/src/application/configuration/components/configuration-component.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.ConfigurationComponent = void 0;
+        var ConfigurationComponent = class {
+          _config;
+          constructor(config, defaultValue) {
+            this._config = config ?? defaultValue;
+          }
+          get config() {
+            return this._config;
+          }
+        };
+        exports2.ConfigurationComponent = ConfigurationComponent;
+      }
+    });
+    var require_enabled_languages_configuration = __commonJS2({
+      "../core/out/src/application/configuration/components/enabled-languages/enabled-languages.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.EnabledLanguagesConfiguration = void 0;
+        var configuration_component_1 = require_configuration_component();
+        var EnabledLanguagesConfiguration = class _EnabledLanguagesConfiguration extends configuration_component_1.ConfigurationComponent {
+          static DEFAULT_ENABLED_LANGUAGES = ["javascript", "typescript"];
+          constructor(enabledLanguages) {
+            super(enabledLanguages, _EnabledLanguagesConfiguration.DEFAULT_ENABLED_LANGUAGES);
+          }
+        };
+        exports2.EnabledLanguagesConfiguration = EnabledLanguagesConfiguration;
+      }
+    });
+    var require_default_configuration = __commonJS2({
+      "../core/out/src/application/configuration/default.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DefaultConfiguration = void 0;
+        var layers_configuration_1 = require_layers_configuration();
+        var source_folder_configuration_1 = require_source_folder_configuration();
+        var enabled_languages_configuration_1 = require_enabled_languages_configuration();
+        var DefaultConfiguration2 = class _DefaultConfiguration {
+          layers;
+          sourceFolder;
+          enabledLanguages;
+          config;
+          static get default() {
+            return new _DefaultConfiguration({}, void 0, void 0).config;
+          }
+          constructor(layers, sourceFolder, enabledLanguages) {
+            this.layers = layers;
+            this.sourceFolder = sourceFolder;
+            this.enabledLanguages = enabledLanguages;
+            const built = {
+              layers: new layers_configuration_1.LayersConfiguration(this.layers).config,
+              sourceFolder: new source_folder_configuration_1.SourceFolderConfiguration(this.sourceFolder).config,
+              enabledLanguages: new enabled_languages_configuration_1.EnabledLanguagesConfiguration(this.enabledLanguages).config
+            };
+            this.config = Object.freeze(built);
+          }
+        };
+        exports2.DefaultConfiguration = DefaultConfiguration2;
+      }
+    });
+    var require_allowed_dependencies = __commonJS2({
+      "../core/out/src/domain/restrictions/allowed-dependencies.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AllowedDependencies = void 0;
+        var AllowedDependencies2 = class {
+          allowedDependencies;
+          constructor(domainDependencies, applicationDependencies, infrastructureDependencies) {
+            this.allowedDependencies = {
+              domain: domainDependencies,
+              application: applicationDependencies,
+              infrastructure: infrastructureDependencies
+            };
+          }
+          isAllowed(fromLayer, toLayer) {
+            return this.allowedDependencies[fromLayer]?.includes(toLayer);
+          }
+        };
+        exports2.AllowedDependencies = AllowedDependencies2;
+      }
+    });
+    var require_allowed_application_dependencies = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/allowed-dependencies/allowed-application-dependencies.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AllowedApplicationDependencies = void 0;
+        var application_layer_configuration_1 = require_application_layer_configuration();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var AllowedApplicationDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
+          overrides;
+          constructor(overrides) {
+            super(application_layer_configuration_1.ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies, overrides);
+            this.overrides = overrides;
+          }
+        };
+        exports2.AllowedApplicationDependencies = AllowedApplicationDependencies;
+      }
+    });
+    var require_allowed_domain_dependencies = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/allowed-dependencies/allowed-domain-dependencies.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AllowedDomainDependencies = void 0;
+        var domain_layer_configuration_1 = require_domain_layer_configuration();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var AllowedDomainDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
+          overrides;
+          constructor(overrides) {
+            super(domain_layer_configuration_1.DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies, overrides);
+            this.overrides = overrides;
+          }
+        };
+        exports2.AllowedDomainDependencies = AllowedDomainDependencies;
+      }
+    });
+    var require_allowed_infrastructure_dependencies = __commonJS2({
+      "../core/out/src/application/configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AllowedInfrastructureDependencies = void 0;
+        var infrastructure_layer_configuration_1 = require_infrastructure_layer_configuration();
+        var allowed_layer_dependencies_1 = require_allowed_layer_dependencies();
+        var AllowedInfrastructureDependencies = class extends allowed_layer_dependencies_1.AllowedLayerDependencies {
+          overrides;
+          constructor(overrides) {
+            super(infrastructure_layer_configuration_1.InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies, overrides);
+            this.overrides = overrides;
+          }
+        };
+        exports2.AllowedInfrastructureDependencies = AllowedInfrastructureDependencies;
+      }
+    });
+    var require_allowed_dependencies_configuration = __commonJS2({
+      "../core/out/src/application/configuration/allowed-dependencies.configuration.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.AllowedDependenciesConfiguration = void 0;
+        var allowed_dependencies_1 = require_allowed_dependencies();
+        var allowed_application_dependencies_1 = require_allowed_application_dependencies();
+        var allowed_domain_dependencies_1 = require_allowed_domain_dependencies();
+        var allowed_infrastructure_dependencies_1 = require_allowed_infrastructure_dependencies();
+        var AllowedDependenciesConfiguration2 = class {
+          allowedDependencies;
+          constructor(config) {
+            this.allowedDependencies = new allowed_dependencies_1.AllowedDependencies(new allowed_domain_dependencies_1.AllowedDomainDependencies(config.layers.domain.allowedDependencies).value, new allowed_application_dependencies_1.AllowedApplicationDependencies(config.layers.application.allowedDependencies).value, new allowed_infrastructure_dependencies_1.AllowedInfrastructureDependencies(config.layers.infrastructure.allowedDependencies).value);
+          }
+        };
+        exports2.AllowedDependenciesConfiguration = AllowedDependenciesConfiguration2;
+      }
+    });
+    var require_supported_language_registry = __commonJS2({
+      "../core/out/src/infrastructure/languages/supported-language-registry.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.SupportedLanguageRegistry = void 0;
+        var SupportedLanguageRegistry4 = class {
+          languagesByExtension = /* @__PURE__ */ new Map([
+            [".js", "javascript"],
+            [".mjs", "javascript"],
+            [".cjs", "javascript"],
+            [".ts", "typescript"],
+            [".mts", "typescript"],
+            [".cts", "typescript"],
+            [".cs", "csharp"],
+            [".csx", "csharp"],
+            [".dart", "dart"],
+            [".ex", "elixir"],
+            [".exs", "elixir"],
+            [".go", "go"],
+            [".groovy", "groovy"],
+            [".gvy", "groovy"],
+            [".gy", "groovy"],
+            [".gsh", "groovy"],
+            [".java", "java"],
+            [".kt", "kotlin"],
+            [".kts", "kotlin"],
+            [".lua", "lua"],
+            [".php", "php"],
+            [".php3", "php"],
+            [".php4", "php"],
+            [".php5", "php"],
+            [".phtml", "php"],
+            [".py", "python"],
+            [".rb", "ruby"],
+            [".rs", "rust"],
+            [".scala", "scala"],
+            [".sc", "scala"]
+          ]);
+          supportedLanguageIds = new Set(this.languagesByExtension.values());
+          getLanguageIdFromExtension(extension) {
+            return this.languagesByExtension.get(extension.toLowerCase());
+          }
+          isSupportedLanguageId(languageId) {
+            return this.supportedLanguageIds.has(languageId);
+          }
+        };
+        exports2.SupportedLanguageRegistry = SupportedLanguageRegistry4;
+      }
+    });
+    var require_enabled_languages_validation_error = __commonJS2({
+      "../core/out/src/application/enabled-languages/enabled-languages-validation-error.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.UnsupportedLanguageError = void 0;
+        var UnsupportedLanguageError3 = class extends Error {
+          unsupportedLanguages;
+          constructor(unsupportedLanguages) {
+            const message = unsupportedLanguages.length === 1 ? `Unsupported language identifier: ${unsupportedLanguages[0]}.` : `Unsupported language identifiers: ${unsupportedLanguages.join(", ")}.`;
+            super(message);
+            this.name = "UnsupportedLanguageError";
+            this.unsupportedLanguages = unsupportedLanguages;
+          }
+        };
+        exports2.UnsupportedLanguageError = UnsupportedLanguageError3;
+      }
+    });
+    var require_enabled_languages_validator = __commonJS2({
+      "../core/out/src/application/enabled-languages/enabled-languages-validator.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.EnabledLanguagesValidator = void 0;
+        var enabled_languages_validation_error_1 = require_enabled_languages_validation_error();
+        var EnabledLanguagesValidator3 = class {
+          supportedLanguages;
+          constructor(supportedLanguages) {
+            this.supportedLanguages = supportedLanguages;
+          }
+          validate(languages) {
+            const unsupported = languages.filter((language) => !this.supportedLanguages.isSupportedLanguageId(language));
+            if (unsupported.length > 0) {
+              throw new enabled_languages_validation_error_1.UnsupportedLanguageError(unsupported);
+            }
+          }
+        };
+        exports2.EnabledLanguagesValidator = EnabledLanguagesValidator3;
+      }
+    });
+    var require_dependency_position = __commonJS2({
+      "../core/out/src/domain/sources/dependencies/dependency-position.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DependencyPosition = void 0;
+        var DependencyPosition = class {
+          lineStart;
+          start;
+          lineEnd;
+          end;
+          constructor(lineStart, start, lineEnd, end) {
+            this.lineStart = lineStart;
+            this.start = start;
+            this.lineEnd = lineEnd;
+            this.end = end;
+          }
+        };
+        exports2.DependencyPosition = DependencyPosition;
+      }
+    });
+    var require_extracted_dependency = __commonJS2({
+      "../core/out/src/domain/sources/dependencies/extracted-dependency.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.ExtractedDependency = void 0;
+        var ExtractedDependency = class {
+          path;
+          position;
+          constructor(path6, position) {
+            this.path = path6;
+            this.position = position;
+          }
+        };
+        exports2.ExtractedDependency = ExtractedDependency;
+      }
+    });
+    var require_delimited_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/delimited-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DelimitedDependencyExtractor = void 0;
+        var dependency_position_1 = require_dependency_position();
+        var extracted_dependency_1 = require_extracted_dependency();
+        var DelimitedDependencyExtractor = class {
+          delimiterRegex;
+          addTrailingSeparator;
+          patterns;
+          constructor(patterns, delimiter3 = "/", addTrailingSeparator = false) {
+            this.patterns = patterns;
+            this.delimiterRegex = new RegExp(this.escapeRegExp(delimiter3), "g");
+            this.addTrailingSeparator = addTrailingSeparator;
+          }
+          extract(document) {
+            return this.patterns.flatMap((pattern) => this.extractMatches(document, pattern));
+          }
+          extractMatches(document, pattern) {
+            const dependencies = [];
+            const text = document.getText();
+            let match;
+            pattern.regex.lastIndex = 0;
+            while (match = pattern.regex.exec(text)) {
+              const startPos = document.positionAt(match.index);
+              const endPos = document.positionAt(match.index + match[0].length);
+              const position = new dependency_position_1.DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
+              dependencies.push(...this.getDependencyPaths(pattern, match).map((path6) => new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(path6), position)));
+            }
+            return dependencies;
+          }
+          getDependencyPaths(pattern, match) {
+            return pattern.dependencyPaths ? pattern.dependencyPaths(match) : [match[1]];
+          }
+          normalizeDependencyPath(path6) {
+            const normalized = path6.replace(this.delimiterRegex, "/");
+            return this.addTrailingSeparator ? `/${normalized}/` : `/${normalized}`;
+          }
+          escapeRegExp(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          }
+        };
+        exports2.DelimitedDependencyExtractor = DelimitedDependencyExtractor;
+      }
+    });
+    var require_csharp_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/csharp-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.CsharpDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var CsharpDependencyExtractor = class _CsharpDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static USING_REGEX = /^[ \t]*(?:global[ \t]+)?using[ \t]+(?:static[ \t]+)?(?:(?:[A-Za-z_]\w*)[ \t]*=[ \t]*)?([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
+          constructor() {
+            super([{
+              regex: _CsharpDependencyExtractor.USING_REGEX,
+              dependencyPaths: (match) => [match[1].toLowerCase()]
+            }], ".", true);
+          }
+        };
+        exports2.CsharpDependencyExtractor = CsharpDependencyExtractor;
+      }
+    });
+    var require_dart_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/dart-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DartDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var DartDependencyExtractor = class _DartDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static DIRECTIVE_REGEX = /^[ \t]*(?:@[A-Za-z_]\w*(?:\([^)]*\))?[ \t]*)*(?:import|export|part)[ \t]+["']([^"'\r\n]+)["'](?:[ \t]+(?:as|show|hide)[^;\r\n]*)?[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
+          constructor() {
+            super([{
+              regex: _DartDependencyExtractor.DIRECTIVE_REGEX,
+              dependencyPaths: (match) => [_DartDependencyExtractor.normalizeDartDependency(match[1])]
+            }], "/", true);
+          }
+          static normalizeDartDependency(path6) {
+            return path6.replace(/^package:[^/]+\//, "").replace(/\\/g, "/");
+          }
+        };
+        exports2.DartDependencyExtractor = DartDependencyExtractor;
+      }
+    });
+    var require_ecmascript_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/ecmascript-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.EcmaScriptDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var EcmaScriptDependencyExtractor = class _EcmaScriptDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static IMPORT_REGEX = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
+          constructor() {
+            super([
+              {
+                regex: _EcmaScriptDependencyExtractor.IMPORT_REGEX,
+                dependencyPaths: (match) => [match[2]]
+              }
+            ]);
+          }
+        };
+        exports2.EcmaScriptDependencyExtractor = EcmaScriptDependencyExtractor;
+      }
+    });
+    var require_elixir_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/elixir-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.ElixirDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var ElixirDependencyExtractor = class _ElixirDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static DIRECTIVE_REGEX = /^[ \t]*(?:alias|import|require|use)[ \t]+([A-Z][A-Za-z0-9_.]*(?:\.\{[^}\r\n]+\})?)(?:[ \t]*,[^\r\n]*)?$/gm;
+          constructor() {
+            super([{
+              regex: _ElixirDependencyExtractor.DIRECTIVE_REGEX,
+              dependencyPaths: (match) => _ElixirDependencyExtractor.getDependencyPaths(match)
+            }], ".", true);
+          }
+          static getDependencyPaths(match) {
+            const modulePath = match[1];
+            const groupedAlias = modulePath.match(/^(.*)\.\{([^}]+)\}$/);
+            if (!groupedAlias) {
+              return [modulePath.toLowerCase()];
+            }
+            const [, basePath, groupedModules] = groupedAlias;
+            return groupedModules.split(",").map((moduleName) => moduleName.trim()).filter(Boolean).map((moduleName) => `${basePath}.${moduleName}`.toLowerCase());
+          }
+        };
+        exports2.ElixirDependencyExtractor = ElixirDependencyExtractor;
+      }
+    });
+    var require_go_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/go-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.GoDependencyExtractor = void 0;
+        var dependency_position_1 = require_dependency_position();
+        var extracted_dependency_1 = require_extracted_dependency();
+        var GoDependencyExtractor = class _GoDependencyExtractor {
+          static SINGLE_IMPORT_REGEX = /^[ \t]*import[ \t]+(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
+          static IMPORT_BLOCK_REGEX = /^[ \t]*import[ \t]*\([ \t]*(?:\/\/.*)?\r?\n([\s\S]*?)^[ \t]*\)[ \t]*(?:\/\/.*)?$/gm;
+          static IMPORT_BLOCK_ENTRY_REGEX = /^[ \t]*(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
+          extract(document) {
+            return [
+              ...this.extractSingleImports(document),
+              ...this.extractBlockImports(document)
+            ];
+          }
+          extractSingleImports(document) {
+            const dependencies = [];
+            const text = document.getText();
+            let match;
+            _GoDependencyExtractor.SINGLE_IMPORT_REGEX.lastIndex = 0;
+            while (match = _GoDependencyExtractor.SINGLE_IMPORT_REGEX.exec(text)) {
+              dependencies.push(this.toExtractedDependency(document, match[1], match.index, match[0].length));
+            }
+            return dependencies;
+          }
+          extractBlockImports(document) {
+            const dependencies = [];
+            const text = document.getText();
+            let blockMatch;
+            _GoDependencyExtractor.IMPORT_BLOCK_REGEX.lastIndex = 0;
+            while (blockMatch = _GoDependencyExtractor.IMPORT_BLOCK_REGEX.exec(text)) {
+              const blockContent = blockMatch[1];
+              const blockContentStart = blockMatch.index + blockMatch[0].indexOf(blockContent);
+              let entryMatch;
+              _GoDependencyExtractor.IMPORT_BLOCK_ENTRY_REGEX.lastIndex = 0;
+              while (entryMatch = _GoDependencyExtractor.IMPORT_BLOCK_ENTRY_REGEX.exec(blockContent)) {
+                dependencies.push(this.toExtractedDependency(document, entryMatch[1], blockContentStart + entryMatch.index, entryMatch[0].length));
+              }
+            }
+            return dependencies;
+          }
+          toExtractedDependency(document, dependencyPath, matchIndex, matchLength) {
+            const startPos = document.positionAt(matchIndex);
+            const endPos = document.positionAt(matchIndex + matchLength);
+            const position = new dependency_position_1.DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
+            return new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(dependencyPath), position);
+          }
+          normalizeDependencyPath(path6) {
+            return `/${path6.replace(/\\/g, "/")}/`;
+          }
+        };
+        exports2.GoDependencyExtractor = GoDependencyExtractor;
+      }
+    });
+    var require_groovy_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/groovy-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.GroovyDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var GroovyDependencyExtractor = class _GroovyDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_$][\w$]*)?[ \t]*(?:;[ \t]*)?(?:\/\/.*)?$/gm;
+          constructor() {
+            super([{ regex: _GroovyDependencyExtractor.IMPORT_REGEX }], ".", true);
+          }
+        };
+        exports2.GroovyDependencyExtractor = GroovyDependencyExtractor;
+      }
+    });
+    var require_java_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/java-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.JavaDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var JavaDependencyExtractor = class _JavaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)[ \t]*;/gm;
+          constructor() {
+            super([{ regex: _JavaDependencyExtractor.IMPORT_REGEX }], ".", true);
+          }
+        };
+        exports2.JavaDependencyExtractor = JavaDependencyExtractor;
+      }
+    });
+    var require_kotlin_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/kotlin-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.KotlinDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var KotlinDependencyExtractor = class _KotlinDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_][\w]*)?[ \t]*(?:\/\/.*)?$/gm;
+          constructor() {
+            super([{ regex: _KotlinDependencyExtractor.IMPORT_REGEX }], ".", true);
+          }
+        };
+        exports2.KotlinDependencyExtractor = KotlinDependencyExtractor;
+      }
+    });
+    var require_lua_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/lua-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LuaDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var LuaDependencyExtractor = class _LuaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static REQUIRE_REGEX = /^[ \t]*(?:local[ \t]+[A-Za-z_]\w*[ \t]*=[ \t]*)?require[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:--.*)?$/gm;
+          constructor() {
+            super([{
+              regex: _LuaDependencyExtractor.REQUIRE_REGEX,
+              dependencyPaths: (match) => [match[1].replace(/\./g, "/")]
+            }], "/", true);
+          }
+        };
+        exports2.LuaDependencyExtractor = LuaDependencyExtractor;
+      }
+    });
+    var require_php_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/php-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.PhpDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var PhpDependencyExtractor = class _PhpDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static USE_REGEX = /^[ \t]*use[ \t]+(?:(?:function|const)[ \t]+)?([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
+          constructor() {
+            super([{
+              regex: _PhpDependencyExtractor.USE_REGEX,
+              dependencyPaths: (match) => _PhpDependencyExtractor.getDependencyPaths(match)
+            }], "\\", true);
+          }
+          static getDependencyPaths(match) {
+            const usePath = match[1].trim();
+            const groupedUse = usePath.match(/^(.+)\\\{(.+)\}$/);
+            if (!groupedUse) {
+              return [_PhpDependencyExtractor.withoutAlias(usePath).toLowerCase()];
+            }
+            const [, basePath, groupedImports] = groupedUse;
+            return groupedImports.split(",").map((selector) => selector.trim()).filter(Boolean).map((selector) => `${basePath}\\${_PhpDependencyExtractor.withoutAlias(selector)}`.toLowerCase());
+          }
+          static withoutAlias(path6) {
+            return path6.split(/\s+as\s+/i)[0].trim();
+          }
+        };
+        exports2.PhpDependencyExtractor = PhpDependencyExtractor;
+      }
+    });
+    var require_python_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/python-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.PythonDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var PythonDependencyExtractor = class _PythonDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static IMPORT_REGEX = /^\s*import\s+(.+)$/gm;
+          static FROM_IMPORT_REGEX = /^\s*from\s+([A-Za-z_][\w.]*)\s+import\s+.+$/gm;
+          constructor() {
+            super([
+              {
+                regex: _PythonDependencyExtractor.IMPORT_REGEX,
+                dependencyPaths: (match) => match[1].split(",").map((module3) => module3.trim().split(/\s+as\s+/)[0].trim()).filter(Boolean)
+              },
+              { regex: _PythonDependencyExtractor.FROM_IMPORT_REGEX }
+            ], ".", true);
+          }
+        };
+        exports2.PythonDependencyExtractor = PythonDependencyExtractor;
+      }
+    });
+    var require_ruby_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/ruby-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.RubyDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var RubyDependencyExtractor = class _RubyDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static REQUIRE_REGEX = /^[ \t]*require(?:_relative)?[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:#.*)?$/gm;
+          constructor() {
+            super([{ regex: _RubyDependencyExtractor.REQUIRE_REGEX }], "/", true);
+          }
+        };
+        exports2.RubyDependencyExtractor = RubyDependencyExtractor;
+      }
+    });
+    var require_rust_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/rust-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.RustDependencyExtractor = void 0;
+        var dependency_position_1 = require_dependency_position();
+        var extracted_dependency_1 = require_extracted_dependency();
+        var RustDependencyExtractor = class _RustDependencyExtractor {
+          static USE_REGEX = /^[ \t]*use[ \t]+([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
+          static MOD_REGEX = /^[ \t]*(?:pub[ \t]+)?mod[ \t]+([A-Za-z_]\w*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
+          extract(document) {
+            return [
+              ...this.extractUseDeclarations(document),
+              ...this.extractModDeclarations(document)
+            ];
+          }
+          extractUseDeclarations(document) {
+            const dependencies = [];
+            const text = document.getText();
+            let match;
+            _RustDependencyExtractor.USE_REGEX.lastIndex = 0;
+            while (match = _RustDependencyExtractor.USE_REGEX.exec(text)) {
+              const position = this.toPosition(document, match.index, match[0].length);
+              dependencies.push(..._RustDependencyExtractor.expandUsePath(match[1]).map((path6) => new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(path6), position)));
+            }
+            return dependencies;
+          }
+          extractModDeclarations(document) {
+            const dependencies = [];
+            const text = document.getText();
+            let match;
+            _RustDependencyExtractor.MOD_REGEX.lastIndex = 0;
+            while (match = _RustDependencyExtractor.MOD_REGEX.exec(text)) {
+              const position = this.toPosition(document, match.index, match[0].length);
+              dependencies.push(new extracted_dependency_1.ExtractedDependency(this.normalizeDependencyPath(match[1]), position));
+            }
+            return dependencies;
+          }
+          static expandUsePath(path6) {
+            const normalizedPath = path6.trim();
+            const groupStart = normalizedPath.indexOf("{");
+            if (groupStart === -1) {
+              return [_RustDependencyExtractor.withoutAlias(normalizedPath)];
+            }
+            const groupEnd = _RustDependencyExtractor.findMatchingBrace(normalizedPath, groupStart);
+            if (groupEnd === -1) {
+              return [_RustDependencyExtractor.withoutAlias(normalizedPath)];
+            }
+            const prefix = normalizedPath.slice(0, groupStart);
+            const groupContent = normalizedPath.slice(groupStart + 1, groupEnd);
+            const suffix = normalizedPath.slice(groupEnd + 1);
+            return _RustDependencyExtractor.splitTopLevel(groupContent).flatMap((item) => _RustDependencyExtractor.expandUsePath(`${prefix}${item.trim()}${suffix}`)).filter(Boolean);
+          }
+          static findMatchingBrace(value, startIndex) {
+            let depth = 0;
+            for (let index = startIndex; index < value.length; index++) {
+              const char = value[index];
+              if (char === "{") {
+                depth++;
+              }
+              if (char === "}") {
+                depth--;
+              }
+              if (depth === 0) {
+                return index;
+              }
+            }
+            return -1;
+          }
+          static splitTopLevel(value) {
+            const items = [];
+            let depth = 0;
+            let itemStart = 0;
+            for (let index = 0; index < value.length; index++) {
+              const char = value[index];
+              if (char === "{") {
+                depth++;
+              } else if (char === "}") {
+                depth--;
+              } else if (char === "," && depth === 0) {
+                items.push(value.slice(itemStart, index));
+                itemStart = index + 1;
+              }
+            }
+            items.push(value.slice(itemStart));
+            return items;
+          }
+          static withoutAlias(path6) {
+            return path6.split(/\s+as\s+/)[0].trim();
+          }
+          toPosition(document, matchIndex, matchLength) {
+            const startPos = document.positionAt(matchIndex);
+            const endPos = document.positionAt(matchIndex + matchLength);
+            return new dependency_position_1.DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
+          }
+          normalizeDependencyPath(path6) {
+            const normalized = path6.replace(/::/g, "/");
+            return `/${normalized}/`;
+          }
+        };
+        exports2.RustDependencyExtractor = RustDependencyExtractor;
+      }
+    });
+    var require_scala_dependency_extractor = __commonJS2({
+      "../core/out/src/infrastructure/extractors/scala-dependency-extractor.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.ScalaDependencyExtractor = void 0;
+        var delimited_dependency_extractor_1 = require_delimited_dependency_extractor();
+        var ScalaDependencyExtractor = class _ScalaDependencyExtractor extends delimited_dependency_extractor_1.DelimitedDependencyExtractor {
+          static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.(?:[A-Za-z]\w*|_\w+|_|\*))*(?:\.\{[^}\r\n]+\})?)[ \t]*(?:\/\/.*)?$/gm;
+          constructor() {
+            super([{
+              regex: _ScalaDependencyExtractor.IMPORT_REGEX,
+              dependencyPaths: (match) => _ScalaDependencyExtractor.getDependencyPaths(match)
+            }], ".", true);
+          }
+          static getDependencyPaths(match) {
+            const importPath = match[1];
+            const groupedImport = importPath.match(/^(.*)\.\{([^}]+)\}$/);
+            if (!groupedImport) {
+              return [_ScalaDependencyExtractor.normalizeWildcard(importPath)];
+            }
+            const [, basePath, groupedImports] = groupedImport;
+            return groupedImports.split(",").map((selector) => _ScalaDependencyExtractor.getGroupedImportPath(basePath, selector)).filter((path6) => path6 !== void 0);
+          }
+          static getGroupedImportPath(basePath, selector) {
+            const [importedName, alias] = selector.trim().split(/\s*=>\s*/).map((part) => part.trim());
+            if (!importedName || alias === "_") {
+              return void 0;
+            }
+            return `${basePath}.${_ScalaDependencyExtractor.normalizeWildcard(importedName)}`;
+          }
+          static normalizeWildcard(value) {
+            if (value === "_") {
+              return "*";
+            }
+            return value.replace(/\._(?=\.|$)/g, ".*");
+          }
+        };
+        exports2.ScalaDependencyExtractor = ScalaDependencyExtractor;
+      }
+    });
+    var require_dependency_extractor_registry = __commonJS2({
+      "../core/out/src/infrastructure/extractors/dependency-extractor-registry.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.DependencyExtractorRegistry = void 0;
+        var csharp_dependency_extractor_1 = require_csharp_dependency_extractor();
+        var dart_dependency_extractor_1 = require_dart_dependency_extractor();
+        var ecmascript_dependency_extractor_1 = require_ecmascript_dependency_extractor();
+        var elixir_dependency_extractor_1 = require_elixir_dependency_extractor();
+        var go_dependency_extractor_1 = require_go_dependency_extractor();
+        var groovy_dependency_extractor_1 = require_groovy_dependency_extractor();
+        var java_dependency_extractor_1 = require_java_dependency_extractor();
+        var kotlin_dependency_extractor_1 = require_kotlin_dependency_extractor();
+        var lua_dependency_extractor_1 = require_lua_dependency_extractor();
+        var php_dependency_extractor_1 = require_php_dependency_extractor();
+        var python_dependency_extractor_1 = require_python_dependency_extractor();
+        var ruby_dependency_extractor_1 = require_ruby_dependency_extractor();
+        var rust_dependency_extractor_1 = require_rust_dependency_extractor();
+        var scala_dependency_extractor_1 = require_scala_dependency_extractor();
+        var DependencyExtractorRegistry2 = class {
+          extractors = /* @__PURE__ */ new Map([
+            ["javascript", new ecmascript_dependency_extractor_1.EcmaScriptDependencyExtractor()],
+            ["typescript", new ecmascript_dependency_extractor_1.EcmaScriptDependencyExtractor()],
+            ["csharp", new csharp_dependency_extractor_1.CsharpDependencyExtractor()],
+            ["dart", new dart_dependency_extractor_1.DartDependencyExtractor()],
+            ["elixir", new elixir_dependency_extractor_1.ElixirDependencyExtractor()],
+            ["go", new go_dependency_extractor_1.GoDependencyExtractor()],
+            ["groovy", new groovy_dependency_extractor_1.GroovyDependencyExtractor()],
+            ["java", new java_dependency_extractor_1.JavaDependencyExtractor()],
+            ["kotlin", new kotlin_dependency_extractor_1.KotlinDependencyExtractor()],
+            ["lua", new lua_dependency_extractor_1.LuaDependencyExtractor()],
+            ["php", new php_dependency_extractor_1.PhpDependencyExtractor()],
+            ["python", new python_dependency_extractor_1.PythonDependencyExtractor()],
+            ["ruby", new ruby_dependency_extractor_1.RubyDependencyExtractor()],
+            ["rust", new rust_dependency_extractor_1.RustDependencyExtractor()],
+            ["scala", new scala_dependency_extractor_1.ScalaDependencyExtractor()]
+          ]);
+          get(languageId) {
+            return this.extractors.get(languageId);
+          }
+        };
+        exports2.DependencyExtractorRegistry = DependencyExtractorRegistry2;
+      }
+    });
+    var require_layer_alias = __commonJS2({
+      "../core/out/src/domain/sources/layer/layer-alias.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.LayerAlias = void 0;
+        var LayerAlias2 = class {
+          domainAliases;
+          applicationAliases;
+          infrastructureAliases;
+          LAYERS = {
+            domain: (path6) => this.isDomain(path6),
+            application: (path6) => this.isApplication(path6),
+            infrastructure: (path6) => this.isInfrastructure(path6)
+          };
+          aliases;
+          constructor(domainAliases, applicationAliases, infrastructureAliases) {
+            this.domainAliases = domainAliases;
+            this.applicationAliases = applicationAliases;
+            this.infrastructureAliases = infrastructureAliases;
+            this.aliases = {
+              domain: this.domainAliases.map(this.setAliasAsPath),
+              application: this.applicationAliases.map(this.setAliasAsPath),
+              infrastructure: this.infrastructureAliases.map(this.setAliasAsPath)
+            };
+          }
+          setAliasAsPath(alias) {
+            return `/${alias}/`;
+          }
+          isDomain(path6) {
+            return this.isAliasInLayer(path6, this.aliases.domain);
+          }
+          isApplication(path6) {
+            return this.isAliasInLayer(path6, this.aliases.application);
+          }
+          isInfrastructure(path6) {
+            return this.isAliasInLayer(path6, this.aliases.infrastructure);
+          }
+          isAliasInLayer(path6, aliases) {
+            const normalizedPath = this.normalizeForAliasLookup(path6);
+            return aliases.some((alias) => normalizedPath.includes(this.normalizeForAliasLookup(alias)));
+          }
+          normalizeForAliasLookup(path6) {
+            return path6.toLowerCase().replace(/[.\\]/g, "/");
+          }
+          getLayer(path6) {
+            return Object.keys(this.LAYERS).find((layer) => this.LAYERS[layer](path6));
+          }
+        };
+        exports2.LayerAlias = LayerAlias2;
+      }
+    });
+    var require_source_folder = __commonJS2({
+      "../core/out/src/domain/sources/source-folder.js"(exports2) {
+        "use strict";
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.SourceFolder = void 0;
+        var SourceFolder = class {
+          sourceFolder;
+          constructor(sourceFolder) {
+            this.sourceFolder = sourceFolder;
+          }
+          contains(documentPath) {
+            if (!this.sourceFolder) {
+              return true;
+            }
+            const normalizedDocumentPath = this.normalize(documentPath);
+            const normalizedSourceFolder = this.normalize(this.sourceFolder);
+            return normalizedDocumentPath === normalizedSourceFolder || normalizedDocumentPath.startsWith(normalizedSourceFolder + "/") || normalizedDocumentPath.includes("/" + normalizedSourceFolder + "/");
+          }
+          normalize(value) {
+            return value.replace(/\\/g, "/");
+          }
+        };
+        exports2.SourceFolder = SourceFolder;
+      }
+    });
+    var require_src = __commonJS2({
+      "../core/out/src/index.js"(exports2) {
+        "use strict";
+        var __createBinding = exports2 && exports2.__createBinding || (Object.create ? (function(o, m, k, k2) {
+          if (k2 === void 0) k2 = k;
+          var desc = Object.getOwnPropertyDescriptor(m, k);
+          if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+            desc = { enumerable: true, get: function() {
+              return m[k];
+            } };
+          }
+          Object.defineProperty(o, k2, desc);
+        }) : (function(o, m, k, k2) {
+          if (k2 === void 0) k2 = k;
+          o[k2] = m[k];
+        }));
+        var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
+          for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p)) __createBinding(exports3, m, p);
+        };
+        Object.defineProperty(exports2, "__esModule", { value: true });
+        exports2.EnabledLanguagesValidator = exports2.UnsupportedLanguageError = void 0;
+        __exportStar(require_document(), exports2);
+        __exportStar(require_supported_languages(), exports2);
+        __exportStar(require_dependency_extractor(), exports2);
+        __exportStar(require_analyze_source_file(), exports2);
+        __exportStar(require_default_configuration(), exports2);
+        __exportStar(require_allowed_dependencies_configuration(), exports2);
+        __exportStar(require_architecture_violation(), exports2);
+        __exportStar(require_allowed_application_dependencies(), exports2);
+        __exportStar(require_allowed_domain_dependencies(), exports2);
+        __exportStar(require_allowed_infrastructure_dependencies(), exports2);
+        __exportStar(require_allowed_dependencies(), exports2);
+        __exportStar(require_supported_language_registry(), exports2);
+        var enabled_languages_validation_error_1 = require_enabled_languages_validation_error();
+        Object.defineProperty(exports2, "UnsupportedLanguageError", { enumerable: true, get: function() {
+          return enabled_languages_validation_error_1.UnsupportedLanguageError;
+        } });
+        var enabled_languages_validator_1 = require_enabled_languages_validator();
+        Object.defineProperty(exports2, "EnabledLanguagesValidator", { enumerable: true, get: function() {
+          return enabled_languages_validator_1.EnabledLanguagesValidator;
+        } });
+        __exportStar(require_dependency_extractor_registry(), exports2);
+        __exportStar(require_layer_alias(), exports2);
+        __exportStar(require_source_folder(), exports2);
+        __exportStar(require_source_file(), exports2);
+        __exportStar(require_source_uri(), exports2);
+      }
+    });
+    var index_exports = {};
+    __export2(index_exports, {
+      runCheck: () => runCheck2,
+      runCli: () => runCli
+    });
+    module.exports = __toCommonJS(index_exports);
+    var import_index = __toESM2(require_commander(), 1);
+    var {
+      program,
+      createCommand,
+      createArgument,
+      createOption,
+      CommanderError,
+      InvalidArgumentError,
+      InvalidOptionArgumentError,
+      // deprecated old name
+      Command: Command2,
+      Argument,
+      Option,
+      Help
+    } = import_index.default;
+    var import_clean_architecture_highlighter_core = __toESM2(require_src());
+    var CliEnabledLanguagesParser = class _CliEnabledLanguagesParser {
+      static validator = new import_clean_architecture_highlighter_core.EnabledLanguagesValidator(new import_clean_architecture_highlighter_core.SupportedLanguageRegistry());
+      static parse(value) {
+        const languages = value.split(",").map((language) => language.trim()).filter((language) => language.length > 0);
+        if (languages.length === 0) {
+          throw new InvalidArgumentError("Expected at least one language identifier.");
+        }
+        try {
+          _CliEnabledLanguagesParser.validator.validate(languages);
+        } catch (error2) {
+          if (error2 instanceof import_clean_architecture_highlighter_core.UnsupportedLanguageError) {
+            throw new InvalidArgumentError(error2.message);
+          }
+          throw error2;
+        }
+        return languages;
+      }
+    };
+    var CliOutputFormatParser = class {
+      static parse(value) {
+        if (value === "text" || value === "json") {
+          return value;
+        }
+        throw new InvalidArgumentError("Expected text or json.");
+      }
+    };
+    var import_node_fs = __require("node:fs");
+    var import_node_path = __require("node:path");
+    var import_clean_architecture_highlighter_core3 = __toESM2(require_src());
+    var import_clean_architecture_highlighter_core2 = __toESM2(require_src());
+    var CliDocument = class {
+      constructor(path6, content) {
+        this.content = content;
+        this.uri = new import_clean_architecture_highlighter_core2.SourceUri(path6);
+      }
+      content;
+      uri;
+      getText() {
+        return this.content;
+      }
+      positionAt(offset) {
+        const beforeOffset = this.content.slice(0, offset);
+        const lines = beforeOffset.split(/\r\n|\r|\n/);
+        return {
+          line: lines.length - 1,
+          character: lines[lines.length - 1].length
+        };
+      }
+    };
+    var CliViolation = class {
+      constructor(filePath, violation) {
+        this.filePath = filePath;
+        this.line = violation.startLine + 1;
+        this.character = violation.startCharacter + 1;
+        this.message = violation.message;
+      }
+      filePath;
+      line;
+      character;
+      message;
+    };
+    var Check = class {
+      constructor(input, dependencyExtractors = new import_clean_architecture_highlighter_core3.DependencyExtractorRegistry(), supportedLanguages = new import_clean_architecture_highlighter_core3.SupportedLanguageRegistry()) {
+        this.input = input;
+        this.dependencyExtractors = dependencyExtractors;
+        this.supportedLanguages = supportedLanguages;
+      }
+      input;
+      dependencyExtractors;
+      supportedLanguages;
+      get violations() {
+        return this.input.files.paths.flatMap((filePath) => this.checkFile(filePath));
+      }
+      checkFile(filePath) {
+        const languageId = this.supportedLanguages.getLanguageIdFromExtension((0, import_node_path.extname)(filePath));
+        if (!languageId || !this.input.configuration.config.enabledLanguages.includes(languageId)) {
+          return [];
+        }
+        const extractor = this.dependencyExtractors.get(languageId);
+        if (!extractor) {
+          return [];
+        }
+        this.input.options.logger.info(`Checking file: ${this.toOutputPath((0, import_node_path.relative)(this.input.files.outputRoot, filePath))}`);
+        const documentPath = this.toDocumentPath((0, import_node_path.relative)(this.input.files.projectRoot, filePath));
+        const document = new CliDocument(documentPath, (0, import_node_fs.readFileSync)(filePath, "utf8"));
+        const analyzer = new import_clean_architecture_highlighter_core3.AnalyzeSourceFile(
+          extractor,
+          this.input.configuration.allowedDependencies,
+          this.input.aliases
+        );
+        return analyzer.violationsFor(document).map(
+          (violation) => new CliViolation(this.toOutputPath((0, import_node_path.relative)(this.input.files.outputRoot, filePath)), violation)
+        );
+      }
+      toDocumentPath(path6) {
+        return `/${path6.split(import_node_path.sep).join("/")}`;
+      }
+      toOutputPath(path6) {
+        return path6.split(import_node_path.sep).join("/");
+      }
+    };
+    var import_clean_architecture_highlighter_core5 = __toESM2(require_src());
+    var import_clean_architecture_highlighter_core4 = __toESM2(require_src());
+    var CliConfiguration = class {
+      constructor(source) {
+        this.source = source;
+        this.fileConfiguration = this.source.fileConfiguration;
+      }
+      source;
+      fileConfiguration;
+      get config() {
+        return new import_clean_architecture_highlighter_core4.DefaultConfiguration(
+          this.fileConfiguration.layers ?? {},
+          this.source.sourceFolder ?? this.fileConfiguration.sourceFolder,
+          this.source.enabledLanguages ?? this.fileConfiguration.enabledLanguages
+        ).config;
+      }
+      get allowedDependencies() {
+        return new import_clean_architecture_highlighter_core4.AllowedDependenciesConfiguration(this.config).allowedDependencies;
+      }
+    };
+    var import_node_fs2 = __require("node:fs");
+    var import_node_path2 = __require("node:path");
+    var FilesToCheck = class {
+      projectRoot;
+      outputRoot;
+      sourcePath;
+      paths;
+      constructor(target) {
+        this.projectRoot = target.projectRoot;
+        this.outputRoot = target.outputRoot;
+        this.sourcePath = target.sourcePath;
+        this.paths = this.collectFilesFrom(target);
+      }
+      collectFilesFrom(target) {
+        return target.filePath ? [target.filePath] : this.collectFiles(target.sourcePath);
+      }
+      collectFiles(path6) {
+        return (0, import_node_fs2.readdirSync)(path6, { withFileTypes: true }).flatMap((entry) => this.collectEntry(path6, entry));
+      }
+      collectEntry(parentPath, entry) {
+        const path6 = (0, import_node_path2.join)(parentPath, entry.name);
+        if (entry.isDirectory()) {
+          return this.collectFiles(path6);
+        }
+        return entry.isFile() ? [path6] : [];
+      }
+    };
+    var import_node_fs3 = __require("node:fs");
+    var import_node_path3 = __require("node:path");
+    var SourceFolderNotFoundError = class extends Error {
+      constructor(sourceFolder, targetPath) {
+        super(`Source folder '${sourceFolder}' was not found under '${targetPath}'. Use --source-folder or pass the source folder path directly.`);
+        this.name = "SourceFolderNotFoundError";
+      }
+    };
+    var FilesToCheckTarget = class _FilesToCheckTarget {
+      constructor(projectRoot, outputRoot, sourcePath, filePath) {
+        this.projectRoot = projectRoot;
+        this.outputRoot = outputRoot;
+        this.sourcePath = sourcePath;
+        this.filePath = filePath;
+      }
+      projectRoot;
+      outputRoot;
+      sourcePath;
+      filePath;
+      static fromPath(targetPath, sourceFolder) {
+        const targetStat = (0, import_node_fs3.statSync)(targetPath);
+        if (targetStat.isFile()) {
+          return new _FilesToCheckTarget((0, import_node_path3.dirname)((0, import_node_path3.dirname)(targetPath)), (0, import_node_path3.dirname)(targetPath), targetPath, targetPath);
+        }
+        if (sourceFolder === void 0) {
+          return new _FilesToCheckTarget(targetPath, targetPath, targetPath);
+        }
+        const sourceFolderPath = (0, import_node_path3.join)(targetPath, sourceFolder);
+        try {
+          if ((0, import_node_fs3.statSync)(sourceFolderPath).isDirectory()) {
+            return new _FilesToCheckTarget(targetPath, targetPath, sourceFolderPath);
+          }
+        } catch {
+        }
+        if ((0, import_node_path3.basename)(targetPath) === sourceFolder) {
+          return new _FilesToCheckTarget((0, import_node_path3.dirname)(targetPath), targetPath, targetPath);
+        }
+        throw new SourceFolderNotFoundError(sourceFolder, targetPath);
+      }
+    };
+    var CheckInput = class {
+      constructor(options) {
+        this.options = options;
+        this.configuration = new CliConfiguration(this.options.configurationSource);
+        this.files = new FilesToCheck(FilesToCheckTarget.fromPath(
+          this.options.targetPath,
+          this.configuration.config.sourceFolder
+        ));
+        this.aliases = new import_clean_architecture_highlighter_core5.LayerAlias(
+          this.configuration.config.layers.domain.aliases,
+          this.configuration.config.layers.application.aliases,
+          this.configuration.config.layers.infrastructure.aliases
+        );
+      }
+      options;
+      configuration;
+      files;
+      aliases;
+      logSummary() {
+        const config = this.configuration.config;
+        this.options.logger.info(`Analyzing path: ${this.options.targetPath}`);
+        this.options.logger.info(`Source folder: ${config.sourceFolder ?? "not set"}`);
+        this.options.logger.info(`Enabled languages: ${config.enabledLanguages.join(", ")}`);
+        this.options.logger.info(`Project root: ${this.files.projectRoot}`);
+        this.options.logger.info(`Source path: ${this.files.sourcePath}`);
+      }
+      get checkedFilesCount() {
+        return this.files.paths.length;
+      }
+    };
+    var import_node_path4 = __require("node:path");
+    var CliLogger = class _CliLogger {
+      constructor(verbose) {
+        this.verbose = verbose;
+      }
+      verbose;
+      static silent = new _CliLogger(false);
+      info(message) {
+        if (this.verbose) {
+          console.error(message);
+        }
+      }
+      warn(message) {
+        console.warn(`Warning: ${message}`);
+      }
+    };
+    var import_node_fs4 = __require("node:fs");
+    var import_clean_architecture_highlighter_core6 = __toESM2(require_src());
+    var CliConfigurationValues = class _CliConfigurationValues {
+      constructor(values) {
+        this.values = values;
+      }
+      values;
+      static empty() {
+        return new _CliConfigurationValues({});
+      }
+      static fromJson(json) {
+        return new _CliConfigurationValues(json);
+      }
+      get layers() {
+        return this.values.layers ?? {};
+      }
+      get sourceFolder() {
+        return this.values.sourceFolder;
+      }
+      get enabledLanguages() {
+        return this.values.enabledLanguages;
+      }
+    };
+    var CliConfigurationFile = class _CliConfigurationFile {
+      constructor(values) {
+        this.values = values;
+      }
+      values;
+      static empty() {
+        return new _CliConfigurationFile(CliConfigurationValues.empty());
+      }
+      static fromPath(path6, logger = CliLogger.silent) {
+        const values = CliConfigurationValues.fromJson(JSON.parse((0, import_node_fs4.readFileSync)(path6, "utf8")));
+        if (values.enabledLanguages) {
+          _CliConfigurationFile.warnUnsupportedLanguages(values.enabledLanguages, logger);
+        }
+        return new _CliConfigurationFile(values);
+      }
+      get layers() {
+        return this.values.layers;
+      }
+      get sourceFolder() {
+        return this.values.sourceFolder;
+      }
+      get enabledLanguages() {
+        return this.values.enabledLanguages;
+      }
+      static warnUnsupportedLanguages(languages, logger) {
+        try {
+          new import_clean_architecture_highlighter_core6.EnabledLanguagesValidator(new import_clean_architecture_highlighter_core6.SupportedLanguageRegistry()).validate(languages);
+        } catch (error2) {
+          if (error2 instanceof import_clean_architecture_highlighter_core6.UnsupportedLanguageError) {
+            logger.warn(error2.message);
+          }
+        }
+      }
+    };
+    var CliConfigurationSource = class _CliConfigurationSource {
+      constructor(fileConfiguration, sourceFolder, enabledLanguages) {
+        this.fileConfiguration = fileConfiguration;
+        this.sourceFolder = sourceFolder;
+        this.enabledLanguages = enabledLanguages;
+      }
+      fileConfiguration;
+      sourceFolder;
+      enabledLanguages;
+      static fromOptions(configPath, sourceFolder, enabledLanguages, logger = CliLogger.silent) {
+        return new _CliConfigurationSource(
+          configPath ? CliConfigurationFile.fromPath(configPath, logger) : CliConfigurationFile.empty(),
+          sourceFolder,
+          enabledLanguages
+        );
+      }
+    };
+    var CheckInputOptions = class _CheckInputOptions {
+      constructor(path6, configPath, sourceFolder, enabledLanguages, verbose = false) {
+        this.path = path6;
+        this.configPath = configPath;
+        this.sourceFolder = sourceFolder;
+        this.enabledLanguages = enabledLanguages;
+        this.verbose = verbose;
+      }
+      path;
+      configPath;
+      sourceFolder;
+      enabledLanguages;
+      verbose;
+      static fromCli(path6, configPath, sourceFolder, enabledLanguages, verbose = false) {
+        return new _CheckInputOptions(path6, configPath, sourceFolder, enabledLanguages, verbose);
+      }
+      get targetPath() {
+        return this.resolveFromInitialCwd(this.path);
+      }
+      get configurationSource() {
+        return CliConfigurationSource.fromOptions(
+          this.configPath ? this.resolveFromInitialCwd(this.configPath) : void 0,
+          this.sourceFolder,
+          this.enabledLanguages,
+          this.logger
+        );
+      }
+      get logger() {
+        return new CliLogger(this.verbose);
+      }
+      resolveFromInitialCwd(path6) {
+        return (0, import_node_path4.resolve)(this.initialCwd, path6);
+      }
+      get initialCwd() {
+        return process.env.INIT_CWD ?? process.cwd();
+      }
+    };
+    var JsonOutput = class {
+      constructor(violations) {
+        this.violations = violations;
+      }
+      violations;
+      get value() {
+        return JSON.stringify(this.violations, null, 2);
+      }
+    };
+    var TextOutput = class {
+      constructor(violations, useColor = false) {
+        this.violations = violations;
+        this.useColor = useColor;
+      }
+      violations;
+      useColor;
+      get value() {
+        if (this.violations.length === 0) {
+          return `${this.green("OK")} No architecture violations found.`;
+        }
+        const lines = this.violations.map((violation) => {
+          const label = this.red("violation:");
+          return `${label} ${violation.filePath}:${violation.line}:${violation.character} ${violation.message}`;
+        });
+        lines.push("", `${this.red("VIOLATION")} ${this.violations.length} architecture ${this.violationWord()} found.`);
+        return lines.join("\n");
+      }
+      violationWord() {
+        return this.violations.length === 1 ? "violation" : "violations";
+      }
+      red(value) {
+        return this.color(value, "31");
+      }
+      green(value) {
+        return this.color(value, "32");
+      }
+      color(value, code) {
+        return this.useColor ? `\x1B[${code}m${value}\x1B[0m` : value;
+      }
+    };
+    var ViolationFormatter = class _ViolationFormatter {
+      constructor(violations, format, useColor = _ViolationFormatter.shouldUseColor(format)) {
+        this.violations = violations;
+        this.format = format;
+        this.useColor = useColor;
+      }
+      violations;
+      format;
+      useColor;
+      get output() {
+        if (this.format === "json") {
+          return new JsonOutput(this.violations).value;
+        }
+        return new TextOutput(this.violations, this.useColor).value;
+      }
+      static shouldUseColor(format) {
+        return format === "text" && process.stdout.isTTY && process.env.NO_COLOR === void 0;
+      }
+    };
+    function runCheck2(input) {
+      const checkInput = new CheckInput(CheckInputOptions.fromCli(
+        input.path,
+        input.config,
+        input.sourceFolder,
+        input.enabledLanguages,
+        input.verbose ?? false
+      ));
+      checkInput.logSummary();
+      const violations = new Check(checkInput).violations;
+      checkInput.options.logger.info(`Checked files: ${checkInput.checkedFilesCount}`);
+      checkInput.options.logger.info(`Violations found: ${violations.length}`);
+      return {
+        exitCode: violations.length > 0 && input.failOnViolations !== false ? 1 : 0,
+        checkedFilesCount: checkInput.checkedFilesCount,
+        violations,
+        output: new ViolationFormatter(violations, input.format).output
+      };
+    }
+    function runCli(argv = process.argv) {
+      const cliVersion = "0.2.0";
+      const program2 = new Command2();
+      program2.name("clean-arch").description("Check Clean Architecture dependency boundaries from the terminal.").version(cliVersion).showHelpAfterError().showSuggestionAfterError();
+      program2.command("check").description("Check a project or source folder.").argument("<path>", "Project path or source folder path to analyze.").option("--source-folder <folder>", "Source folder relative to the project root.").option("--enabled-languages <languages>", "Comma-separated language identifiers to analyze.", CliEnabledLanguagesParser.parse).option("--config <path>", "Path to a JSON configuration file.").option("--format <format>", "Output format: text or json.", CliOutputFormatParser.parse, "text").option("--strict", "Fail with exit code 1 when architecture violations are found. This is the default behavior.").option("--no-fail", "Report architecture violations without returning exit code 1.").option("--verbose", "Print analysis details to stderr.").addHelpText("after", `
+
+Examples:
+  $ clean-arch check .
+  $ clean-arch check ./src --enabled-languages typescript,csharp
+  $ clean-arch check . --format json
+  $ clean-arch check . --no-fail`).action((path6, options) => {
+        try {
+          if (options.strict && options.fail === false) {
+            throw new Error("Options --strict and --no-fail cannot be used together.");
+          }
+          const result = runCheck2({
+            path: path6,
+            config: options.config,
+            sourceFolder: options.sourceFolder,
+            enabledLanguages: options.enabledLanguages,
+            format: options.format,
+            verbose: options.verbose,
+            failOnViolations: options.fail
+          });
+          if (result.output) {
+            console.log(result.output);
+          }
+          process.exitCode = result.exitCode;
+        } catch (error2) {
+          console.error(error2 instanceof Error ? `Error: ${error2.message}` : error2);
+          process.exitCode = 2;
+        }
+      });
+      program2.parse(argv);
+    }
+    if (__require.main === module) {
+      runCli();
+    }
+  }
+});
+
 // ../../node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js
 var core_exports = {};
 __export(core_exports, {
@@ -18896,11 +24100,11 @@ var tunnel = __toESM(require_tunnel2(), 1);
 var import_undici = __toESM(require_undici(), 1);
 var __awaiter = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -18916,7 +24120,7 @@ var __awaiter = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -18989,26 +24193,26 @@ var HttpClientResponse = class {
   }
   readBody() {
     return __awaiter(this, void 0, void 0, function* () {
-      return new Promise((resolve3) => __awaiter(this, void 0, void 0, function* () {
+      return new Promise((resolve2) => __awaiter(this, void 0, void 0, function* () {
         let output = Buffer.alloc(0);
         this.message.on("data", (chunk) => {
           output = Buffer.concat([output, chunk]);
         });
         this.message.on("end", () => {
-          resolve3(output.toString());
+          resolve2(output.toString());
         });
       }));
     });
   }
   readBodyBuffer() {
     return __awaiter(this, void 0, void 0, function* () {
-      return new Promise((resolve3) => __awaiter(this, void 0, void 0, function* () {
+      return new Promise((resolve2) => __awaiter(this, void 0, void 0, function* () {
         const chunks = [];
         this.message.on("data", (chunk) => {
           chunks.push(chunk);
         });
         this.message.on("end", () => {
-          resolve3(Buffer.concat(chunks));
+          resolve2(Buffer.concat(chunks));
         });
       }));
     });
@@ -19211,14 +24415,14 @@ var HttpClient = class {
    */
   requestRaw(info2, data) {
     return __awaiter(this, void 0, void 0, function* () {
-      return new Promise((resolve3, reject) => {
+      return new Promise((resolve2, reject) => {
         function callbackForResult(err, res) {
           if (err) {
             reject(err);
           } else if (!res) {
             reject(new Error("Unknown error"));
           } else {
-            resolve3(res);
+            resolve2(res);
           }
         }
         this.requestRawWithCallback(info2, data, callbackForResult);
@@ -19462,12 +24666,12 @@ var HttpClient = class {
     return __awaiter(this, void 0, void 0, function* () {
       retryNumber = Math.min(ExponentialBackoffCeiling, retryNumber);
       const ms = ExponentialBackoffTimeSlice * Math.pow(2, retryNumber);
-      return new Promise((resolve3) => setTimeout(() => resolve3(), ms));
+      return new Promise((resolve2) => setTimeout(() => resolve2(), ms));
     });
   }
   _processResponse(res, options) {
     return __awaiter(this, void 0, void 0, function* () {
-      return new Promise((resolve3, reject) => __awaiter(this, void 0, void 0, function* () {
+      return new Promise((resolve2, reject) => __awaiter(this, void 0, void 0, function* () {
         const statusCode = res.message.statusCode || 0;
         const response = {
           statusCode,
@@ -19475,7 +24679,7 @@ var HttpClient = class {
           headers: {}
         };
         if (statusCode === HttpCodes.NotFound) {
-          resolve3(response);
+          resolve2(response);
         }
         function dateTimeDeserializer(key, value) {
           if (typeof value === "string") {
@@ -19514,7 +24718,7 @@ var HttpClient = class {
           err.result = response.result;
           reject(err);
         } else {
-          resolve3(response);
+          resolve2(response);
         }
       }));
     });
@@ -19525,11 +24729,11 @@ var lowercaseKeys = (obj) => Object.keys(obj).reduce((c, k) => (c[k.toLowerCase(
 // ../../node_modules/.pnpm/@actions+http-client@4.0.1/node_modules/@actions/http-client/lib/auth.js
 var __awaiter2 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -19545,7 +24749,7 @@ var __awaiter2 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -19576,11 +24780,11 @@ var BearerCredentialHandler = class {
 // ../../node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/oidc-utils.js
 var __awaiter3 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -19596,7 +24800,7 @@ var __awaiter3 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -19665,11 +24869,11 @@ import { EOL as EOL3 } from "os";
 import { constants, promises } from "fs";
 var __awaiter4 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -19685,7 +24889,7 @@ var __awaiter4 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -19987,11 +25191,11 @@ import * as fs2 from "fs";
 import * as path2 from "path";
 var __awaiter5 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -20007,7 +25211,7 @@ var __awaiter5 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -20111,11 +25315,11 @@ function isUnixExecutable(stats) {
 // ../../node_modules/.pnpm/@actions+io@3.0.2/node_modules/@actions/io/lib/io.js
 var __awaiter6 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -20131,7 +25335,7 @@ var __awaiter6 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -20205,11 +25409,11 @@ function findInPath(tool) {
 import { setTimeout as setTimeout2 } from "timers";
 var __awaiter7 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -20225,7 +25429,7 @@ var __awaiter7 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -20444,7 +25648,7 @@ var ToolRunner = class extends events.EventEmitter {
         this.toolPath = path4.resolve(process.cwd(), this.options.cwd || process.cwd(), this.toolPath);
       }
       this.toolPath = yield which(this.toolPath, true);
-      return new Promise((resolve3, reject) => __awaiter7(this, void 0, void 0, function* () {
+      return new Promise((resolve2, reject) => __awaiter7(this, void 0, void 0, function* () {
         this._debug(`exec tool: ${this.toolPath}`);
         this._debug("arguments:");
         for (const arg of this.args) {
@@ -20527,7 +25731,7 @@ var ToolRunner = class extends events.EventEmitter {
           if (error2) {
             reject(error2);
           } else {
-            resolve3(exitCode);
+            resolve2(exitCode);
           }
         });
         if (this.options.input) {
@@ -20650,11 +25854,11 @@ var ExecState = class _ExecState extends events.EventEmitter {
 // ../../node_modules/.pnpm/@actions+exec@3.0.0/node_modules/@actions/exec/lib/exec.js
 var __awaiter8 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -20670,7 +25874,7 @@ var __awaiter8 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -20723,11 +25927,11 @@ function getExecOutput(commandLine, args, options) {
 // ../../node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/platform.js
 var __awaiter9 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -20743,7 +25947,7 @@ var __awaiter9 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -20802,11 +26006,11 @@ function getDetails() {
 // ../../node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js
 var __awaiter10 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve3) {
-      resolve3(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve3, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -20822,7 +26026,7 @@ var __awaiter10 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve3(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -20948,1322 +26152,8 @@ function getIDToken(aud) {
   });
 }
 
-// ../cli/src/check/check.ts
-import { readFileSync } from "node:fs";
-import { extname as extname2, relative as relative2, sep as sep3 } from "node:path";
-
-// ../core/src/domain/restrictions/architecture-violation.ts
-var ArchitectureViolation = class {
-  constructor(violation, position) {
-    this.violation = violation;
-    this.position = position;
-  }
-  violation;
-  position;
-  isViolation() {
-    return this.violation.isViolation();
-  }
-  get message() {
-    return this.violation.message;
-  }
-  get startLine() {
-    return this.position.lineStart;
-  }
-  get startCharacter() {
-    return this.position.start;
-  }
-  get endLine() {
-    return this.position.lineEnd;
-  }
-  get endCharacter() {
-    return this.position.end;
-  }
-};
-
-// ../core/src/domain/restrictions/layer-violation.ts
-var LayerViolation = class {
-  constructor(fromLayer, toLayer, allowedDependencies) {
-    this.fromLayer = fromLayer;
-    this.toLayer = toLayer;
-    this.allowedDependencies = allowedDependencies;
-  }
-  fromLayer;
-  toLayer;
-  allowedDependencies;
-  isViolation() {
-    return !this.allowedDependencies.isAllowed(this.fromLayer, this.toLayer);
-  }
-  get message() {
-    return `${this.fromLayer} layer should not depend on ${this.toLayer} layer.`;
-  }
-};
-
-// ../core/src/domain/sources/dependencies/dependency-statement.ts
-var DependencyStatement = class {
-  constructor(text, path6, position, allowedDependencies, aliases) {
-    this.text = text;
-    this.path = path6;
-    this.position = position;
-    this.allowedDependencies = allowedDependencies;
-    const layer = aliases.getLayer(path6);
-    const toLayer = text.layer;
-    if (!layer || !toLayer) {
-      this._violation = null;
-      return;
-    }
-    this._violation = new LayerViolation(layer, toLayer, allowedDependencies), position;
-  }
-  text;
-  path;
-  position;
-  allowedDependencies;
-  _violation;
-  isViolation() {
-    return this._violation?.isViolation() ?? false;
-  }
-  get violation() {
-    return this._violation;
-  }
-};
-
-// ../core/src/domain/sources/layer/layered-component.ts
-var LayeredComponent = class {
-  constructor(path6, aliases) {
-    this.path = path6;
-    this.aliases = aliases;
-    this.layer = aliases.getLayer(path6);
-  }
-  path;
-  aliases;
-  layer;
-  isDomain() {
-    return this.aliases.isDomain(this.path);
-  }
-  isApplication() {
-    return this.aliases.isApplication(this.path);
-  }
-  isInfrastructure() {
-    return this.aliases.isInfrastructure(this.path);
-  }
-};
-
-// ../core/src/domain/sources/layer/layer-path.ts
-var LayerPath = class extends LayeredComponent {
-  constructor(path6, aliases) {
-    super(path6, aliases);
-    this.path = path6;
-  }
-  path;
-};
-
-// ../core/src/domain/sources/source-file.ts
-var SourceFile = class extends LayeredComponent {
-  constructor(sourceUri, extractedDependencies, allowedDependencies, aliases) {
-    super(sourceUri.path, aliases);
-    this.allowedDependencies = allowedDependencies;
-    this.dependencies = extractedDependencies.map(
-      (dependency) => new DependencyStatement(new LayerPath(dependency.path, this.aliases), this.path, dependency.position, this.allowedDependencies, this.aliases)
-    );
-  }
-  allowedDependencies;
-  dependencies = [];
-  get violations() {
-    return this.dependencies.filter((dependency) => dependency.isViolation()).map((dependency) => new ArchitectureViolation(dependency.violation, dependency.position));
-  }
-};
-
-// ../core/src/domain/sources/source-uri.ts
-var SourceUri = class {
-  path;
-  constructor(path6) {
-    if (typeof path6 !== "string") {
-      throw new Error("SourceUri path must be a string.");
-    }
-    this.path = path6;
-  }
-};
-
-// ../core/src/application/analyze-source-file.ts
-var AnalyzeSourceFile = class {
-  constructor(extractor, allowedDependencies, aliases) {
-    this.extractor = extractor;
-    this.allowedDependencies = allowedDependencies;
-    this.aliases = aliases;
-  }
-  extractor;
-  allowedDependencies;
-  aliases;
-  violationsFor(document) {
-    return new SourceFile(
-      new SourceUri(document.uri.path),
-      this.extractor.extract(document),
-      this.allowedDependencies,
-      this.aliases
-    ).violations;
-  }
-};
-
-// ../core/src/application/configuration/components/layers/allowed-dependencies/allowed-layer-dependencies.ts
-var AllowedLayerDependencies = class {
-  constructor(defaults, overrides = []) {
-    this.defaults = defaults;
-    this.overrides = overrides;
-    this.value = Array.from(new Set(
-      [...defaults, ...overrides].map((layer) => layer.trim()).filter((layer) => layer.length > 0)
-    ));
-  }
-  defaults;
-  overrides;
-  value;
-};
-
-// ../core/src/application/configuration/components/layers/layer-component.ts
-var LayerComponent = class {
-  constructor(aliases, allowedDependencies) {
-    this.aliases = aliases;
-    this.allowedDependencies = allowedDependencies;
-    this._config = {
-      aliases: this.aliases,
-      allowedDependencies: this.allowedDependencies.value
-    };
-  }
-  aliases;
-  allowedDependencies;
-  _config;
-  static DEFAULT_LAYERS = {
-    domain: {
-      aliases: ["domain"],
-      allowedDependencies: ["domain"]
-    },
-    application: {
-      aliases: ["application"],
-      allowedDependencies: ["domain", "application"]
-    },
-    infrastructure: {
-      aliases: ["infrastructure"],
-      allowedDependencies: ["domain", "application", "infrastructure"]
-    }
-  };
-  get config() {
-    return this._config;
-  }
-};
-
-// ../core/src/application/configuration/components/layers/application-layer.configuration.ts
-var ApplicationLayerConfiguration = class _ApplicationLayerConfiguration extends LayerComponent {
-  static DEFAULT_APPLICATION_LAYER = LayerComponent.DEFAULT_LAYERS.application;
-  constructor(layer) {
-    super(
-      layer?.aliases ?? _ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.aliases,
-      new AllowedLayerDependencies(
-        _ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies,
-        layer?.allowedDependencies
-      )
-    );
-  }
-};
-
-// ../core/src/application/configuration/components/layers/domain-layer.configuration.ts
-var DomainLayerConfiguration = class _DomainLayerConfiguration extends LayerComponent {
-  static DEFAULT_DOMAIN_LAYER = LayerComponent.DEFAULT_LAYERS.domain;
-  constructor(layer) {
-    super(
-      layer?.aliases ?? _DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.aliases,
-      new AllowedLayerDependencies(
-        _DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies,
-        layer?.allowedDependencies
-      )
-    );
-  }
-};
-
-// ../core/src/application/configuration/components/layers/infrastructure-layer.configuration.ts
-var InfrastructureLayerConfiguration = class _InfrastructureLayerConfiguration extends LayerComponent {
-  static DEFAULT_INFRASTRUCTURE_LAYER = LayerComponent.DEFAULT_LAYERS.infrastructure;
-  constructor(layer) {
-    super(
-      layer?.aliases ?? _InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.aliases,
-      new AllowedLayerDependencies(
-        _InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies,
-        layer?.allowedDependencies
-      )
-    );
-  }
-};
-
-// ../core/src/application/configuration/components/layers/layers.configuration.ts
-var LayersConfiguration = class {
-  domain;
-  application;
-  infrastructure;
-  constructor(layers) {
-    this.domain = new DomainLayerConfiguration(layers.domain).config;
-    this.application = new ApplicationLayerConfiguration(layers.application).config;
-    this.infrastructure = new InfrastructureLayerConfiguration(layers.infrastructure).config;
-  }
-  get config() {
-    return {
-      domain: this.domain,
-      application: this.application,
-      infrastructure: this.infrastructure
-    };
-  }
-};
-
-// ../core/src/application/configuration/components/source-folder/source-folder.configuration.ts
-var SourceFolderConfiguration = class {
-  constructor(sourceFolder) {
-    this.sourceFolder = sourceFolder;
-  }
-  sourceFolder;
-  get config() {
-    return this.sourceFolder;
-  }
-};
-
-// ../core/src/application/configuration/components/configuration-component.ts
-var ConfigurationComponent = class {
-  _config;
-  constructor(config, defaultValue) {
-    this._config = config ?? defaultValue;
-  }
-  get config() {
-    return this._config;
-  }
-};
-
-// ../core/src/application/configuration/components/enabled-languages/enabled-languages.configuration.ts
-var EnabledLanguagesConfiguration = class _EnabledLanguagesConfiguration extends ConfigurationComponent {
-  static DEFAULT_ENABLED_LANGUAGES = ["javascript", "typescript"];
-  constructor(enabledLanguages) {
-    super(enabledLanguages, _EnabledLanguagesConfiguration.DEFAULT_ENABLED_LANGUAGES);
-  }
-};
-
-// ../core/src/application/configuration/default.configuration.ts
-var DefaultConfiguration = class _DefaultConfiguration {
-  constructor(layers, sourceFolder, enabledLanguages) {
-    this.layers = layers;
-    this.sourceFolder = sourceFolder;
-    this.enabledLanguages = enabledLanguages;
-    const built = {
-      layers: new LayersConfiguration(this.layers).config,
-      sourceFolder: new SourceFolderConfiguration(this.sourceFolder).config,
-      enabledLanguages: new EnabledLanguagesConfiguration(this.enabledLanguages).config
-    };
-    this.config = Object.freeze(built);
-  }
-  layers;
-  sourceFolder;
-  enabledLanguages;
-  config;
-  static get default() {
-    return new _DefaultConfiguration({}, void 0, void 0).config;
-  }
-};
-
-// ../core/src/domain/restrictions/allowed-dependencies.ts
-var AllowedDependencies = class {
-  allowedDependencies;
-  constructor(domainDependencies, applicationDependencies, infrastructureDependencies) {
-    this.allowedDependencies = {
-      domain: domainDependencies,
-      application: applicationDependencies,
-      infrastructure: infrastructureDependencies
-    };
-  }
-  isAllowed(fromLayer, toLayer) {
-    return this.allowedDependencies[fromLayer]?.includes(toLayer);
-  }
-};
-
-// ../core/src/application/configuration/components/layers/allowed-dependencies/allowed-application-dependencies.ts
-var AllowedApplicationDependencies = class extends AllowedLayerDependencies {
-  constructor(overrides) {
-    super(ApplicationLayerConfiguration.DEFAULT_APPLICATION_LAYER.allowedDependencies, overrides);
-    this.overrides = overrides;
-  }
-  overrides;
-};
-
-// ../core/src/application/configuration/components/layers/allowed-dependencies/allowed-domain-dependencies.ts
-var AllowedDomainDependencies = class extends AllowedLayerDependencies {
-  constructor(overrides) {
-    super(DomainLayerConfiguration.DEFAULT_DOMAIN_LAYER.allowedDependencies, overrides);
-    this.overrides = overrides;
-  }
-  overrides;
-};
-
-// ../core/src/application/configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies.ts
-var AllowedInfrastructureDependencies = class extends AllowedLayerDependencies {
-  constructor(overrides) {
-    super(InfrastructureLayerConfiguration.DEFAULT_INFRASTRUCTURE_LAYER.allowedDependencies, overrides);
-    this.overrides = overrides;
-  }
-  overrides;
-};
-
-// ../core/src/application/configuration/allowed-dependencies.configuration.ts
-var AllowedDependenciesConfiguration = class {
-  allowedDependencies;
-  constructor(config) {
-    this.allowedDependencies = new AllowedDependencies(
-      new AllowedDomainDependencies(config.layers.domain.allowedDependencies).value,
-      new AllowedApplicationDependencies(config.layers.application.allowedDependencies).value,
-      new AllowedInfrastructureDependencies(config.layers.infrastructure.allowedDependencies).value
-    );
-  }
-};
-
-// ../core/src/infrastructure/languages/supported-language-registry.ts
-var SupportedLanguageRegistry = class {
-  languagesByExtension = /* @__PURE__ */ new Map([
-    [".js", "javascript"],
-    [".mjs", "javascript"],
-    [".cjs", "javascript"],
-    [".ts", "typescript"],
-    [".mts", "typescript"],
-    [".cts", "typescript"],
-    [".cs", "csharp"],
-    [".csx", "csharp"],
-    [".dart", "dart"],
-    [".ex", "elixir"],
-    [".exs", "elixir"],
-    [".go", "go"],
-    [".groovy", "groovy"],
-    [".gvy", "groovy"],
-    [".gy", "groovy"],
-    [".gsh", "groovy"],
-    [".java", "java"],
-    [".kt", "kotlin"],
-    [".kts", "kotlin"],
-    [".lua", "lua"],
-    [".php", "php"],
-    [".php3", "php"],
-    [".php4", "php"],
-    [".php5", "php"],
-    [".phtml", "php"],
-    [".py", "python"],
-    [".rb", "ruby"],
-    [".rs", "rust"],
-    [".scala", "scala"],
-    [".sc", "scala"]
-  ]);
-  supportedLanguageIds = new Set(this.languagesByExtension.values());
-  getLanguageIdFromExtension(extension) {
-    return this.languagesByExtension.get(extension.toLowerCase());
-  }
-  isSupportedLanguageId(languageId) {
-    return this.supportedLanguageIds.has(languageId);
-  }
-};
-
-// ../core/src/application/enabled-languages/enabled-languages-validation-error.ts
-var UnsupportedLanguageError = class extends Error {
-  unsupportedLanguages;
-  constructor(unsupportedLanguages) {
-    const message = unsupportedLanguages.length === 1 ? `Unsupported language identifier: ${unsupportedLanguages[0]}.` : `Unsupported language identifiers: ${unsupportedLanguages.join(", ")}.`;
-    super(message);
-    this.name = "UnsupportedLanguageError";
-    this.unsupportedLanguages = unsupportedLanguages;
-  }
-};
-
-// ../core/src/application/enabled-languages/enabled-languages-validator.ts
-var EnabledLanguagesValidator = class {
-  constructor(supportedLanguages) {
-    this.supportedLanguages = supportedLanguages;
-  }
-  supportedLanguages;
-  validate(languages) {
-    const unsupported = languages.filter((language) => !this.supportedLanguages.isSupportedLanguageId(language));
-    if (unsupported.length > 0) {
-      throw new UnsupportedLanguageError(unsupported);
-    }
-  }
-};
-
-// ../core/src/domain/sources/dependencies/dependency-position.ts
-var DependencyPosition = class {
-  constructor(lineStart, start, lineEnd, end) {
-    this.lineStart = lineStart;
-    this.start = start;
-    this.lineEnd = lineEnd;
-    this.end = end;
-  }
-  lineStart;
-  start;
-  lineEnd;
-  end;
-};
-
-// ../core/src/domain/sources/dependencies/extracted-dependency.ts
-var ExtractedDependency = class {
-  constructor(path6, position) {
-    this.path = path6;
-    this.position = position;
-  }
-  path;
-  position;
-};
-
-// ../core/src/infrastructure/extractors/delimited-dependency-extractor.ts
-var DelimitedDependencyExtractor = class {
-  delimiterRegex;
-  addTrailingSeparator;
-  patterns;
-  constructor(patterns, delimiter3 = "/", addTrailingSeparator = false) {
-    this.patterns = patterns;
-    this.delimiterRegex = new RegExp(this.escapeRegExp(delimiter3), "g");
-    this.addTrailingSeparator = addTrailingSeparator;
-  }
-  extract(document) {
-    return this.patterns.flatMap((pattern) => this.extractMatches(document, pattern));
-  }
-  extractMatches(document, pattern) {
-    const dependencies = [];
-    const text = document.getText();
-    let match;
-    pattern.regex.lastIndex = 0;
-    while (match = pattern.regex.exec(text)) {
-      const startPos = document.positionAt(match.index);
-      const endPos = document.positionAt(match.index + match[0].length);
-      const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-      dependencies.push(...this.getDependencyPaths(pattern, match).map((path6) => new ExtractedDependency(this.normalizeDependencyPath(path6), position)));
-    }
-    return dependencies;
-  }
-  getDependencyPaths(pattern, match) {
-    return pattern.dependencyPaths ? pattern.dependencyPaths(match) : [match[1]];
-  }
-  normalizeDependencyPath(path6) {
-    const normalized = path6.replace(this.delimiterRegex, "/");
-    return this.addTrailingSeparator ? `/${normalized}/` : `/${normalized}`;
-  }
-  escapeRegExp(value) {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-};
-
-// ../core/src/infrastructure/extractors/csharp-dependency-extractor.ts
-var CsharpDependencyExtractor = class _CsharpDependencyExtractor extends DelimitedDependencyExtractor {
-  static USING_REGEX = /^[ \t]*(?:global[ \t]+)?using[ \t]+(?:static[ \t]+)?(?:(?:[A-Za-z_]\w*)[ \t]*=[ \t]*)?([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
-  constructor() {
-    super([{
-      regex: _CsharpDependencyExtractor.USING_REGEX,
-      dependencyPaths: (match) => [match[1].toLowerCase()]
-    }], ".", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/dart-dependency-extractor.ts
-var DartDependencyExtractor = class _DartDependencyExtractor extends DelimitedDependencyExtractor {
-  static DIRECTIVE_REGEX = /^[ \t]*(?:@[A-Za-z_]\w*(?:\([^)]*\))?[ \t]*)*(?:import|export|part)[ \t]+["']([^"'\r\n]+)["'](?:[ \t]+(?:as|show|hide)[^;\r\n]*)?[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
-  constructor() {
-    super([{
-      regex: _DartDependencyExtractor.DIRECTIVE_REGEX,
-      dependencyPaths: (match) => [_DartDependencyExtractor.normalizeDartDependency(match[1])]
-    }], "/", true);
-  }
-  static normalizeDartDependency(path6) {
-    return path6.replace(/^package:[^/]+\//, "").replace(/\\/g, "/");
-  }
-};
-
-// ../core/src/infrastructure/extractors/ecmascript-dependency-extractor.ts
-var EcmaScriptDependencyExtractor = class _EcmaScriptDependencyExtractor extends DelimitedDependencyExtractor {
-  static IMPORT_REGEX = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]/g;
-  constructor() {
-    super([
-      {
-        regex: _EcmaScriptDependencyExtractor.IMPORT_REGEX,
-        dependencyPaths: (match) => [match[2]]
-      }
-    ]);
-  }
-};
-
-// ../core/src/infrastructure/extractors/elixir-dependency-extractor.ts
-var ElixirDependencyExtractor = class _ElixirDependencyExtractor extends DelimitedDependencyExtractor {
-  static DIRECTIVE_REGEX = /^[ \t]*(?:alias|import|require|use)[ \t]+([A-Z][A-Za-z0-9_.]*(?:\.\{[^}\r\n]+\})?)(?:[ \t]*,[^\r\n]*)?$/gm;
-  constructor() {
-    super([{
-      regex: _ElixirDependencyExtractor.DIRECTIVE_REGEX,
-      dependencyPaths: (match) => _ElixirDependencyExtractor.getDependencyPaths(match)
-    }], ".", true);
-  }
-  static getDependencyPaths(match) {
-    const modulePath = match[1];
-    const groupedAlias = modulePath.match(/^(.*)\.\{([^}]+)\}$/);
-    if (!groupedAlias) {
-      return [modulePath.toLowerCase()];
-    }
-    const [, basePath, groupedModules] = groupedAlias;
-    return groupedModules.split(",").map((moduleName) => moduleName.trim()).filter(Boolean).map((moduleName) => `${basePath}.${moduleName}`.toLowerCase());
-  }
-};
-
-// ../core/src/infrastructure/extractors/go-dependency-extractor.ts
-var GoDependencyExtractor = class _GoDependencyExtractor {
-  static SINGLE_IMPORT_REGEX = /^[ \t]*import[ \t]+(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
-  static IMPORT_BLOCK_REGEX = /^[ \t]*import[ \t]*\([ \t]*(?:\/\/.*)?\r?\n([\s\S]*?)^[ \t]*\)[ \t]*(?:\/\/.*)?$/gm;
-  static IMPORT_BLOCK_ENTRY_REGEX = /^[ \t]*(?:[._]|[A-Za-z_]\w*)?[ \t]*"([^"\r\n]+)"[ \t]*(?:\/\/.*)?$/gm;
-  extract(document) {
-    return [
-      ...this.extractSingleImports(document),
-      ...this.extractBlockImports(document)
-    ];
-  }
-  extractSingleImports(document) {
-    const dependencies = [];
-    const text = document.getText();
-    let match;
-    _GoDependencyExtractor.SINGLE_IMPORT_REGEX.lastIndex = 0;
-    while (match = _GoDependencyExtractor.SINGLE_IMPORT_REGEX.exec(text)) {
-      dependencies.push(this.toExtractedDependency(document, match[1], match.index, match[0].length));
-    }
-    return dependencies;
-  }
-  extractBlockImports(document) {
-    const dependencies = [];
-    const text = document.getText();
-    let blockMatch;
-    _GoDependencyExtractor.IMPORT_BLOCK_REGEX.lastIndex = 0;
-    while (blockMatch = _GoDependencyExtractor.IMPORT_BLOCK_REGEX.exec(text)) {
-      const blockContent = blockMatch[1];
-      const blockContentStart = blockMatch.index + blockMatch[0].indexOf(blockContent);
-      let entryMatch;
-      _GoDependencyExtractor.IMPORT_BLOCK_ENTRY_REGEX.lastIndex = 0;
-      while (entryMatch = _GoDependencyExtractor.IMPORT_BLOCK_ENTRY_REGEX.exec(blockContent)) {
-        dependencies.push(this.toExtractedDependency(
-          document,
-          entryMatch[1],
-          blockContentStart + entryMatch.index,
-          entryMatch[0].length
-        ));
-      }
-    }
-    return dependencies;
-  }
-  toExtractedDependency(document, dependencyPath, matchIndex, matchLength) {
-    const startPos = document.positionAt(matchIndex);
-    const endPos = document.positionAt(matchIndex + matchLength);
-    const position = new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-    return new ExtractedDependency(this.normalizeDependencyPath(dependencyPath), position);
-  }
-  normalizeDependencyPath(path6) {
-    return `/${path6.replace(/\\/g, "/")}/`;
-  }
-};
-
-// ../core/src/infrastructure/extractors/groovy-dependency-extractor.ts
-var GroovyDependencyExtractor = class _GroovyDependencyExtractor extends DelimitedDependencyExtractor {
-  static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_$][\w$]*)?[ \t]*(?:;[ \t]*)?(?:\/\/.*)?$/gm;
-  constructor() {
-    super([{ regex: _GroovyDependencyExtractor.IMPORT_REGEX }], ".", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/java-dependency-extractor.ts
-var JavaDependencyExtractor = class _JavaDependencyExtractor extends DelimitedDependencyExtractor {
-  static IMPORT_REGEX = /^[ \t]*import[ \t]+(?:static[ \t]+)?([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\.\*)?)[ \t]*;/gm;
-  constructor() {
-    super([{ regex: _JavaDependencyExtractor.IMPORT_REGEX }], ".", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/kotlin-dependency-extractor.ts
-var KotlinDependencyExtractor = class _KotlinDependencyExtractor extends DelimitedDependencyExtractor {
-  static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*(?:\.\*)?)(?:[ \t]+as[ \t]+[A-Za-z_][\w]*)?[ \t]*(?:\/\/.*)?$/gm;
-  constructor() {
-    super([{ regex: _KotlinDependencyExtractor.IMPORT_REGEX }], ".", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/lua-dependency-extractor.ts
-var LuaDependencyExtractor = class _LuaDependencyExtractor extends DelimitedDependencyExtractor {
-  static REQUIRE_REGEX = /^[ \t]*(?:local[ \t]+[A-Za-z_]\w*[ \t]*=[ \t]*)?require[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:--.*)?$/gm;
-  constructor() {
-    super([{
-      regex: _LuaDependencyExtractor.REQUIRE_REGEX,
-      dependencyPaths: (match) => [match[1].replace(/\./g, "/")]
-    }], "/", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/php-dependency-extractor.ts
-var PhpDependencyExtractor = class _PhpDependencyExtractor extends DelimitedDependencyExtractor {
-  static USE_REGEX = /^[ \t]*use[ \t]+(?:(?:function|const)[ \t]+)?([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
-  constructor() {
-    super([{
-      regex: _PhpDependencyExtractor.USE_REGEX,
-      dependencyPaths: (match) => _PhpDependencyExtractor.getDependencyPaths(match)
-    }], "\\", true);
-  }
-  static getDependencyPaths(match) {
-    const usePath = match[1].trim();
-    const groupedUse = usePath.match(/^(.+)\\\{(.+)\}$/);
-    if (!groupedUse) {
-      return [_PhpDependencyExtractor.withoutAlias(usePath).toLowerCase()];
-    }
-    const [, basePath, groupedImports] = groupedUse;
-    return groupedImports.split(",").map((selector) => selector.trim()).filter(Boolean).map((selector) => `${basePath}\\${_PhpDependencyExtractor.withoutAlias(selector)}`.toLowerCase());
-  }
-  static withoutAlias(path6) {
-    return path6.split(/\s+as\s+/i)[0].trim();
-  }
-};
-
-// ../core/src/infrastructure/extractors/python-dependency-extractor.ts
-var PythonDependencyExtractor = class _PythonDependencyExtractor extends DelimitedDependencyExtractor {
-  static IMPORT_REGEX = /^\s*import\s+(.+)$/gm;
-  static FROM_IMPORT_REGEX = /^\s*from\s+([A-Za-z_][\w.]*)\s+import\s+.+$/gm;
-  constructor() {
-    super([
-      {
-        regex: _PythonDependencyExtractor.IMPORT_REGEX,
-        dependencyPaths: (match) => match[1].split(",").map((module) => module.trim().split(/\s+as\s+/)[0].trim()).filter(Boolean)
-      },
-      { regex: _PythonDependencyExtractor.FROM_IMPORT_REGEX }
-    ], ".", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/ruby-dependency-extractor.ts
-var RubyDependencyExtractor = class _RubyDependencyExtractor extends DelimitedDependencyExtractor {
-  static REQUIRE_REGEX = /^[ \t]*require(?:_relative)?[ \t]*(?:\([ \t]*)?["']([^"'\r\n]+)["'][ \t]*(?:\))?[ \t]*(?:#.*)?$/gm;
-  constructor() {
-    super([{ regex: _RubyDependencyExtractor.REQUIRE_REGEX }], "/", true);
-  }
-};
-
-// ../core/src/infrastructure/extractors/rust-dependency-extractor.ts
-var RustDependencyExtractor = class _RustDependencyExtractor {
-  static USE_REGEX = /^[ \t]*use[ \t]+([^;\r\n]+);[ \t]*(?:\/\/.*)?$/gm;
-  static MOD_REGEX = /^[ \t]*(?:pub[ \t]+)?mod[ \t]+([A-Za-z_]\w*)[ \t]*;[ \t]*(?:\/\/.*)?$/gm;
-  extract(document) {
-    return [
-      ...this.extractUseDeclarations(document),
-      ...this.extractModDeclarations(document)
-    ];
-  }
-  extractUseDeclarations(document) {
-    const dependencies = [];
-    const text = document.getText();
-    let match;
-    _RustDependencyExtractor.USE_REGEX.lastIndex = 0;
-    while (match = _RustDependencyExtractor.USE_REGEX.exec(text)) {
-      const position = this.toPosition(document, match.index, match[0].length);
-      dependencies.push(..._RustDependencyExtractor.expandUsePath(match[1]).map((path6) => new ExtractedDependency(this.normalizeDependencyPath(path6), position)));
-    }
-    return dependencies;
-  }
-  extractModDeclarations(document) {
-    const dependencies = [];
-    const text = document.getText();
-    let match;
-    _RustDependencyExtractor.MOD_REGEX.lastIndex = 0;
-    while (match = _RustDependencyExtractor.MOD_REGEX.exec(text)) {
-      const position = this.toPosition(document, match.index, match[0].length);
-      dependencies.push(new ExtractedDependency(this.normalizeDependencyPath(match[1]), position));
-    }
-    return dependencies;
-  }
-  static expandUsePath(path6) {
-    const normalizedPath = path6.trim();
-    const groupStart = normalizedPath.indexOf("{");
-    if (groupStart === -1) {
-      return [_RustDependencyExtractor.withoutAlias(normalizedPath)];
-    }
-    const groupEnd = _RustDependencyExtractor.findMatchingBrace(normalizedPath, groupStart);
-    if (groupEnd === -1) {
-      return [_RustDependencyExtractor.withoutAlias(normalizedPath)];
-    }
-    const prefix = normalizedPath.slice(0, groupStart);
-    const groupContent = normalizedPath.slice(groupStart + 1, groupEnd);
-    const suffix = normalizedPath.slice(groupEnd + 1);
-    return _RustDependencyExtractor.splitTopLevel(groupContent).flatMap((item) => _RustDependencyExtractor.expandUsePath(`${prefix}${item.trim()}${suffix}`)).filter(Boolean);
-  }
-  static findMatchingBrace(value, startIndex) {
-    let depth = 0;
-    for (let index = startIndex; index < value.length; index++) {
-      const char = value[index];
-      if (char === "{") {
-        depth++;
-      }
-      if (char === "}") {
-        depth--;
-      }
-      if (depth === 0) {
-        return index;
-      }
-    }
-    return -1;
-  }
-  static splitTopLevel(value) {
-    const items = [];
-    let depth = 0;
-    let itemStart = 0;
-    for (let index = 0; index < value.length; index++) {
-      const char = value[index];
-      if (char === "{") {
-        depth++;
-      } else if (char === "}") {
-        depth--;
-      } else if (char === "," && depth === 0) {
-        items.push(value.slice(itemStart, index));
-        itemStart = index + 1;
-      }
-    }
-    items.push(value.slice(itemStart));
-    return items;
-  }
-  static withoutAlias(path6) {
-    return path6.split(/\s+as\s+/)[0].trim();
-  }
-  toPosition(document, matchIndex, matchLength) {
-    const startPos = document.positionAt(matchIndex);
-    const endPos = document.positionAt(matchIndex + matchLength);
-    return new DependencyPosition(startPos.line, startPos.character, endPos.line, endPos.character);
-  }
-  normalizeDependencyPath(path6) {
-    const normalized = path6.replace(/::/g, "/");
-    return `/${normalized}/`;
-  }
-};
-
-// ../core/src/infrastructure/extractors/scala-dependency-extractor.ts
-var ScalaDependencyExtractor = class _ScalaDependencyExtractor extends DelimitedDependencyExtractor {
-  static IMPORT_REGEX = /^[ \t]*import[ \t]+([A-Za-z_][\w]*(?:\.(?:[A-Za-z]\w*|_\w+|_|\*))*(?:\.\{[^}\r\n]+\})?)[ \t]*(?:\/\/.*)?$/gm;
-  constructor() {
-    super([{
-      regex: _ScalaDependencyExtractor.IMPORT_REGEX,
-      dependencyPaths: (match) => _ScalaDependencyExtractor.getDependencyPaths(match)
-    }], ".", true);
-  }
-  static getDependencyPaths(match) {
-    const importPath = match[1];
-    const groupedImport = importPath.match(/^(.*)\.\{([^}]+)\}$/);
-    if (!groupedImport) {
-      return [_ScalaDependencyExtractor.normalizeWildcard(importPath)];
-    }
-    const [, basePath, groupedImports] = groupedImport;
-    return groupedImports.split(",").map((selector) => _ScalaDependencyExtractor.getGroupedImportPath(basePath, selector)).filter((path6) => path6 !== void 0);
-  }
-  static getGroupedImportPath(basePath, selector) {
-    const [importedName, alias] = selector.trim().split(/\s*=>\s*/).map((part) => part.trim());
-    if (!importedName || alias === "_") {
-      return void 0;
-    }
-    return `${basePath}.${_ScalaDependencyExtractor.normalizeWildcard(importedName)}`;
-  }
-  static normalizeWildcard(value) {
-    if (value === "_") {
-      return "*";
-    }
-    return value.replace(/\._(?=\.|$)/g, ".*");
-  }
-};
-
-// ../core/src/infrastructure/extractors/dependency-extractor-registry.ts
-var DependencyExtractorRegistry = class {
-  extractors = /* @__PURE__ */ new Map([
-    ["javascript", new EcmaScriptDependencyExtractor()],
-    ["typescript", new EcmaScriptDependencyExtractor()],
-    ["csharp", new CsharpDependencyExtractor()],
-    ["dart", new DartDependencyExtractor()],
-    ["elixir", new ElixirDependencyExtractor()],
-    ["go", new GoDependencyExtractor()],
-    ["groovy", new GroovyDependencyExtractor()],
-    ["java", new JavaDependencyExtractor()],
-    ["kotlin", new KotlinDependencyExtractor()],
-    ["lua", new LuaDependencyExtractor()],
-    ["php", new PhpDependencyExtractor()],
-    ["python", new PythonDependencyExtractor()],
-    ["ruby", new RubyDependencyExtractor()],
-    ["rust", new RustDependencyExtractor()],
-    ["scala", new ScalaDependencyExtractor()]
-  ]);
-  get(languageId) {
-    return this.extractors.get(languageId);
-  }
-};
-
-// ../core/src/domain/sources/layer/layer-alias.ts
-var LayerAlias = class {
-  constructor(domainAliases, applicationAliases, infrastructureAliases) {
-    this.domainAliases = domainAliases;
-    this.applicationAliases = applicationAliases;
-    this.infrastructureAliases = infrastructureAliases;
-    this.aliases = {
-      domain: this.domainAliases.map(this.setAliasAsPath),
-      application: this.applicationAliases.map(this.setAliasAsPath),
-      infrastructure: this.infrastructureAliases.map(this.setAliasAsPath)
-    };
-  }
-  domainAliases;
-  applicationAliases;
-  infrastructureAliases;
-  LAYERS = {
-    domain: (path6) => this.isDomain(path6),
-    application: (path6) => this.isApplication(path6),
-    infrastructure: (path6) => this.isInfrastructure(path6)
-  };
-  aliases;
-  setAliasAsPath(alias) {
-    return `/${alias}/`;
-  }
-  isDomain(path6) {
-    return this.isAliasInLayer(path6, this.aliases.domain);
-  }
-  isApplication(path6) {
-    return this.isAliasInLayer(path6, this.aliases.application);
-  }
-  isInfrastructure(path6) {
-    return this.isAliasInLayer(path6, this.aliases.infrastructure);
-  }
-  isAliasInLayer(path6, aliases) {
-    const normalizedPath = this.normalizeForAliasLookup(path6);
-    return aliases.some((alias) => normalizedPath.includes(this.normalizeForAliasLookup(alias)));
-  }
-  normalizeForAliasLookup(path6) {
-    return path6.toLowerCase().replace(/[.\\]/g, "/");
-  }
-  getLayer(path6) {
-    return Object.keys(this.LAYERS).find((layer) => this.LAYERS[layer](path6));
-  }
-};
-
-// ../cli/src/adapter/cli-document.ts
-var CliDocument = class {
-  constructor(path6, content) {
-    this.content = content;
-    this.uri = new SourceUri(path6);
-  }
-  content;
-  uri;
-  getText() {
-    return this.content;
-  }
-  positionAt(offset) {
-    const beforeOffset = this.content.slice(0, offset);
-    const lines = beforeOffset.split(/\r\n|\r|\n/);
-    return {
-      line: lines.length - 1,
-      character: lines[lines.length - 1].length
-    };
-  }
-};
-
-// ../cli/src/check/cli-violation.ts
-var CliViolation = class {
-  constructor(filePath, violation) {
-    this.filePath = filePath;
-    this.line = violation.startLine + 1;
-    this.character = violation.startCharacter + 1;
-    this.message = violation.message;
-  }
-  filePath;
-  line;
-  character;
-  message;
-};
-
-// ../cli/src/check/check.ts
-var Check = class {
-  constructor(input, dependencyExtractors = new DependencyExtractorRegistry(), supportedLanguages = new SupportedLanguageRegistry()) {
-    this.input = input;
-    this.dependencyExtractors = dependencyExtractors;
-    this.supportedLanguages = supportedLanguages;
-  }
-  input;
-  dependencyExtractors;
-  supportedLanguages;
-  get violations() {
-    return this.input.files.paths.flatMap((filePath) => this.checkFile(filePath));
-  }
-  checkFile(filePath) {
-    const languageId = this.supportedLanguages.getLanguageIdFromExtension(extname2(filePath));
-    if (!languageId || !this.input.configuration.config.enabledLanguages.includes(languageId)) {
-      return [];
-    }
-    const extractor = this.dependencyExtractors.get(languageId);
-    if (!extractor) {
-      return [];
-    }
-    this.input.options.logger.info(`Checking file: ${this.toOutputPath(relative2(this.input.files.outputRoot, filePath))}`);
-    const documentPath = this.toDocumentPath(relative2(this.input.files.projectRoot, filePath));
-    const document = new CliDocument(documentPath, readFileSync(filePath, "utf8"));
-    const analyzer = new AnalyzeSourceFile(
-      extractor,
-      this.input.configuration.allowedDependencies,
-      this.input.aliases
-    );
-    return analyzer.violationsFor(document).map(
-      (violation) => new CliViolation(this.toOutputPath(relative2(this.input.files.outputRoot, filePath)), violation)
-    );
-  }
-  toDocumentPath(path6) {
-    return `/${path6.split(sep3).join("/")}`;
-  }
-  toOutputPath(path6) {
-    return path6.split(sep3).join("/");
-  }
-};
-
-// ../cli/src/configuration/cli-configuration.ts
-var CliConfiguration = class {
-  constructor(source) {
-    this.source = source;
-    this.fileConfiguration = this.source.fileConfiguration;
-  }
-  source;
-  fileConfiguration;
-  get config() {
-    return new DefaultConfiguration(
-      this.fileConfiguration.layers ?? {},
-      this.source.sourceFolder ?? this.fileConfiguration.sourceFolder,
-      this.source.enabledLanguages ?? this.fileConfiguration.enabledLanguages
-    ).config;
-  }
-  get allowedDependencies() {
-    return new AllowedDependenciesConfiguration(this.config).allowedDependencies;
-  }
-};
-
-// ../cli/src/files/files-to-check.ts
-import { readdirSync } from "node:fs";
-import { join as join3 } from "node:path";
-var FilesToCheck = class {
-  projectRoot;
-  outputRoot;
-  sourcePath;
-  paths;
-  constructor(target) {
-    this.projectRoot = target.projectRoot;
-    this.outputRoot = target.outputRoot;
-    this.sourcePath = target.sourcePath;
-    this.paths = this.collectFilesFrom(target);
-  }
-  collectFilesFrom(target) {
-    return target.filePath ? [target.filePath] : this.collectFiles(target.sourcePath);
-  }
-  collectFiles(path6) {
-    return readdirSync(path6, { withFileTypes: true }).flatMap((entry) => this.collectEntry(path6, entry));
-  }
-  collectEntry(parentPath, entry) {
-    const path6 = join3(parentPath, entry.name);
-    if (entry.isDirectory()) {
-      return this.collectFiles(path6);
-    }
-    return entry.isFile() ? [path6] : [];
-  }
-};
-
-// ../cli/src/files/files-to-check-target.ts
-import { statSync } from "node:fs";
-import { basename as basename3, dirname as dirname3, join as join4 } from "node:path";
-
-// ../cli/src/files/errors/source-folder-not-found-error.ts
-var SourceFolderNotFoundError = class extends Error {
-  constructor(sourceFolder, targetPath) {
-    super(`Source folder '${sourceFolder}' was not found under '${targetPath}'. Use --source-folder or pass the source folder path directly.`);
-    this.name = "SourceFolderNotFoundError";
-  }
-};
-
-// ../cli/src/files/files-to-check-target.ts
-var FilesToCheckTarget = class _FilesToCheckTarget {
-  constructor(projectRoot, outputRoot, sourcePath, filePath) {
-    this.projectRoot = projectRoot;
-    this.outputRoot = outputRoot;
-    this.sourcePath = sourcePath;
-    this.filePath = filePath;
-  }
-  projectRoot;
-  outputRoot;
-  sourcePath;
-  filePath;
-  static fromPath(targetPath, sourceFolder) {
-    const targetStat = statSync(targetPath);
-    if (targetStat.isFile()) {
-      return new _FilesToCheckTarget(dirname3(dirname3(targetPath)), dirname3(targetPath), targetPath, targetPath);
-    }
-    if (sourceFolder === void 0) {
-      return new _FilesToCheckTarget(targetPath, targetPath, targetPath);
-    }
-    const sourceFolderPath = join4(targetPath, sourceFolder);
-    try {
-      if (statSync(sourceFolderPath).isDirectory()) {
-        return new _FilesToCheckTarget(targetPath, targetPath, sourceFolderPath);
-      }
-    } catch {
-    }
-    if (basename3(targetPath) === sourceFolder) {
-      return new _FilesToCheckTarget(dirname3(targetPath), targetPath, targetPath);
-    }
-    throw new SourceFolderNotFoundError(sourceFolder, targetPath);
-  }
-};
-
-// ../cli/src/check/check-input.ts
-var CheckInput = class {
-  constructor(options) {
-    this.options = options;
-    this.configuration = new CliConfiguration(this.options.configurationSource);
-    this.files = new FilesToCheck(FilesToCheckTarget.fromPath(
-      this.options.targetPath,
-      this.configuration.config.sourceFolder
-    ));
-    this.aliases = new LayerAlias(
-      this.configuration.config.layers.domain.aliases,
-      this.configuration.config.layers.application.aliases,
-      this.configuration.config.layers.infrastructure.aliases
-    );
-  }
-  options;
-  configuration;
-  files;
-  aliases;
-  logSummary() {
-    const config = this.configuration.config;
-    this.options.logger.info(`Analyzing path: ${this.options.targetPath}`);
-    this.options.logger.info(`Source folder: ${config.sourceFolder ?? "not set"}`);
-    this.options.logger.info(`Enabled languages: ${config.enabledLanguages.join(", ")}`);
-    this.options.logger.info(`Project root: ${this.files.projectRoot}`);
-    this.options.logger.info(`Source path: ${this.files.sourcePath}`);
-  }
-  get checkedFilesCount() {
-    return this.files.paths.length;
-  }
-};
-
-// ../cli/src/check/check-input-options.ts
-import { resolve as resolve2 } from "node:path";
-
-// ../cli/src/output/cli-logger.ts
-var CliLogger = class _CliLogger {
-  constructor(verbose) {
-    this.verbose = verbose;
-  }
-  verbose;
-  static silent = new _CliLogger(false);
-  info(message) {
-    if (this.verbose) {
-      console.error(message);
-    }
-  }
-  warn(message) {
-    console.warn(`Warning: ${message}`);
-  }
-};
-
-// ../cli/src/configuration/cli-configuration-file.ts
-import { readFileSync as readFileSync2 } from "node:fs";
-
-// ../cli/src/configuration/cli-configuration-values.ts
-var CliConfigurationValues = class _CliConfigurationValues {
-  constructor(values) {
-    this.values = values;
-  }
-  values;
-  static empty() {
-    return new _CliConfigurationValues({});
-  }
-  static fromJson(json) {
-    return new _CliConfigurationValues(json);
-  }
-  get layers() {
-    return this.values.layers ?? {};
-  }
-  get sourceFolder() {
-    return this.values.sourceFolder;
-  }
-  get enabledLanguages() {
-    return this.values.enabledLanguages;
-  }
-};
-
-// ../cli/src/configuration/cli-configuration-file.ts
-var CliConfigurationFile = class _CliConfigurationFile {
-  constructor(values) {
-    this.values = values;
-  }
-  values;
-  static empty() {
-    return new _CliConfigurationFile(CliConfigurationValues.empty());
-  }
-  static fromPath(path6, logger = CliLogger.silent) {
-    const values = CliConfigurationValues.fromJson(JSON.parse(readFileSync2(path6, "utf8")));
-    if (values.enabledLanguages) {
-      _CliConfigurationFile.warnUnsupportedLanguages(values.enabledLanguages, logger);
-    }
-    return new _CliConfigurationFile(values);
-  }
-  get layers() {
-    return this.values.layers;
-  }
-  get sourceFolder() {
-    return this.values.sourceFolder;
-  }
-  get enabledLanguages() {
-    return this.values.enabledLanguages;
-  }
-  static warnUnsupportedLanguages(languages, logger) {
-    try {
-      new EnabledLanguagesValidator(new SupportedLanguageRegistry()).validate(languages);
-    } catch (error2) {
-      if (error2 instanceof UnsupportedLanguageError) {
-        logger.warn(error2.message);
-      }
-    }
-  }
-};
-
-// ../cli/src/configuration/cli-configuration-source.ts
-var CliConfigurationSource = class _CliConfigurationSource {
-  constructor(fileConfiguration, sourceFolder, enabledLanguages) {
-    this.fileConfiguration = fileConfiguration;
-    this.sourceFolder = sourceFolder;
-    this.enabledLanguages = enabledLanguages;
-  }
-  fileConfiguration;
-  sourceFolder;
-  enabledLanguages;
-  static fromOptions(configPath, sourceFolder, enabledLanguages, logger = CliLogger.silent) {
-    return new _CliConfigurationSource(
-      configPath ? CliConfigurationFile.fromPath(configPath, logger) : CliConfigurationFile.empty(),
-      sourceFolder,
-      enabledLanguages
-    );
-  }
-};
-
-// ../cli/src/check/check-input-options.ts
-var CheckInputOptions = class _CheckInputOptions {
-  constructor(path6, configPath, sourceFolder, enabledLanguages, verbose = false) {
-    this.path = path6;
-    this.configPath = configPath;
-    this.sourceFolder = sourceFolder;
-    this.enabledLanguages = enabledLanguages;
-    this.verbose = verbose;
-  }
-  path;
-  configPath;
-  sourceFolder;
-  enabledLanguages;
-  verbose;
-  static fromCli(path6, configPath, sourceFolder, enabledLanguages, verbose = false) {
-    return new _CheckInputOptions(path6, configPath, sourceFolder, enabledLanguages, verbose);
-  }
-  get targetPath() {
-    return this.resolveFromInitialCwd(this.path);
-  }
-  get configurationSource() {
-    return CliConfigurationSource.fromOptions(
-      this.configPath ? this.resolveFromInitialCwd(this.configPath) : void 0,
-      this.sourceFolder,
-      this.enabledLanguages,
-      this.logger
-    );
-  }
-  get logger() {
-    return new CliLogger(this.verbose);
-  }
-  resolveFromInitialCwd(path6) {
-    return resolve2(this.initialCwd, path6);
-  }
-  get initialCwd() {
-    return process.env.INIT_CWD ?? process.cwd();
-  }
-};
-
-// ../cli/src/output/json-output.ts
-var JsonOutput = class {
-  constructor(violations) {
-    this.violations = violations;
-  }
-  violations;
-  get value() {
-    return JSON.stringify(this.violations, null, 2);
-  }
-};
-
-// ../cli/src/output/text-output.ts
-var TextOutput = class {
-  constructor(violations, useColor = false) {
-    this.violations = violations;
-    this.useColor = useColor;
-  }
-  violations;
-  useColor;
-  get value() {
-    if (this.violations.length === 0) {
-      return `${this.green("OK")} No architecture violations found.`;
-    }
-    const lines = this.violations.map((violation) => {
-      const label = this.red("violation:");
-      return `${label} ${violation.filePath}:${violation.line}:${violation.character} ${violation.message}`;
-    });
-    lines.push("", `${this.red("VIOLATION")} ${this.violations.length} architecture ${this.violationWord()} found.`);
-    return lines.join("\n");
-  }
-  violationWord() {
-    return this.violations.length === 1 ? "violation" : "violations";
-  }
-  red(value) {
-    return this.color(value, "31");
-  }
-  green(value) {
-    return this.color(value, "32");
-  }
-  color(value, code) {
-    return this.useColor ? `\x1B[${code}m${value}\x1B[0m` : value;
-  }
-};
-
-// ../cli/src/output/violation-formatter.ts
-var ViolationFormatter = class _ViolationFormatter {
-  constructor(violations, format, useColor = _ViolationFormatter.shouldUseColor(format)) {
-    this.violations = violations;
-    this.format = format;
-    this.useColor = useColor;
-  }
-  violations;
-  format;
-  useColor;
-  get output() {
-    if (this.format === "json") {
-      return new JsonOutput(this.violations).value;
-    }
-    return new TextOutput(this.violations, this.useColor).value;
-  }
-  static shouldUseColor(format) {
-    return format === "text" && process.stdout.isTTY && process.env.NO_COLOR === void 0;
-  }
-};
-
-// ../cli/src/check/run-check.ts
-function runCheck(input) {
-  const checkInput = new CheckInput(CheckInputOptions.fromCli(
-    input.path,
-    input.config,
-    input.sourceFolder,
-    input.enabledLanguages,
-    input.verbose ?? false
-  ));
-  checkInput.logSummary();
-  const violations = new Check(checkInput).violations;
-  checkInput.options.logger.info(`Checked files: ${checkInput.checkedFilesCount}`);
-  checkInput.options.logger.info(`Violations found: ${violations.length}`);
-  return {
-    exitCode: violations.length > 0 && input.failOnViolations !== false ? 1 : 0,
-    checkedFilesCount: checkInput.checkedFilesCount,
-    violations,
-    output: new ViolationFormatter(violations, input.format).output
-  };
-}
+// src/index.ts
+var import_clean_architecture_highlighter_cli = __toESM(require_dist(), 1);
 
 // src/action-inputs.ts
 function parseActionInputs(getInput2) {
@@ -22316,7 +26206,7 @@ function runGithubAction(actionCore, checkRunner) {
 }
 
 // src/index.ts
-runGithubAction(core_exports, runCheck);
+runGithubAction(core_exports, import_clean_architecture_highlighter_cli.runCheck);
 /*! Bundled license information:
 
 undici/lib/web/fetch/body.js:
