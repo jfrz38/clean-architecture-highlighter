@@ -1,0 +1,123 @@
+name: Publish ESLint Plugin
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify workflow runs from main
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Publish ESLint Plugin must be run from main. Current ref is $GITHUB_REF" >&2
+            exit 1
+          fi
+
+      - name: Resolve latest ESLint Plugin release
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_PREFIX: eslint-plugin-v
+        run: |
+          TAG="$(gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName --jq '.[].tagName' | grep "^${TAG_PREFIX}" | head -n 1)"
+          if [ -z "$TAG" ]; then
+            echo "No GitHub release found for ESLint Plugin prefix $TAG_PREFIX." >&2
+            exit 1
+          fi
+
+          VERSION="${TAG#${TAG_PREFIX}}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Verify GitHub release exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: gh release view "$TAG" --repo "$GITHUB_REPOSITORY"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.version.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Verify release tag is on main
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git fetch origin main --tags
+          if ! git merge-base --is-ancestor "$TAG" origin/main; then
+            echo "Release tag $TAG is not reachable from main" >&2
+            exit 1
+          fi
+
+      - name: Verify package version matches release
+        working-directory: packages/eslint-plugin
+        env:
+          EXPECTED_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$PACKAGE_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "Release version $EXPECTED_VERSION does not match package version $PACKAGE_VERSION" >&2
+            exit 1
+          fi
+
+      - id: version-check
+        name: Check version is not already published
+        uses: jfrz38/check-version-change@v1
+        with:
+          file-path: packages/eslint-plugin/package.json
+          package-name: "@jfrz38/eslint-plugin-clean-architecture-highlighter"
+          compare-source: registry
+          registry: npm
+
+      - name: Verify version can be published
+        run: |
+          if [ "${{ steps.version-check.outputs.changed }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is already published to npm" >&2
+            exit 1
+          fi
+
+          if [ -n "${{ steps.version-check.outputs.compared-version }}" ] && [ "${{ steps.version-check.outputs.is-higher }}" != "true" ]; then
+            echo "Version ${{ steps.version-check.outputs.local-version }} is not higher than published version ${{ steps.version-check.outputs.compared-version }}" >&2
+            exit 1
+          fi
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6.0.8
+        with:
+          version: 11.1.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: make ci-install
+
+      - name: Build ESLint Plugin
+        run: make build-eslint-plugin
+
+      - name: Test ESLint Plugin
+        run: make test-eslint-plugin
+
+      - name: Package ESLint Plugin
+        run: make package-eslint-plugin
+
+      - name: Verify npm package contents
+        working-directory: packages/eslint-plugin
+        run: npm pack --dry-run
+
+      - name: Publish ESLint Plugin to npm
+        working-directory: packages/eslint-plugin
+        run: npm publish --access public

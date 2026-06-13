@@ -11,6 +11,7 @@ on:
         options:
           - cli
           - core
+          - eslint-plugin
           - github-action
           - vscode-extension
       bump:
@@ -64,6 +65,11 @@ jobs:
               echo "package_name=@jfrz38/clean-architecture-highlighter-core" >> "$GITHUB_OUTPUT"
               echo "version_file=packages/core/package.json" >> "$GITHUB_OUTPUT"
               echo "tag_prefix=core-v" >> "$GITHUB_OUTPUT"
+              ;;
+            eslint-plugin)
+              echo "package_name=@jfrz38/eslint-plugin-clean-architecture-highlighter" >> "$GITHUB_OUTPUT"
+              echo "version_file=packages/eslint-plugin/package.json" >> "$GITHUB_OUTPUT"
+              echo "tag_prefix=eslint-plugin-v" >> "$GITHUB_OUTPUT"
               ;;
             github-action)
               echo "package_name=@jfrz38/clean-architecture-highlighter-github-action" >> "$GITHUB_OUTPUT"

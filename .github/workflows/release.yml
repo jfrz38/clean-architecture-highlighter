@@ -29,6 +29,18 @@ jobs:
             validate_command: make validate-cli TEST_LANGUAGE=all
             package_command: make package-cli
             asset_path: ""
+          - release_name: ESLint Plugin
+            package_key: eslint-plugin
+            tag_prefix: eslint-plugin-v
+            package_name: "@jfrz38/eslint-plugin-clean-architecture-highlighter"
+            package_dir: packages/eslint-plugin
+            package_file: packages/eslint-plugin/package.json
+            compare_source: registry
+            compare_ref: ""
+            registry: npm
+            validate_command: make validate-eslint-plugin
+            package_command: make package-eslint-plugin
+            asset_path: ""
           - release_name: GitHub Action
             package_key: github-action
             tag_prefix: github-action-v
