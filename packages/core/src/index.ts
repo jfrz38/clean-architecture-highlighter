@@ -1,21 +1,25 @@
-export * from './document';
-export * from './configuration/default.configuration';
-export * from './configuration/allowed-dependencies.configuration';
+export * from './domain/document';
+export * from './domain/languages/supported-languages';
+export * from './domain/sources/dependencies/extractors/dependency-extractor';
+export * from './application/analyze-source-file';
+export * from './application/configuration/default.configuration';
+export * from './application/configuration/allowed-dependencies.configuration';
 export type {
     ConfigurationOptions,
     EnabledLanguages,
     Layers,
     SourceFolderPath
-} from './configuration/types.configuration';
-export * from './clean-architecture/restrictions/architecture-violation';
-export * from './configuration/components/layers/allowed-dependencies/allowed-application-dependencies';
-export * from './configuration/components/layers/allowed-dependencies/allowed-domain-dependencies';
-export * from './configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies';
-export * from './clean-architecture/restrictions/allowed-dependencies';
-export * from './clean-architecture/sources/dependencies/languages';
-export { UnsupportedLanguageError } from './clean-architecture/sources/dependencies/enabled-languages-validation-error';
-export { EnabledLanguagesValidator } from './clean-architecture/sources/dependencies/enabled-languages-validator';
-export * from './clean-architecture/sources/dependencies/extractors/dependency-extractor-registry';
-export * from './clean-architecture/sources/layer/layer-alias';
-export * from './clean-architecture/sources/source-folder';
-export * from './clean-architecture/sources/source-file';
+} from './application/configuration/types.configuration';
+export * from './domain/restrictions/architecture-violation';
+export * from './application/configuration/components/layers/allowed-dependencies/allowed-application-dependencies';
+export * from './application/configuration/components/layers/allowed-dependencies/allowed-domain-dependencies';
+export * from './application/configuration/components/layers/allowed-dependencies/allowed-infrastructure-dependencies';
+export * from './domain/restrictions/allowed-dependencies';
+export * from './infrastructure/languages/supported-language-registry';
+export { UnsupportedLanguageError } from './application/enabled-languages/enabled-languages-validation-error';
+export { EnabledLanguagesValidator } from './application/enabled-languages/enabled-languages-validator';
+export * from './infrastructure/extractors/dependency-extractor-registry';
+export * from './domain/sources/layer/layer-alias';
+export * from './domain/sources/source-folder';
+export * from './domain/sources/source-file';
+export * from './domain/sources/source-uri';

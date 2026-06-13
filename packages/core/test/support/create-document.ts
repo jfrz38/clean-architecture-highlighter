@@ -1,10 +1,9 @@
-import { CoreDocument, DocumentPosition } from '../../src/document';
+import { Document, DocumentPosition } from '../../src/domain/document';
+import { SourceUri } from '../../src/domain/sources/source-uri';
 
-export function createDocument(options: { content: string; language?: string }): CoreDocument {
+export function createDocument(options: { content: string; language?: string }): Document {
     return {
-        uri: {
-            path: ''
-        },
+        uri: new SourceUri(''),
         getText: () => options.content,
         positionAt: (offset: number) => positionAt(options.content, offset)
     };

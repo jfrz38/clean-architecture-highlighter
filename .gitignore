@@ -85,6 +85,8 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+!packages/github-action/dist/
+!packages/github-action/dist/index.js
 
 # Gatsby files
 .cache/
@@ -131,6 +133,10 @@ dist
 **/.vscode-test
 *.vsix
 .vscode
+
+# Python mypy cache
+.mypy_cache
+**/.mypy_cache
 
 # yarn v3
 .pnp.*

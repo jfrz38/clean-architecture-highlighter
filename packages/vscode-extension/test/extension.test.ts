@@ -57,6 +57,101 @@ suite('Extension Test Suite', () => {
 		}
 	});
 
+	test('keeps text import resolution as the default for TypeScript aliases', async () => {
+		const workspaceRootPath = loadWorkspace();
+
+		try {
+			await setDefaultConfigurations();
+			await setConfigurations({ enabledLanguages: ['typescript'], importResolution: 'text' });
+			await assertScenario(workspaceRootPath, {
+				name: 'TypeScript alias is not resolved in text mode',
+				file: 'native-resolution/src/domain/domain.ts',
+				diagnostics: []
+			});
+		} finally {
+			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			await setDefaultConfigurations();
+		}
+	});
+
+	test('uses native import resolution for TypeScript aliases when enabled', async () => {
+		const workspaceRootPath = loadWorkspace();
+
+		try {
+			await setDefaultConfigurations();
+			await setConfigurations({ enabledLanguages: ['typescript'], importResolution: 'native' });
+			await assertScenario(workspaceRootPath, {
+				name: 'TypeScript alias is resolved in native mode',
+				file: 'native-resolution/src/domain/domain.ts',
+				diagnostics: [
+					{
+						message: 'domain layer should not depend on infrastructure layer.',
+						severity: 'Warning',
+						startLine: 0,
+						endLine: 0
+					}
+				]
+			});
+		} finally {
+			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			await setDefaultConfigurations();
+		}
+	});
+
+	test('uses native import resolution for JavaScript aliases when enabled', async () => {
+		const workspaceRootPath = loadWorkspace();
+
+		try {
+			await setDefaultConfigurations();
+			await setConfigurations({ enabledLanguages: ['javascript'], importResolution: 'native' });
+			await assertScenario(workspaceRootPath, {
+				name: 'JavaScript alias is resolved in native mode',
+				file: 'native-resolution/src/domain/domain.js',
+				diagnostics: [
+					{
+						message: 'domain layer should not depend on infrastructure layer.',
+						severity: 'Warning',
+						startLine: 0,
+						endLine: 0
+					}
+				]
+			});
+		} finally {
+			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			await setDefaultConfigurations();
+		}
+	});
+
+	test('falls back to the existing extractor for non EcmaScript languages when native import resolution is enabled', async () => {
+		const workspaceRootPath = loadWorkspace();
+
+		try {
+			await setDefaultConfigurations();
+			await setConfigurations({ enabledLanguages: ['python'], importResolution: 'native' });
+			await assertScenario(workspaceRootPath, {
+				name: 'Python keeps existing extractor in native mode',
+				file: 'languages/python/src/domain/domain.py',
+				diagnostics: [
+					{
+						message: 'domain layer should not depend on infrastructure layer.',
+						severity: 'Warning',
+						startLine: 0,
+						endLine: 0
+					},
+					{
+						message: 'domain layer should not depend on application layer.',
+						severity: 'Warning',
+						startLine: 0,
+						endLine: 0
+					}
+				]
+			});
+		} finally {
+			await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+			await setDefaultConfigurations();
+		}
+	});
+
 	async function setConfigurations(configuration: any): Promise<void> {
 		if (!configuration) {
 			return;
@@ -65,7 +160,7 @@ suite('Extension Test Suite', () => {
 		const config = vscode.workspace.getConfiguration('clean-architecture-highlighter');
 		const updates: Thenable<void>[] = [];
 
-		for (const key of ['severityLevel', 'sourceFolder', 'enabledLanguages']) {
+		for (const key of ['severityLevel', 'sourceFolder', 'enabledLanguages', 'importResolution']) {
 			if (Object.prototype.hasOwnProperty.call(configuration, key)) {
 				updates.push(config.update(key, configuration[key], vscode.ConfigurationTarget.Global));
 			}
@@ -92,7 +187,7 @@ suite('Extension Test Suite', () => {
 	}
 
 	async function setDefaultConfigurations(): Promise<void> {
-		await setConfigurations({ ...DefaultConfiguration.default, severityLevel: 'warning' });
+		await setConfigurations({ ...DefaultConfiguration.default, severityLevel: 'warning', importResolution: 'text' });
 	}
 
 	async function assertScenario(workspaceRootPath: string, scenario: Scenario) {

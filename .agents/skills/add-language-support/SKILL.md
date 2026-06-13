@@ -5,9 +5,9 @@ description: Add opt-in support for a new language by updating core language reg
 
 # Add Language Support
 
-Use this skill to add a new supported language to the extension.
+Use this skill when adding a new supported language to Clean Architecture Highlighter.
 
-The goal is to add a language-specific dependency extractor without changing the language-agnostic architecture rules.
+The goal is to add a language-specific dependency extractor without changing the language-agnostic domain rules.
 
 ## Core rules
 
@@ -17,13 +17,10 @@ The goal is to add a language-specific dependency extractor without changing the
 - Do **not** add `onLanguage:<languageId>` for an opt-in language by default.
   - Keep `onLanguage` for default languages.
   - `onStartupFinished` lets opt-in languages work after the extension starts.
-- Keep architecture rules language-agnostic in `packages/core`; language additions should only change supported-language registration, dependency extraction, adapter registration/integration, and documentation.
-- Add VS Code integration coverage beyond enabled/disabled smoke tests when practical.
-  - Use the existing TypeScript scenarios as the reference shape.
-  - Prefer idiomatic fixtures for the target language over mechanically copying TypeScript syntax.
-- Put language syntax edge cases in extractor unit tests.
+- Keep architecture rules language-agnostic in `packages/core`; adding a language should not change domain rules.
 - Keep import/dependency extraction separate from architecture validation.
 - Use VS Code `languageId`, not file extension, as the runtime language key.
+- Tests in `packages/core/test` should mirror the `packages/core/src` layer structure.
 
 ## Implementation workflow
 
@@ -32,7 +29,7 @@ The goal is to add a language-specific dependency extractor without changing the
 Update:
 
 ```text
-packages/core/src/clean-architecture/sources/dependencies/languages.ts
+packages/core/src/infrastructure/languages/supported-language-registry.ts
 ```
 
 Add the language's file extensions to `SupportedLanguageRegistry.languagesByExtension` using the runtime language identifier as the value:
@@ -46,26 +43,41 @@ This registry is the source of truth for supported language identifiers outside 
 Also update:
 
 ```text
-packages/core/test/languages.test.ts
+packages/core/test/infrastructure/languages/supported-language-registry.test.ts
 ```
 
 Cover at least:
 
 - one representative extension resolving to the language id;
-- the language id being accepted by `isSupportedLanguageId` or `EnabledLanguagesValidator`.
+- the language id being accepted by `isSupportedLanguageId`;
+- an unsupported extension or language id still being rejected.
+
+If validation behavior changes, update application tests under:
+
+```text
+packages/core/test/application/enabled-languages/
+```
+
+Do not make `EnabledLanguagesValidator` instantiate `SupportedLanguageRegistry`; callers or adapters should inject it.
 
 ### 1. Add the extractor
 
 Create a new extractor under:
 
 ```text
-packages/core/src/clean-architecture/sources/dependencies/extractors/
+packages/core/src/infrastructure/extractors/
 ```
 
-Use the existing contract:
+Use the domain contract:
 
 ```ts
-DependencyExtractor.extract(document: CoreDocument): ExtractedDependency[]
+DependencyExtractor.extract(document: Document): ExtractedDependency[]
+```
+
+The extractor contract lives at:
+
+```text
+packages/core/src/domain/sources/dependencies/extractors/dependency-extractor.ts
 ```
 
 Each extracted dependency must include:
@@ -73,19 +85,21 @@ Each extracted dependency must include:
 - normalized dependency path;
 - `DependencyPosition` covering the import/dependency statement.
 
-Normalize the extracted dependency into the path style expected by the existing layer matcher.
+Normalize extracted dependencies into the path style expected by the existing layer matcher.
 
 Examples:
 
 - JavaScript/TypeScript path import: `../domain/user`
 - Dotted/module import: `application.use_cases.create_user` -> `/application/use_cases/create_user/`
 
+Use existing extractors as reference. Prefer extending `DelimitedDependencyExtractor` when the language can be parsed with regular expression patterns.
+
 ### 2. Register the extractor
 
 Update:
 
 ```text
-packages/core/src/clean-architecture/sources/dependencies/extractors/dependency-extractor-registry.ts
+packages/core/src/infrastructure/extractors/dependency-extractor-registry.ts
 ```
 
 Add the new VS Code `languageId` to the registry:
@@ -100,7 +114,27 @@ The extractor registry and `SupportedLanguageRegistry` are separate on purpose:
 - `DependencyExtractorRegistry` maps supported language identifiers to extraction behavior.
 - A new language normally needs both.
 
-### 3. Activation and configuration
+### 3. Preserve application wiring
+
+The application service:
+
+```text
+packages/core/src/application/analyze-source-file.ts
+```
+
+should continue to receive a `DependencyExtractor` by constructor injection. Do not make it import concrete infrastructure extractors.
+
+Adapters such as CLI and VS Code should keep choosing the concrete extractor through `DependencyExtractorRegistry`.
+
+If language validation is touched, keep the registry injected from adapter/composition code:
+
+```ts
+new EnabledLanguagesValidator(new SupportedLanguageRegistry())
+```
+
+in adapter or composition code, not inside application/domain code.
+
+### 4. Activation and configuration
 
 Update the VS Code extension package manifest only where appropriate:
 
@@ -113,7 +147,7 @@ packages/vscode-extension/package.json
 - For opt-in languages, prefer relying on `onStartupFinished` unless the user explicitly wants early activation.
 - Do **not** add the language to the default `enabledLanguages` unless explicitly requested.
 - Keep the `enabledLanguages` default in `package.json` and `EnabledLanguagesConfiguration` aligned.
-- Do not rely on the VS Code manifest alone as the supported-language source of truth; core must also know the language in `languages.ts`.
+- Do not rely on the VS Code manifest alone as the supported-language source of truth; core must also know the language in `SupportedLanguageRegistry`.
 
 If the language is opt-in, document that users must configure:
 
@@ -125,33 +159,65 @@ If the language is opt-in, document that users must configure:
 ]
 ```
 
-### 4. Add extractor unit tests
+### 5. Add extractor unit tests
 
 Add or update the extractor-specific test file under:
 
 ```text
-packages/core/test/dependency-extractors/<language>-dependency-extractor.test.ts
+packages/core/test/infrastructure/extractors/<language>-dependency-extractor.test.ts
 ```
 
 Keep one test file per extractor/language so language syntax coverage does not grow a shared monolithic test file.
+
+Use test support from:
+
+```text
+packages/core/test/support/create-document.ts
+```
 
 Cover representative cases such as:
 
 - basic import/dependency statement;
 - alternative import form, if the language has one;
-- aliases, multiple imports, multiline syntax, or comments when relevant;
+- aliases, multiple imports, multiline syntax, grouped syntax, or comments when relevant;
 - correct normalized path;
 - correct diagnostic range.
 
-Do not rely only on integration tests for parser behavior. If the test runner does not already discover nested test files, update it to load `*.test` files recursively.
+Do not rely only on integration tests for parser behavior.
 
-The current core test command already discovers nested tests through:
+The current core test command discovers nested tests through:
 
 ```text
 mocha "out/test/**/*.test.js" --ui tdd --timeout 10000
 ```
 
-### 5. Add minimal language integration fixtures
+### 6. Keep tests mirrored to source structure
+
+When adding or changing core tests, place them under the matching layer:
+
+- Domain tests:
+  - `packages/core/test/domain/...`
+- Application tests:
+  - `packages/core/test/application/...`
+- Infrastructure tests:
+  - `packages/core/test/infrastructure/...`
+- Shared test helpers:
+  - `packages/core/test/support/...`
+
+Examples:
+
+- `packages/core/src/infrastructure/extractors/foo-dependency-extractor.ts`
+  -> `packages/core/test/infrastructure/extractors/foo-dependency-extractor.test.ts`
+- `packages/core/src/infrastructure/languages/supported-language-registry.ts`
+  -> `packages/core/test/infrastructure/languages/supported-language-registry.test.ts`
+- `packages/core/src/application/enabled-languages/enabled-languages-validator.ts`
+  -> `packages/core/test/application/enabled-languages/enabled-languages-validator.test.ts`
+- `packages/core/src/domain/sources/layer/layer-alias.ts`
+  -> `packages/core/test/domain/sources/layer/layer-alias.test.ts`
+
+Do not put application tests under infrastructure merely because they use an infrastructure implementation as a convenient fake; prefer a local fake where practical.
+
+### 7. Add minimal language integration fixtures
 
 Create fixtures under:
 
@@ -190,7 +256,7 @@ application.use_cases.create_user -> /application/use_cases/create_user/
 
 This keeps the architecture rule engine unchanged.
 
-### 6. Add language integration suites
+### 8. Add language integration suites
 
 Create a language case:
 
@@ -198,7 +264,7 @@ Create a language case:
 test/scenarios/languages/cases/<language>.case.ts
 ```
 
-Use the existing language cases as the reference shape. The case should include:
+Use existing language cases as the reference shape. The case should include:
 
 - `language`;
 - `displayName`;
@@ -216,8 +282,6 @@ test/scenarios/languages/language-cases.ts
 Import the new case and add it to `languageCases`.
 
 The shared builder in `test/scenarios/languages/language-suite-builder.ts` generates the standard enabled/disabled and architecture scenarios from the case. Do not add manual registration to `test/scenarios/scenarios.ts`; it delegates to `getSelectedSuites()` in `test/scenarios/scenario-selection.ts`.
-
-Add enabled/disabled scenarios through the case and, when practical, fuller architecture scenarios equivalent to the TypeScript reference coverage.
 
 At minimum include:
 
@@ -238,7 +302,7 @@ Prefer also covering:
 - nested layer folders are detected correctly;
 - files outside the configured `sourceFolder` are ignored.
 
-Only create a dedicated suite file under `test/scenarios/languages/suites/` if the current project still uses those files for the target workflow. In the current scenario-selection flow, the generated suites come from `languageCases`.
+Only create a dedicated suite file under `test/scenarios/languages/suites/` if the current project still uses those files for the target workflow. In the current scenario-selection flow, generated suites come from `languageCases`.
 
 The old manual registration target:
 
@@ -248,7 +312,7 @@ test/scenarios/scenarios.ts
 
 should normally not be edited for new languages.
 
-### 7. Update documentation
+### 9. Update documentation
 
 Update:
 
@@ -268,7 +332,7 @@ At minimum, update `README.md`:
 
 Update `packages/cli/README.md` when the language is available through the CLI. Add the language id to the opt-in supported-language example.
 
-Update `packages/vscode-extension/README.md` if the extension-facing language support text or requirements need to mention the new language explicitly.
+Update `packages/vscode-extension/README.md` if extension-facing language support text or requirements need to mention the new language explicitly.
 
 For local manual testing, ensure `test/fixtures/.vscode/settings.json` includes the opt-in language if such a workspace settings file is present. Do not create it only for this unless local manual testing needs it:
 
@@ -326,13 +390,18 @@ If `make test-vscode-extension` fails before executing tests because the VS Code
 
 ## Completion checklist
 
-- [ ] New extractor added.
+- [ ] New extractor added under `packages/core/src/infrastructure/extractors/`.
+- [ ] Extractor implements the domain `DependencyExtractor` contract.
 - [ ] Extractor registered by VS Code `languageId`.
 - [ ] Core `SupportedLanguageRegistry` updated with language id and extensions.
-- [ ] `package.json` `contributes.languages` includes the language id, aliases, and extensions.
+- [ ] `SupportedLanguageRegistry` still implements domain `SupportedLanguages`.
+- [ ] Application/domain code does not import infrastructure.
+- [ ] `package.json` `contributes.languages` includes the language id, aliases, and extensions when appropriate.
 - [ ] Default `enabledLanguages` unchanged unless explicitly requested.
-- [ ] Extractor unit tests added for language syntax.
-- [ ] Core supported-language tests updated.
+- [ ] Extractor unit tests added under `packages/core/test/infrastructure/extractors/`.
+- [ ] Core supported-language tests updated under `packages/core/test/infrastructure/languages/`.
+- [ ] Application validation tests updated under `packages/core/test/application/enabled-languages/` if needed.
+- [ ] Core tests continue to mirror the `src` layer structure.
 - [ ] Minimal `test/fixtures/languages/<languageId>/` fixtures added.
 - [ ] `test/scenarios/languages/cases/<language>.case.ts` added.
 - [ ] New language case imported and added to `test/scenarios/languages/language-cases.ts`.

@@ -1,9 +1,11 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
-import { DependencyExtractorRegistry, LayerAlias, SourceFile, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
+import { AnalyzeSourceFile, DependencyExtractorRegistry, LayerAlias, SourceFolder } from '@jfrz38/clean-architecture-highlighter-core';
 import { State } from './state';
+import { DependencyExtractorSelector } from './dependency-extractor-selection';
+import { NativeDependencyExtractorFactory } from './native/native-dependency-extractor-factory';
+import { WorkspaceRelativePath } from './workspace/workspace-relative-path';
 
-const dependencyExtractors = new DependencyExtractorRegistry();
+const dependencyExtractorSelector = new DependencyExtractorSelector(new DependencyExtractorRegistry(), NativeDependencyExtractorFactory.create());
 
 export function checkFile(document: vscode.TextDocument, state: State, diagnostics: vscode.DiagnosticCollection) {
     if (!state.config.enabledLanguages.includes(document.languageId)) {
@@ -12,13 +14,16 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
     }
 
     const sourceFolder = new SourceFolder(state.config.sourceFolder);
-    const workspaceRelativePath = getWorkspaceRelativePath(document.uri);
+    const workspaceRelativePath = WorkspaceRelativePath.from(document.uri);
     if (!sourceFolder.contains(workspaceRelativePath ?? '')) {
         diagnostics.delete(document.uri);
         return;
     }
 
-    const extractor = dependencyExtractors.get(document.languageId);
+    const extractor = dependencyExtractorSelector.select(document, {
+        languageId: document.languageId,
+        importResolution: state.importResolution
+    });
     if (!extractor) {
         diagnostics.delete(document.uri);
         return;
@@ -30,7 +35,7 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
         state.config.layers.infrastructure.aliases
     );
 
-    const violations = new SourceFile(document, extractor.extract(document), state.allowedDependencies, aliases).violations;
+    const violations = new AnalyzeSourceFile(extractor, state.allowedDependencies, aliases).violationsFor(document);
 
     diagnostics.set(document.uri, violations.map(violation => {
         const range = new vscode.Range(
@@ -39,13 +44,4 @@ export function checkFile(document: vscode.TextDocument, state: State, diagnosti
         );
         return new vscode.Diagnostic(range, violation.message, state.severityLevel);
     }));
-}
-
-function getWorkspaceRelativePath(uri: vscode.Uri): string | undefined {
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
-    if (!workspaceFolder) {
-        return undefined;
-    }
-
-    return path.relative(workspaceFolder.uri.fsPath, uri.fsPath);
 }

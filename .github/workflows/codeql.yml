@@ -29,6 +29,9 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: javascript-typescript
+          config: |
+            paths-ignore:
+              - packages/github-action/dist/**
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v4

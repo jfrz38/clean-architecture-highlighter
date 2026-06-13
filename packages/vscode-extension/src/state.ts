@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
-import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions, EnabledLanguagesValidator, UnsupportedLanguageError } from "@jfrz38/clean-architecture-highlighter-core";
-import { Configuration, SeverityLevel } from "./configuration";
+import { AllowedApplicationDependencies, AllowedDependencies, AllowedDomainDependencies, AllowedInfrastructureDependencies, ConfigurationOptions, EnabledLanguagesValidator, SupportedLanguageRegistry, UnsupportedLanguageError } from "@jfrz38/clean-architecture-highlighter-core";
+import { Configuration, ImportResolution, SeverityLevel } from "./configuration";
 
 export class State {
   config: ConfigurationOptions;
   allowedDependencies!: AllowedDependencies;
   severityLevel!: vscode.DiagnosticSeverity;
+  importResolution!: ImportResolution;
 
   constructor() {
     this.config = Configuration.configuration;
@@ -22,10 +23,11 @@ export class State {
     );
 
     this.severityLevel = this.getSeverityLevel(Configuration.severityLevel);
+    this.importResolution = Configuration.importResolution;
   }
 
   private withValidatedLanguages(config: ConfigurationOptions): ConfigurationOptions {
-    const validator = new EnabledLanguagesValidator();
+    const validator = new EnabledLanguagesValidator(new SupportedLanguageRegistry());
     try {
       validator.validate(config.enabledLanguages);
     } catch (error) {
