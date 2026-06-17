@@ -85,8 +85,8 @@ package: package-cli package-eslint-plugin package-github-action package-vscode-
 package-cli: ## bundle the CLI package for publishing
 	$(PNPM) --filter "$(CLI_PACKAGE)" run package
 
-package-eslint-plugin: ## compile the ESLint plugin package for publishing
-	$(PNPM) --filter "$(ESLINT_PLUGIN_PACKAGE)" run clean:compile
+package-eslint-plugin: ## bundle the ESLint plugin package for publishing
+	$(PNPM) --filter "$(ESLINT_PLUGIN_PACKAGE)" run package
 
 package-github-action: package-cli ## bundle the GitHub Action package
 	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)" run package
