@@ -22,7 +22,7 @@ ci-install: ## install project dependencies without modifying the lockfile
 	$(PNPM) install --frozen-lockfile
 
 # Build and quality
-.PHONY: build compile build-core build-cli build-eslint-plugin build-github-action build-vscode-extension lint
+.PHONY: build compile build-core build-cli build-eslint-plugin build-github-action build-vscode-extension lint lint-core
 
 build: ## remove previous build output and compile all workspace packages
 	$(PNPM) run clean:compile
@@ -47,6 +47,9 @@ build-vscode-extension: ## build the VS Code extension package and its dependenc
 
 lint: ## run all workspace linters
 	$(PNPM) run lint
+
+lint-core: ## lint the core package
+	$(PNPM) --filter "$(CORE_PACKAGE)" lint
 
 # Tests
 .PHONY: test clean-test test-core test-cli test-eslint-plugin test-github-action test-vscode-extension test-integration test-integration-full
@@ -115,7 +118,7 @@ dev: compile ## open test workspace with this extension loaded in development mo
 # Validation
 .PHONY: validate-core validate-cli validate-eslint-plugin validate-github-action validate-vscode-extension validate-release
 
-validate-core: ci-install build-core test-core ## install, build, and test core
+validate-core: ci-install build-core lint-core test-core ## install, build, lint, and test core
 
 validate-cli: ci-install build-cli test-cli ## install, build, and test CLI
 
