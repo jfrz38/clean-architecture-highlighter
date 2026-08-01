@@ -23,8 +23,8 @@
     "@jfrz38/clean-architecture-highlighter-cli": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "25.x",
-    "esbuild": "0.28.0",
+    "@types/node": "26.x",
+    "esbuild": "0.28.1",
     "rimraf": "6.1.3"
   }
 }

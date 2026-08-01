@@ -47,8 +47,8 @@
   },
   "devDependencies": {
     "@jfrz38/clean-architecture-highlighter-core": "workspace:*",
-    "@types/node": "25.x",
-    "eslint": "10.4.0",
-    "typescript-eslint": "8.60.0"
+    "@types/node": "26.x",
+    "eslint": "10.8.0",
+    "typescript-eslint": "8.65.0"
   }
 }
