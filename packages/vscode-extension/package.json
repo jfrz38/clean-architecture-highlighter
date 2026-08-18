@@ -334,6 +334,7 @@
     "package": "pnpm exec vsce package --no-dependencies"
   },
   "dependencies": {
-    "@jfrz38/clean-architecture-highlighter-core": "workspace:*"
+    "@jfrz38/clean-architecture-highlighter-core": "workspace:*",
+    "typescript": "npm:@typescript/typescript6@6.0.2"
   }
 }

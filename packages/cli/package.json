@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "type": "commonjs",
   "engines": {
-    "node": ">=20"
+    "node": ">=24.0.0"
   },
   "main": "./dist/index.js",
   "types": "./out/src/index.d.ts",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@jfrz38/clean-architecture-highlighter-core": "workspace:*",
-    "@types/node": "26.x",
+    "@types/node": "24.x",
     "commander": "15.0.0"
   }
 }
