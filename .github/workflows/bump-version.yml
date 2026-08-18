@@ -95,7 +95,7 @@ jobs:
 
       - name: Install pnpm
         if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
-        uses: pnpm/action-setup@v6.0.9
+        uses: pnpm/action-setup@v6.0.10
 
       - name: Set up Node.js
         if: ${{ inputs.package == 'cli' || inputs.package == 'github-action' }}
