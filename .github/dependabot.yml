@@ -10,34 +10,25 @@ updates:
     commit-message:
       prefix: "[Dependency Update]"
     groups:
-      typescript-toolchain:
-        patterns:
-          - "@typescript/native"
-          - "typescript"
-          - "typescript-eslint"
-      commander:
-        patterns:
-          - "commander"
-      runtime-types:
-        patterns:
-          - "@types/node"
       dependencies:
         patterns:
           - "*"
-        exclude-patterns:
-          - "@types/node"
-          - "@types/vscode"
-          - "@typescript/native"
-          - "commander"
-          - "typescript"
-          - "typescript-eslint"
+        update-types:
+          - "minor"
+          - "patch"
     ignore:
+      - dependency-name: "typescript"
+        versions:
+          - ">=7.0.0"
+      - dependency-name: "commander"
+        versions:
+          - ">=15.0.0"
       - dependency-name: "@types/node"
         update-types:
           - "version-update:semver-major"
       - dependency-name: "@types/vscode"
         versions:
-          - ">=1.71.0"
+          - ">=1.121.0"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -50,3 +41,6 @@ updates:
       dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
