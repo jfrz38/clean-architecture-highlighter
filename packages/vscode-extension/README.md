@@ -85,7 +85,7 @@ Native resolution uses the nearest `tsconfig.json` when available, including `ba
 
 Current limitations:
 
-- Native resolution is only available in the VS Code extension, not in the CLI or GitHub Action.
+- Native resolution is only available in the VS Code extension, not in the CLI.
 - It is only selected for `javascript` and `typescript` documents. `javascriptreact` and `typescriptreact` documents are not enabled by this setting.
 - Imports may resolve to `.jsx` or `.tsx` files when TypeScript resolves them naturally, but those file types are not analyzed as source documents in this issue.
 

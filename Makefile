@@ -10,7 +10,6 @@ export TEST_SCENARIO_SET
 CORE_PACKAGE := @jfrz38/clean-architecture-highlighter-core
 CLI_PACKAGE := @jfrz38/clean-architecture-highlighter-cli
 ESLINT_PLUGIN_PACKAGE := @jfrz38/eslint-plugin-clean-architecture-highlighter
-GITHUB_ACTION_PACKAGE := @jfrz38/clean-architecture-highlighter-github-action
 VSCODE_EXTENSION_PACKAGE := clean-architecture-highlighter
 
 .PHONY: install ci-install
@@ -22,7 +21,7 @@ ci-install: ## install project dependencies without modifying the lockfile
 	$(PNPM) install --frozen-lockfile
 
 # Build and quality
-.PHONY: build compile build-core build-cli build-eslint-plugin build-github-action build-vscode-extension lint lint-core
+.PHONY: build compile build-core build-cli build-eslint-plugin build-vscode-extension lint lint-core
 
 build: ## remove previous build output and compile all workspace packages
 	$(PNPM) run clean:compile
@@ -39,9 +38,6 @@ build-cli: ## build the CLI package and its dependencies
 build-eslint-plugin: ## build the ESLint plugin package and its dependencies
 	$(PNPM) --filter "$(ESLINT_PLUGIN_PACKAGE)..." run clean:compile
 
-build-github-action: ## build the GitHub Action package and its dependencies
-	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)..." run clean:compile
-
 build-vscode-extension: ## build the VS Code extension package and its dependencies
 	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)..." run clean:compile
 
@@ -52,7 +48,7 @@ lint-core: ## lint the core package
 	$(PNPM) --filter "$(CORE_PACKAGE)" lint
 
 # Tests
-.PHONY: test clean-test test-core test-cli test-eslint-plugin test-github-action test-vscode-extension test-integration test-integration-full
+.PHONY: test clean-test test-core test-cli test-eslint-plugin test-vscode-extension test-integration test-integration-full
 
 test: ## run the full test suite
 	$(PNPM) test
@@ -69,9 +65,6 @@ test-cli: ## test the CLI package
 test-eslint-plugin: ## test the ESLint plugin package
 	$(PNPM) --filter "$(ESLINT_PLUGIN_PACKAGE)" test
 
-test-github-action: ## test the GitHub Action package
-	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)" test
-
 test-vscode-extension: ## test the VS Code extension package
 	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" test
 
@@ -81,24 +74,15 @@ test-integration-full: ## run the full shared integration matrix
 	$(MAKE) test-integration TEST_SCENARIO_SET=full TEST_LANGUAGE=all
 
 # Local generation and linking
-.PHONY: package package-cli package-eslint-plugin package-github-action smoke-test-github-action-bundle verify-github-action-bundle package-vscode-extension vsix vscode-vsix link-cli cli-link dev
+.PHONY: package package-cli package-eslint-plugin package-vscode-extension vsix vscode-vsix link-cli cli-link dev
 
-package: package-cli package-eslint-plugin package-github-action package-vscode-extension ## package all publishable adapters
+package: package-cli package-eslint-plugin package-vscode-extension ## package all publishable adapters
 
 package-cli: ## bundle the CLI package for publishing
 	$(PNPM) --filter "$(CLI_PACKAGE)" run package
 
 package-eslint-plugin: ## bundle the ESLint plugin package for publishing
 	$(PNPM) --filter "$(ESLINT_PLUGIN_PACKAGE)" run package
-
-package-github-action: package-cli ## bundle the GitHub Action package
-	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)" run package
-
-smoke-test-github-action-bundle: ## run the committed GitHub Action bundle with real inputs
-	$(PNPM) --filter "$(GITHUB_ACTION_PACKAGE)" run smoke:bundle
-
-verify-github-action-bundle: ## verify the committed GitHub Action bundle is up to date
-	git diff --exit-code -- packages/github-action/dist/index.js
 
 package-vscode-extension: ## package the VS Code extension
 	$(PNPM) --filter "$(VSCODE_EXTENSION_PACKAGE)" run package
@@ -116,15 +100,13 @@ dev: compile ## open test workspace with this extension loaded in development mo
 	code --extensionDevelopmentPath=packages/vscode-extension test/fixtures
 
 # Validation
-.PHONY: validate-core validate-cli validate-eslint-plugin validate-github-action validate-vscode-extension validate-release
+.PHONY: validate-core validate-cli validate-eslint-plugin validate-vscode-extension validate-release
 
 validate-core: ci-install build-core lint-core test-core ## install, build, lint, and test core
 
 validate-cli: ci-install build-cli test-cli ## install, build, and test CLI
 
 validate-eslint-plugin: ci-install build-eslint-plugin test-eslint-plugin ## install, build, and test ESLint plugin
-
-validate-github-action: ci-install build-github-action test-github-action package-github-action smoke-test-github-action-bundle verify-github-action-bundle ## install, build, test, bundle, smoke-test, and verify the GitHub Action
 
 validate-vscode-extension: ci-install build-vscode-extension test-vscode-extension ## install, build, and test the VS Code extension
 

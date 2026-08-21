@@ -18,7 +18,6 @@ jobs:
       matrix:
         package:
           - release_name: CLI
-            package_key: cli
             tag_prefix: cli-v
             package_name: "@jfrz38/clean-architecture-highlighter-cli"
             package_dir: packages/cli
@@ -30,7 +29,6 @@ jobs:
             package_command: make package-cli
             asset_path: ""
           - release_name: ESLint Plugin
-            package_key: eslint-plugin
             tag_prefix: eslint-plugin-v
             package_name: "@jfrz38/eslint-plugin-clean-architecture-highlighter"
             package_dir: packages/eslint-plugin
@@ -41,20 +39,7 @@ jobs:
             validate_command: make validate-eslint-plugin
             package_command: make package-eslint-plugin
             asset_path: ""
-          - release_name: GitHub Action
-            package_key: github-action
-            tag_prefix: github-action-v
-            package_name: "@jfrz38/clean-architecture-highlighter-github-action"
-            package_dir: packages/github-action
-            package_file: packages/github-action/package.json
-            compare_source: git-ref
-            compare_ref: HEAD^
-            registry: auto
-            validate_command: make validate-github-action TEST_LANGUAGE=all
-            package_command: make package-github-action
-            asset_path: ""
           - release_name: VS Code Extension
-            package_key: vscode-extension
             tag_prefix: vscode-extension-v
             package_name: jfrz38.clean-architecture-highlighter
             package_dir: packages/vscode-extension
@@ -136,7 +121,6 @@ jobs:
 
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "version_tag=${{ matrix.package.tag_prefix }}$VERSION" >> "$GITHUB_OUTPUT"
-          echo "major_tag=${{ matrix.package.tag_prefix }}${VERSION%%.*}" >> "$GITHUB_OUTPUT"
 
       - name: Package release asset
         if: steps.version-check.outputs.changed == 'true' && matrix.package.asset_path != ''
@@ -153,14 +137,6 @@ jobs:
             git tag "$VERSION_TAG"
             git push origin "refs/tags/$VERSION_TAG"
           fi
-
-      - name: Force-update GitHub Action major version tag
-        if: steps.version-check.outputs.changed == 'true' && matrix.package.package_key == 'github-action'
-        env:
-          MAJOR_TAG: ${{ steps.version.outputs.major_tag }}
-        run: |
-          git tag -f "$MAJOR_TAG"
-          git push origin "refs/tags/$MAJOR_TAG" --force
 
       - name: Create GitHub release
         if: steps.version-check.outputs.changed == 'true'
