@@ -40,4 +40,4 @@ jobs:
         run: make validate-cli TEST_LANGUAGE=all
 
       - name: Check core architecture boundaries with the CLI
-        run: pnpm --filter "@jfrz38/clean-architecture-highlighter-cli" run check -- packages/core --source-folder src --enabled-languages typescript
+        run: pnpm --filter "@jfrz38/clean-architecture-highlighter-cli" run check packages/core --source-folder src --enabled-languages typescript
