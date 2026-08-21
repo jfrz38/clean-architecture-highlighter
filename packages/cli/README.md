@@ -209,7 +209,26 @@ The CLI is designed to fail the pipeline when architecture violations are found:
 clean-arch check .
 ```
 
-For GitHub Actions, use the dedicated [GitHub Action wrapper](../github-action/README.md) when you do not want to install the CLI manually in the workflow.
+For example, run it directly in GitHub Actions:
+
+```yaml
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v6
+
+  - name: Setup Node
+    uses: actions/setup-node@v7
+    with:
+      node-version: 24
+
+  - name: Install Clean Architecture Highlighter
+    run: npm install --global @jfrz38/clean-architecture-highlighter-cli
+
+  - name: Check Clean Architecture boundaries
+    run: clean-arch check .
+```
+
+Pin the package version in automated environments when reproducible checks are required.
 
 ## Relationship with the VS Code extension
 
